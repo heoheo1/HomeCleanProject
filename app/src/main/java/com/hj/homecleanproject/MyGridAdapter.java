@@ -27,7 +27,21 @@ public class MyGridAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        MyWork_View view = null;
+        if(convertView == null){
+            view = new MyWork_View(parent.getContext());
+        }else{
+            view = (MyWork_View) convertView;
+        }
 
-        return null;
+        MyWork work = list.get(position);
+        view.setImageView(work.getResID());
+        view.setTextView(work.getContent());
+
+        return view;
+    }
+
+    public void addItem(MyWork work){
+        list.add(work);
     }
 }
