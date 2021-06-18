@@ -1,6 +1,7 @@
 package com.hj.homecleanproject;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +9,8 @@ import android.os.Handler;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 public class IntroActivity extends AppCompatActivity {
@@ -17,29 +20,46 @@ public class IntroActivity extends AppCompatActivity {
     final int delayed =2500;
     Animation logo;
     LinearLayout intro_Layout;
+    FrameLayout intro;
+    LoginFragment loginFragment;
+    FragmentManager fragmentManager;
+    GridFragment gridFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro);
 
         intro_Layout=findViewById(R.id.introlayout);
+        intro =findViewById(R.id.intro);
+        fragmentManager = getSupportFragmentManager();
+
+        logo = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.logo_animation);
+        intro_Layout.startAnimation(logo);
 
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent intent =new Intent(IntroActivity.this,LoginActivity.class);
-                startActivity(intent);
+                loginFragment=new LoginFragment();
+                fragmentManager.beginTransaction().replace(R.id.intro, loginFragment, null).commit();
+                onWindowFocusChanged(false);
             }
         },delayed);
-        logo = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.logo_animation);
-        intro_Layout.startAnimation(logo);
+
+
+
+
+
 
     }
+
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
             hideSystemUI();
+        }else{
+            showSystemUI();
         }
     }
 

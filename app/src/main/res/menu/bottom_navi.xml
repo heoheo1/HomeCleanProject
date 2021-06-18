@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_login"
+        android:enabled="true"
+        android:icon="@drawable/ic_launcher_foreground"
+        android:title="Login"/>
+    <item
+        android:id="@+id/action_message"
+        android:enabled="true"
+        android:icon="@drawable/ic_launcher_foreground"
+        android:title="message"/>
+    <item
+        android:id="@+id/action_music"
+        android:enabled="true"
+        android:icon="@drawable/ic_launcher_foreground"
+        android:title="mssic"/>
+    <item
+        android:id="@+id/action_location"
+        android:enabled="true"
+        android:icon="@drawable/ic_launcher_foreground"
+        android:title="lacation"/>
+    <item
+        android:id="@+id/action_next"
+        android:enabled="true"
+        android:icon="@drawable/ic_launcher_foreground"
+        android:title="next"/>
+
+</menu>
