@@ -99,9 +99,12 @@ public class IntroActivity extends AppCompatActivity {
 
     public void replaceFragment(Fragment fragment) {
         //Fragment를 전환할 때 이 메소드를 사용
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.intro, fragment).commit();      // Fragment로 사용할 MainActivity내의 layout공간을 선택합니다.
+//        FragmentManager fragmentManager = getSupportFragmentManager();
+//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//        fragmentTransaction.replace(R.id.intro, fragment).commit();
+//        Fragment로 사용할 MainActivity내의 layout공간을 선택합니다.
+
+        fragmentManager.beginTransaction().replace(R.id.intro,fragment,null).commit();
     }
 
 }

@@ -14,6 +14,12 @@ import android.widget.FrameLayout;
 import android.widget.GridView;
 
 
+//Fragment란, 어플리케이션에서 화면에 직접 보이는 공간의 Activity내에서 분할시키고 다른 화면으로 전환할 수 있는 화면 공간의 단위
+//Fragment를 이용하려면, 상위에 있는 Activity에서 출력할 layout을 제어
+//하지만 Fragment 내부에서 다른 Fragment로 이동하는 것은 그 Fragment가 자신의 하위레벨이 아니기 때문에
+//내부에서 직접 제어할 수 없으므로 , 상위 레벨인 Activity를 호출하여 제어하는 형태가 되어야 함
+
+
 
 
 public class LoginFragment extends Fragment {
