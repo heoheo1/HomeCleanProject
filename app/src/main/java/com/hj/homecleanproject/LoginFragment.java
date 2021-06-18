@@ -14,14 +14,20 @@ import android.widget.FrameLayout;
 import android.widget.GridView;
 
 
+
+
 public class LoginFragment extends Fragment {
 
     ViewGroup viewGroup;
     Button btn_Login;
-    FragmentManager fragmentManager;
     IntroActivity introActivity;
-    FrameLayout login_Frame;
     GridFragment gridFragment;
+
+    // 각각의 Fragment마다 Instance를 반환해 줄 메소드를 생성, Fragment들이 메소드를 가지고 있어야 화면전환 가능
+    public static LoginFragment newInstance() {
+        return new LoginFragment();
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -33,8 +39,8 @@ public class LoginFragment extends Fragment {
         btn_Login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                gridFragment =new GridFragment();
-                introActivity.fragmentManager.beginTransaction().replace(R.id.login_Frame, gridFragment ,null).commit();
+
+                introActivity.fragmentManager.beginTransaction().replace(R.id.login_Frame,new GridFragment() ,null).commit();
             }
         });
 
@@ -42,5 +48,7 @@ public class LoginFragment extends Fragment {
 
 
     }
+
+
 
 }

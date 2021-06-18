@@ -1,17 +1,23 @@
 package com.hj.homecleanproject;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class IntroActivity extends AppCompatActivity {
 
@@ -21,9 +27,10 @@ public class IntroActivity extends AppCompatActivity {
     Animation logo;
     LinearLayout intro_Layout;
     FrameLayout intro;
-    LoginFragment loginFragment;
+
     FragmentManager fragmentManager;
-    GridFragment gridFragment;
+
+    BottomNavigationView bottomNavi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,24 +39,24 @@ public class IntroActivity extends AppCompatActivity {
 
         intro_Layout=findViewById(R.id.introlayout);
         intro =findViewById(R.id.intro);
+
+        //화면전환 프래그먼트 선언
         fragmentManager = getSupportFragmentManager();
 
         logo = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.logo_animation);
         intro_Layout.startAnimation(logo);
 
+
+
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                loginFragment=new LoginFragment();
-                fragmentManager.beginTransaction().replace(R.id.intro, loginFragment, null).commit();
+
+
+                fragmentManager.beginTransaction().add(R.id.intro,new LoginFragment().newInstance(), null).commit();
                 onWindowFocusChanged(false);
             }
         },delayed);
-
-
-
-
-
 
     }
 
@@ -89,5 +96,13 @@ public class IntroActivity extends AppCompatActivity {
                         | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
     }
+
+    public void replaceFragment(Fragment fragment) {
+        //Fragment를 전환할 때 이 메소드를 사용
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.intro, fragment).commit();      // Fragment로 사용할 MainActivity내의 layout공간을 선택합니다.
+    }
+
 }
 
