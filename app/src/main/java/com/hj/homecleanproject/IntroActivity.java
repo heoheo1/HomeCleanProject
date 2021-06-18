@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
@@ -16,14 +17,18 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.hj.homecleanproject.customInterface.onBackPressedListener;
+
+import java.util.List;
 
 public class IntroActivity extends AppCompatActivity {
 
 
-    Handler handler =new Handler();
-    final int delayed =2500;
+    Handler handler = new Handler();
+    final int delayed = 2500;
     Animation logo;
     LinearLayout intro_Layout;
     FrameLayout intro;
@@ -37,8 +42,8 @@ public class IntroActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro);
 
-        intro_Layout=findViewById(R.id.introlayout);
-        intro =findViewById(R.id.intro);
+        intro_Layout = findViewById(R.id.introlayout);
+        intro = findViewById(R.id.intro);
 
         //화면전환 프래그먼트 선언
         fragmentManager = getSupportFragmentManager();
@@ -46,17 +51,13 @@ public class IntroActivity extends AppCompatActivity {
         logo = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.logo_animation);
         intro_Layout.startAnimation(logo);
 
-
-
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-
-
-                fragmentManager.beginTransaction().add(R.id.intro,new LoginFragment().newInstance(), null).commit();
+                fragmentManager.beginTransaction().add(R.id.intro, new LoginFragment().newInstance(), null).commit();
                 onWindowFocusChanged(false);
             }
-        },delayed);
+        }, delayed);
 
     }
 
@@ -65,7 +66,7 @@ public class IntroActivity extends AppCompatActivity {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
             hideSystemUI();
-        }else{
+        } else {
             showSystemUI();
         }
     }
@@ -104,8 +105,23 @@ public class IntroActivity extends AppCompatActivity {
 //        fragmentTransaction.replace(R.id.intro, fragment).commit();
 //        Fragment로 사용할 MainActivity내의 layout공간을 선택합니다.
 
-        fragmentManager.beginTransaction().replace(R.id.intro,fragment,null).commit();
+        fragmentManager.beginTransaction().replace(R.id.intro, fragment, null).commit();
     }
 
+    @Override
+    public void onBackPressed() {
+        //프래그먼트들의 리스트를 만들어
+        List<Fragment> fragmentList = getSupportFragmentManager().getFragments();
+        if (fragmentList != null) {
+            for (Fragment fragment : fragmentList) {
+                //만약 프래그먼트가 BackPressClick을 implements하고있다면
+                if (fragment instanceof onBackPressedListener) {
+                    //해당 fragment의 onBackPressed를 실행하고
+                    ((onBackPressedListener) fragment).onBackPressed();
+                }
+            }
+        }
+    }//onBackPressed()
 }
+
 
