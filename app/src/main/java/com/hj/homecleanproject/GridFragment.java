@@ -54,7 +54,10 @@ public class GridFragment extends Fragment implements onBackPressedListener {
         adapter.addItem(new MyWork(R.drawable.moon, "하이요"));
         adapter.notifyDataSetChanged();
 
+        bottomNavi.setSelectedItemId(R.id.action_home);
+
         bottomNavi.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
@@ -69,6 +72,7 @@ public class GridFragment extends Fragment implements onBackPressedListener {
                     case R.id.action_home:
                         ((IntroActivity) getActivity()).replaceFragment(GridFragment.newInstance(),R.id.grid_layout);
                         break;
+
 
                 }
                 return true;
