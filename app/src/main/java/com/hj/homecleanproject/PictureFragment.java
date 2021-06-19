@@ -8,23 +8,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+public class PictureFragment extends Fragment {
 
-public class MyFamilyFragment extends Fragment {
-
-    ViewGroup viewGroup;
-
-    public static MyFamilyFragment newInstance() {
-        return new MyFamilyFragment();
+    public static PictureFragment newInstance() {
+        return new PictureFragment();
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        viewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_my_family, container, false);
-
-
-        return viewGroup;
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_picture, container, false);
     }
 }

@@ -13,6 +13,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.GridView;
+import android.widget.Toast;
+
+import com.google.android.material.navigation.NavigationView;
+import com.hj.homecleanproject.customInterface.onBackPressedListener;
 
 
 //Fragment란, 어플리케이션에서 화면에 직접 보이는 공간의 Activity내에서 분할시키고 다른 화면으로 전환할 수 있는 화면 공간의 단위
@@ -23,34 +27,31 @@ import android.widget.GridView;
 
 
 
-public class LoginFragment extends Fragment {
+public class LoginFragment extends Fragment  {
 
     ViewGroup viewGroup;
     Button btn_Login;
-    IntroActivity introActivity;
-    GridFragment gridFragment;
 
     // 각각의 Fragment마다 Instance를 반환해 줄 메소드를 생성, Fragment들이 메소드를 가지고 있어야 화면전환 가능
-    public static LoginFragment newInstance() {
-        return new LoginFragment();
-    }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        introActivity = (IntroActivity) getActivity();
         viewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_login, container, false);
+        btn_Login = viewGroup.findViewById(R.id.login);
 
-        btn_Login=viewGroup.findViewById(R.id.login);
         btn_Login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                introActivity.fragmentManager.beginTransaction().replace(R.id.login_layout,new GridFragment() ,null).commit();
+               Intent intent =new Intent(getActivity(),FragmentActivity.class);
+               startActivity(intent);
             }
         });
 
         return viewGroup;
+
     }
+
 }
+

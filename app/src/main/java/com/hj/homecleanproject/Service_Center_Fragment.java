@@ -9,22 +9,16 @@ import android.view.View;
 import android.view.ViewGroup;
 
 
-public class MyFamilyFragment extends Fragment {
+public class Service_Center_Fragment extends Fragment {
 
-    ViewGroup viewGroup;
-
-    public static MyFamilyFragment newInstance() {
-        return new MyFamilyFragment();
+    public static Service_Center_Fragment newInstance() {
+        return new Service_Center_Fragment();
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        viewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_my_family, container, false);
-
-
-        return viewGroup;
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_service__center_, container, false);
     }
 }

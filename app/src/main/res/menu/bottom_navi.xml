@@ -6,7 +6,7 @@
         android:icon="@drawable/ic_launcher_foreground"
         android:title="로그아웃"/>
     <item
-        android:id="@+id/action_message"
+        android:id="@+id/action_family"
         android:enabled="true"
         android:icon="@drawable/ic_launcher_foreground"
         android:title="나의 가족"/>
@@ -16,12 +16,12 @@
         android:icon="@drawable/ic_launcher_foreground"
         android:title="홈"/>
     <item
-        android:id="@+id/action_location"
+        android:id="@+id/action_Picture"
         android:enabled="true"
         android:icon="@drawable/ic_launcher_foreground"
         android:title="갤러리"/>
     <item
-        android:id="@+id/action_next"
+        android:id="@+id/action_ServiceCenter"
         android:enabled="true"
         android:icon="@drawable/ic_launcher_foreground"
         android:title="고객센터"/>

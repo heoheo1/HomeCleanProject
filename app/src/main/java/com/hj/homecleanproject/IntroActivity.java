@@ -14,6 +14,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -22,6 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationView;
 import com.hj.homecleanproject.customInterface.onBackPressedListener;
 
 import java.util.List;
@@ -35,9 +37,8 @@ public class IntroActivity extends AppCompatActivity {
     LinearLayout intro_Layout;
     FrameLayout intro;
 
-    FragmentManager fragmentManager;
 
-    BottomNavigationView bottomNavi;
+    FragmentManager fragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +50,11 @@ public class IntroActivity extends AppCompatActivity {
         intro_Layout = findViewById(R.id.introlayout);
         intro = findViewById(R.id.intro);
 
+
+
         //화면전환 프래그먼트 선언
         fragmentManager = getSupportFragmentManager();
+
 
         logo = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.logo_animation);
         intro_Layout.startAnimation(logo);
@@ -58,7 +62,7 @@ public class IntroActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                fragmentManager.beginTransaction().add(R.id.intro, new LoginFragment().newInstance(), null).commitAllowingStateLoss();
+                fragmentManager.beginTransaction().add(R.id.intro, new LoginFragment(), null).commitAllowingStateLoss();
                 onWindowFocusChanged(false);
             }
         }, delayed);
@@ -101,30 +105,7 @@ public class IntroActivity extends AppCompatActivity {
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
     }
 
-    public void replaceFragment(Fragment fragment,int layout) {
-        //Fragment를 전환할 때 이 메소드를 사용
-//        FragmentManager fragmentManager = getSupportFragmentManager();
-//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//        fragmentTransaction.replace(R.id.intro, fragment).commit();
-//        Fragment로 사용할 MainActivity내의 layout공간을 선택합니다.
 
-        fragmentManager.beginTransaction().replace(layout, fragment, null).commit();
-    }
-
-    @Override
-    public void onBackPressed() {
-        //프래그먼트들의 리스트를 만들어
-        List<Fragment> fragmentList = getSupportFragmentManager().getFragments();
-        if (fragmentList != null) {
-            for (Fragment fragment : fragmentList) {
-                //만약 프래그먼트가 BackPressClick을 implements하고있다면
-                if (fragment instanceof onBackPressedListener) {
-                    //해당 fragment의 onBackPressed를 실행한다.
-                    ((onBackPressedListener) fragment).onBackPressed();
-                }
-            }
-        }
-    }//onBackPressed()
 }
 
 
