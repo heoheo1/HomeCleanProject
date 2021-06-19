@@ -58,6 +58,7 @@ public class GridFragment extends Fragment implements onBackPressedListener {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
+
                     case R.id.action_login:
                         // getActivity()로 IntroActivity replaceFragment를 불러옵니다.
                         ((IntroActivity) getActivity()).replaceFragment(LoginFragment.newInstance(), R.id.login_layout);
@@ -73,6 +74,7 @@ public class GridFragment extends Fragment implements onBackPressedListener {
                 return true;
             }
         });
+
 
         viewGroup.findViewById(R.id.hamburger).setOnClickListener(v -> { //hamburger button 클릭시
             navigation.setVisibility(View.VISIBLE);
