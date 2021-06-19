@@ -55,6 +55,7 @@ public class GridFragment extends Fragment implements onBackPressedListener {
         adapter.notifyDataSetChanged();
 
         bottomNavi.setSelectedItemId(R.id.action_home);
+        //11
 
         bottomNavi.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
 
