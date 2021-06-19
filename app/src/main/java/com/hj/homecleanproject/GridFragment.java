@@ -60,14 +60,13 @@ public class GridFragment extends Fragment implements onBackPressedListener {
                 switch (item.getItemId()) {
                     case R.id.action_login:
                         // getActivity()로 IntroActivity replaceFragment를 불러옵니다.
-                        ((IntroActivity) getActivity()).replaceFragment(LoginFragment.newInstance());
+                        ((IntroActivity) getActivity()).replaceFragment(LoginFragment.newInstance(), R.id.login_layout);
                         break;
                     case R.id.action_message:
-                        ((IntroActivity) getActivity()).replaceFragment(MyFamilyFragment.newInstance());
+                        ((IntroActivity) getActivity()).replaceFragment(MyFamilyFragment.newInstance(),R.id.grid_layout);
                         break;
-
                     case R.id.action_home:
-                        ((IntroActivity) getActivity()).replaceFragment(GridFragment.newInstance());
+                        ((IntroActivity) getActivity()).replaceFragment(GridFragment.newInstance(),R.id.grid_layout);
                         break;
 
                 }

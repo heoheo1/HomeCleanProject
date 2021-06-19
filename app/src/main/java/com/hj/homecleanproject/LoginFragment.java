@@ -47,7 +47,7 @@ public class LoginFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                introActivity.fragmentManager.beginTransaction().replace(R.id.login_Frame,new GridFragment() ,null).commit();
+                introActivity.fragmentManager.beginTransaction().replace(R.id.login_layout,new GridFragment() ,null).commit();
             }
         });
 
