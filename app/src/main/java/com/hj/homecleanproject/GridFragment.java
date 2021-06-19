@@ -57,6 +57,8 @@ public class GridFragment extends Fragment implements onBackPressedListener {
         adapter.addItem(new MyWork(R.drawable.moon, "하이요"));
         adapter.notifyDataSetChanged();
 
+        bottomNavi.setSelectedItemId(R.id.action_home);
+
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
