@@ -105,7 +105,7 @@ public class IntroActivity extends AppCompatActivity {
 //        fragmentTransaction.replace(R.id.intro, fragment).commit();
 //        Fragment로 사용할 MainActivity내의 layout공간을 선택합니다.
 
-        fragmentManager.beginTransaction().replace(R.id.intro, fragment, null).commit();
+        fragmentManager.beginTransaction().replace(R.id.grid_layout, fragment, null).commit();
     }
 
     @Override

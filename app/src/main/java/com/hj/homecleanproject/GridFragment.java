@@ -33,8 +33,8 @@ public class GridFragment extends Fragment implements onBackPressedListener {
 
     long lastBackPressed = 0;
 
-    public static LoginFragment newInstance() {
-        return new LoginFragment();
+    public static GridFragment newInstance() {
+        return new GridFragment();
     }
 
     @Override
@@ -61,6 +61,15 @@ public class GridFragment extends Fragment implements onBackPressedListener {
                     case R.id.action_login:
                         // getActivity()로 IntroActivity replaceFragment를 불러옵니다.
                         ((IntroActivity) getActivity()).replaceFragment(LoginFragment.newInstance());
+                        break;
+                    case R.id.action_message:
+                        ((IntroActivity) getActivity()).replaceFragment(MyFamilyFragment.newInstance());
+                        break;
+
+                    case R.id.action_home:
+                        ((IntroActivity) getActivity()).replaceFragment(GridFragment.newInstance());
+                        break;
+
                 }
                 return true;
             }

@@ -4,26 +4,26 @@
         android:id="@+id/action_login"
         android:enabled="true"
         android:icon="@drawable/ic_launcher_foreground"
-        android:title="Login"/>
+        android:title="로그아웃"/>
     <item
         android:id="@+id/action_message"
         android:enabled="true"
         android:icon="@drawable/ic_launcher_foreground"
-        android:title="message"/>
+        android:title="나의 가족"/>
     <item
-        android:id="@+id/action_music"
+        android:id="@+id/action_home"
         android:enabled="true"
         android:icon="@drawable/ic_launcher_foreground"
-        android:title="mssic"/>
+        android:title="홈"/>
     <item
         android:id="@+id/action_location"
         android:enabled="true"
         android:icon="@drawable/ic_launcher_foreground"
-        android:title="lacation"/>
+        android:title="갤러리"/>
     <item
         android:id="@+id/action_next"
         android:enabled="true"
         android:icon="@drawable/ic_launcher_foreground"
-        android:title="next"/>
+        android:title="고객센터"/>
 
 </menu>
