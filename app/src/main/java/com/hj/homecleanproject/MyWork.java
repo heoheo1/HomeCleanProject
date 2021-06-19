@@ -2,8 +2,8 @@ package com.hj.homecleanproject;
 
 public class MyWork {
 
-    int resID;
-    String content;
+    int resID; //CardView에 사용될 Image Resource
+    String content; // CardView에 사용될 TextView
 
     public MyWork(int resID, String content){
         this.resID = resID;

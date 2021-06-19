@@ -10,11 +10,13 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
+import com.hj.homecleanproject.customDialog.GridDialogFragment;
 import com.hj.homecleanproject.customInterface.onBackPressedListener;
 
 import java.util.ArrayList;
@@ -32,6 +34,7 @@ public class GridFragment extends Fragment implements onBackPressedListener {
     NavigationView navigation;
 
     long lastBackPressed = 0;
+    private GridDialogFragment dialog;
 
     public static GridFragment newInstance() {
         return new GridFragment();
@@ -54,11 +57,23 @@ public class GridFragment extends Fragment implements onBackPressedListener {
         adapter.addItem(new MyWork(R.drawable.moon, "하이요"));
         adapter.notifyDataSetChanged();
 
-        bottomNavi.setSelectedItemId(R.id.action_home);
-        //11
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                MyWork work = (MyWork) adapter.getItem(position);
+                int resID = work.getResID();
+                String contents = work.getContent();
+
+                if(resID == R.drawable.moon){
+                    dialog = new GridDialogFragment(resID, contents);
+                }else{
+                    dialog = new GridDialogFragment();
+                }
+                dialog.show(getFragmentManager(),null);
+            }
+        });
 
         bottomNavi.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
@@ -73,8 +88,6 @@ public class GridFragment extends Fragment implements onBackPressedListener {
                     case R.id.action_home:
                         ((IntroActivity) getActivity()).replaceFragment(GridFragment.newInstance(),R.id.grid_layout);
                         break;
-
-
                 }
                 return true;
             }

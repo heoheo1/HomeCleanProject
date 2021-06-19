@@ -2,10 +2,12 @@ package com.hj.homecleanproject;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -42,6 +44,8 @@ public class IntroActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro);
 
+        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE},0);
+
         intro_Layout = findViewById(R.id.introlayout);
         intro = findViewById(R.id.intro);
 
@@ -54,11 +58,10 @@ public class IntroActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                fragmentManager.beginTransaction().add(R.id.intro, new LoginFragment().newInstance(), null).commit();
+                fragmentManager.beginTransaction().add(R.id.intro, new LoginFragment().newInstance(), null).commitAllowingStateLoss();
                 onWindowFocusChanged(false);
             }
         }, delayed);
-
     }
 
     @Override
@@ -116,7 +119,7 @@ public class IntroActivity extends AppCompatActivity {
             for (Fragment fragment : fragmentList) {
                 //만약 프래그먼트가 BackPressClick을 implements하고있다면
                 if (fragment instanceof onBackPressedListener) {
-                    //해당 fragment의 onBackPressed를 실행하고
+                    //해당 fragment의 onBackPressed를 실행한다.
                     ((onBackPressedListener) fragment).onBackPressed();
                 }
             }
