@@ -42,17 +42,16 @@ public class GridFragment extends Fragment{
 
         viewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_grid, container, false);
         gridView = viewGroup.findViewById(R.id.grid);
-        navigation =viewGroup.findViewById(R.id.nav_view);
 
 
         workList = new ArrayList<>();
         adapter = new MyGridAdapter();
         gridView.setAdapter(adapter);
+        navigation = viewGroup.findViewById(R.id.nav_view);
 
-        adapter.addItem(new MyWork(R.drawable.moon, "하이요"));
-        adapter.addItem(new MyWork(R.drawable.moon, "하이요"));
+        adapter.addItem(new MyWork(R.drawable.iu, "하이요"));
+        adapter.addItem(new MyWork(R.drawable.iu, "하이요"));
         adapter.notifyDataSetChanged();
-
 
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -62,13 +61,13 @@ public class GridFragment extends Fragment{
                 int resID = work.getResID();
                 String contents = work.getContent();
 
-                if(resID == R.drawable.moon){
+                if (resID == R.drawable.moon) {
                     dialog = new GridDialogFragment(resID, contents);
-                }else{
+                } else {
                     dialog = new GridDialogFragment();
                 }
                 dialog.setCancelable(false);
-                dialog.show(getFragmentManager(),null);
+                dialog.show(getFragmentManager(), null);
             }
         });
 
@@ -76,5 +75,8 @@ public class GridFragment extends Fragment{
             navigation.setVisibility(View.VISIBLE);
         });
         return viewGroup;
+
     }
+
+
 }

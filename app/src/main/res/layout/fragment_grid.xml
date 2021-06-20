@@ -8,32 +8,48 @@
     android:background="@android:color/white"
     tools:context=".GridFragment">
 
-
-    <FrameLayout
+    <RelativeLayout
+        android:id="@+id/aa"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/grid_layout">
+        android:layout_height="75dp">
+        <TextView
+            android:src="@drawable/ic_launcher_foreground"
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:gravity="center"
+            android:text="My Family clean"
+            android:textSize="30dp"
+            android:fontFamily="@font/font"
+            android:textColor="#B4D433"
+            />
+        <Button
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:id="@+id/hamburger"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/hamburger_button" />
+
+    </RelativeLayout>
+
+
+
 
     <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <Button
-                android:id="@+id/hamburger"
-                android:layout_width="40dp"
-                android:layout_height="wrap_content"
-                android:background="@drawable/hamburger_button" />
+            android:layout_height="wrap_content"
+        android:layout_below="@+id/aa"
+            android:id="@+id/grid_layout">
 
             <GridView
                 android:id="@+id/grid"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@+id/hamburger"
+
                 android:numColumns="2" />
         </RelativeLayout>
 
 
-    </FrameLayout>
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"

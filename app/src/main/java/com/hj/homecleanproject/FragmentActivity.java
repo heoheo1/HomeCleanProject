@@ -93,11 +93,15 @@ public class FragmentActivity extends AppCompatActivity {
         ft = fm.beginTransaction();
         switch (n) {
             case 0:
+
                 ft.replace(R.id.main_frame, loginFragment, "login");
                 bottomNavigationView.removeAllViews();
                 //login후, 여러 fragment를 클릭후, 다시 로그인페이지로 왔을때
                 //back버튼을 누르면 로그인페이지를 누르기전의 Fragment로 이동함
-                fm.popBackStackImmediate(); //그래서 login으로 이동했을땐, backstack의 내용을 모두 없앤다.
+                //BackStack에 들어있는 모든 갯수를 Count해서 한개씩 지운다.
+                for(int i = 0; i<fm.getBackStackEntryCount(); i++){
+                    fm.popBackStack();
+                }
                 ft.commit();
                 break;
             case 1:
