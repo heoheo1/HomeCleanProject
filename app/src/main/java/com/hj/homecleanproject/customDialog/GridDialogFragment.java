@@ -95,9 +95,7 @@ public class GridDialogFragment extends DialogFragment {
     public void startActivityForResult(Intent intent, int requestCode) {
         super.startActivityForResult(intent, requestCode);
         if(requestCode == 1000){
-            Bundle extra = intent.getExtras();
-            Bitmap bitmap = (Bitmap) extra.get("data");
-            dialogImageView.setImageBitmap(bitmap);
+
         }
 
     }
