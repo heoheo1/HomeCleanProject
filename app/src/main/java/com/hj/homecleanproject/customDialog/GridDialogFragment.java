@@ -94,25 +94,12 @@ public class GridDialogFragment extends DialogFragment {
     }
 
     @Override
-    public void startActivityForResult(Intent intent, int requestCode) {
-        super.startActivityForResult(intent, requestCode);
-        if(requestCode == 1000){
-            Bundle extra = intent.getExtras();
-            Bitmap bitmap = (Bitmap) extra.get("data");
-            dialogImageView.setImageBitmap(bitmap);
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1000 && resultCode == Activity.RESULT_OK){
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            dialogImageView.setImageBitmap(imageBitmap);
         }
-
-    }
-
-
-
-    private File createImageFile() throws IOException {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(imageFileName, ".jpg", storageDir);
-
-        currentPhotoPath = image.getAbsolutePath();
-        return image;
     }
 }
