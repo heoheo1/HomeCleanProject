@@ -45,6 +45,8 @@ public class GridDialogFragment extends DialogFragment {
     int resID = 0;
     String contents;
 
+    String currentPhotoPath;
+
     public GridDialogFragment(int resID, String contents){ // GridView에 사진과 내용이 있을때
         this.resID = resID;
         this.contents = contents;
@@ -100,5 +102,17 @@ public class GridDialogFragment extends DialogFragment {
             dialogImageView.setImageBitmap(bitmap);
         }
 
+    }
+
+
+
+    private File createImageFile() throws IOException {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(imageFileName, ".jpg", storageDir);
+
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
     }
 }

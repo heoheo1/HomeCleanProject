@@ -31,6 +31,7 @@ public class FragmentActivity extends AppCompatActivity {
     private ArrayList<Integer> positions; // position을 저장할 list
     private int position = 0, lastPosition = 2; //현재 선택값, 마지막에 선택한 값
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
