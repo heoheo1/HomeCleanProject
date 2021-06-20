@@ -3,27 +3,27 @@
     <item
         android:id="@+id/action_login"
         android:enabled="true"
-        android:icon="@drawable/ic_launcher_foreground"
+        android:icon="@drawable/logout"
         android:title="로그아웃"/>
     <item
         android:id="@+id/action_family"
         android:enabled="true"
-        android:icon="@drawable/ic_launcher_foreground"
+        android:icon="@drawable/ic_baseline_family_restroom_24"
         android:title="나의 가족"/>
     <item
         android:id="@+id/action_home"
         android:enabled="true"
-        android:icon="@drawable/ic_launcher_foreground"
+        android:icon="@drawable/ic_baseline_home_24"
         android:title="홈"/>
     <item
         android:id="@+id/action_Picture"
         android:enabled="true"
-        android:icon="@drawable/ic_launcher_foreground"
+        android:icon="@drawable/ic_baseline_image_24"
         android:title="갤러리"/>
     <item
         android:id="@+id/action_ServiceCenter"
         android:enabled="true"
-        android:icon="@drawable/ic_launcher_foreground"
+        android:icon="@drawable/ic_baseline_miscellaneous_services_24"
         android:title="고객센터"/>
 
 </menu>
