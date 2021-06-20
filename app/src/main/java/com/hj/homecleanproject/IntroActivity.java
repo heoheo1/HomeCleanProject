@@ -24,7 +24,6 @@ import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
-import com.hj.homecleanproject.customInterface.onBackPressedListener;
 
 import java.util.List;
 
@@ -45,16 +44,13 @@ public class IntroActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro);
 
-        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE},0);
+        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA},0);
 
         intro_Layout = findViewById(R.id.introlayout);
         intro = findViewById(R.id.intro);
 
-
-
         //화면전환 프래그먼트 선언
         fragmentManager = getSupportFragmentManager();
-
 
         logo = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.logo_animation);
         intro_Layout.startAnimation(logo);
@@ -104,8 +100,6 @@ public class IntroActivity extends AppCompatActivity {
                         | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
     }
-
-
 }
 
 

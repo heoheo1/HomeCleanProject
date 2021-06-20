@@ -17,7 +17,6 @@ import android.widget.Toast;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.hj.homecleanproject.customDialog.GridDialogFragment;
-import com.hj.homecleanproject.customInterface.onBackPressedListener;
 
 import java.util.ArrayList;
 
@@ -70,6 +69,7 @@ public class GridFragment extends Fragment{
                 }else{
                     dialog = new GridDialogFragment();
                 }
+                dialog.setCancelable(false);
                 dialog.show(getFragmentManager(),null);
             }
         });
@@ -77,9 +77,6 @@ public class GridFragment extends Fragment{
         viewGroup.findViewById(R.id.hamburger).setOnClickListener(v -> { //hamburger button 클릭시
             navigation.setVisibility(View.VISIBLE);
         });
-
         return viewGroup;
-
     }
-
 }

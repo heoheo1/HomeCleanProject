@@ -16,7 +16,6 @@ import android.widget.GridView;
 import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
-import com.hj.homecleanproject.customInterface.onBackPressedListener;
 
 
 //Fragment란, 어플리케이션에서 화면에 직접 보이는 공간의 Activity내에서 분할시키고 다른 화면으로 전환할 수 있는 화면 공간의 단위
