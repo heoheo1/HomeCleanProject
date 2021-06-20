@@ -92,13 +92,12 @@ public class GridDialogFragment extends DialogFragment {
     }
 
     @Override
-    public void startActivityForResult(Intent intent, int requestCode) {
-        super.startActivityForResult(intent, requestCode);
-        if(requestCode == 1000){
-            Bundle extra = intent.getExtras();
-            Bitmap bitmap = (Bitmap) extra.get("data");
-            dialogImageView.setImageBitmap(bitmap);
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1000 && resultCode == Activity.RESULT_OK){
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            dialogImageView.setImageBitmap(imageBitmap);
         }
-
     }
 }
