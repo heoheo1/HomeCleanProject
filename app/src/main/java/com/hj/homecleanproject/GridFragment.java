@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ImageView;
 
 import com.google.android.material.navigation.NavigationView;
 import com.hj.homecleanproject.customDialog.GridDialogFragment;
@@ -30,6 +31,7 @@ public class GridFragment extends Fragment{
     ArrayList<MyWork> workList;
     MyGridAdapter adapter;
     FragmentActivity fragmentActivity;
+    ImageView cardView;
 
     NavigationView navigation;
     private GridDialogFragment dialog;
@@ -52,8 +54,8 @@ public class GridFragment extends Fragment{
         gridView.setAdapter(adapter);
         navigation = viewGroup.findViewById(R.id.nav_view);
 
-        adapter.addItem(new MyWork(R.drawable.iu, "하이요"));
-        adapter.addItem(new MyWork(R.drawable.iu, "하이요"));
+        adapter.addItem(new MyWork(R.drawable.iu, "화장실 청소 완료"));
+        adapter.addItem(new MyWork(R.drawable.iu, "설거지 완료"));
         adapter.notifyDataSetChanged();
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -77,15 +79,17 @@ public class GridFragment extends Fragment{
                         ((MyWork) adapter.getItem(position)).setResID(0); //기존 CardView의 이미지는 없애고
                         ((MyWork) adapter.getItem(position)).setEncodeResID(resID); // Dialog의 이미지와
                         ((MyWork) adapter.getItem(position)).setContent(contents); // Contents의 내용을 붙인다.
+
                         adapter.notifyDataSetChanged();
+
                     }
                 });
             }
         });
 
-        viewGroup.findViewById(R.id.hamburger).setOnClickListener(v -> { //hamburger button 클릭시
-            navigation.setVisibility(View.VISIBLE);
-        });
+//        viewGroup.findViewById(R.id.hamburger).setOnClickListener(v -> { //hamburger button 클릭시
+//            navigation.setVisibility(View.VISIBLE);
+//        });
         return viewGroup;
     }
 }

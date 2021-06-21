@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentTransaction;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -48,7 +49,6 @@ public class FragmentActivity extends AppCompatActivity {
         setFrag(2); //첫 프로그먼트 화면을 무엇으로 지정
         bottomNavigationView.getMenu().getItem(lastPosition).setEnabled(false);
         positions.add(lastPosition);
-        bottomNavigationView.setSelectedItemId(R.id.action_home);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -56,6 +56,7 @@ public class FragmentActivity extends AppCompatActivity {
                     case R.id.action_login:
                         setFrag(0);
                         position = 0;
+
                         break;
                     case R.id.action_family:
                         setFrag(1);

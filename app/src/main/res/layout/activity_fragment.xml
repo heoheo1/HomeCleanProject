@@ -6,24 +6,17 @@
     android:layout_height="match_parent"
     tools:context=".FragmentActivity">
 
-
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNavi"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        app:itemIconTint="#000000"
-        app:itemTextColor="#000000"
-        app:menu="@menu/bottom_navi"
-        />
-
-    <FrameLayout
-        android:id="@+id/main_frame"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_below="@+id/aa"
         android:layout_above="@+id/bottomNavi"
-        android:layout_alignParentTop="true"
-        ></FrameLayout>
+       >
+<FrameLayout
+    android:id="@+id/main_frame"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
@@ -39,5 +32,22 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent" />
     </com.google.android.material.navigation.NavigationView>
+
+</FrameLayout>
+    </RelativeLayout>
+
+
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavi"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:itemIconTint="#000000"
+        app:itemTextColor="#000000"
+        app:menu="@menu/bottom_navi"
+        />
+
+
 
 </RelativeLayout>

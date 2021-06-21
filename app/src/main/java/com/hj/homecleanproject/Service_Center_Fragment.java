@@ -2,23 +2,30 @@ package com.hj.homecleanproject;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceFragmentCompat;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.zip.Inflater;
 
-public class Service_Center_Fragment extends Fragment {
 
-    public static Service_Center_Fragment newInstance() {
-        return new Service_Center_Fragment();
-    }
+public class Service_Center_Fragment extends PreferenceFragmentCompat {
+
+    ViewGroup viewGroup;
+    ViewGroup container;
+
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_service__center_, container, false);
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+        setPreferencesFromResource(R.xml.settings_preference,rootKey);
+
+
+
     }
+
 }

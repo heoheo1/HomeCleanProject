@@ -11,26 +11,35 @@
     <RelativeLayout
         android:id="@+id/aa"
         android:layout_width="match_parent"
-        android:layout_height="75dp">
-        <TextView
-            android:src="@drawable/ic_launcher_foreground"
-            android:layout_width="match_parent"
-            android:layout_height="75dp"
-            android:gravity="center"
-            android:text="My Family clean"
-            android:textSize="30dp"
-            android:fontFamily="@font/font"
-            android:textColor="#B4D433"
-            />
-        <Button
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp"
-            android:id="@+id/hamburger"
-            android:layout_width="40dp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/hamburger_button" />
+        android:layout_height="125dp"
+        android:background="@drawable/title"
+        android:elevation="10dp"
+        android:gravity="center"
 
+        >
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+
+            <TextView
+                android:src="@drawable/ic_launcher_foreground"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textStyle="bold"
+                android:text="My Family clean"
+                android:textSize="30dp"
+                android:fontFamily="@font/font"
+                android:textColor="#000000"
+                />
+        </LinearLayout>
     </RelativeLayout>
+
+
 
 
 
@@ -39,14 +48,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
         android:layout_below="@+id/aa"
+        android:layout_marginTop="10dp"
             android:id="@+id/grid_layout">
 
             <GridView
                 android:id="@+id/grid"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-
-                android:numColumns="2" />
+                android:numColumns="1" />
         </RelativeLayout>
 
 

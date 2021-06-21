@@ -20,6 +20,8 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -34,8 +36,8 @@ public class IntroActivity extends AppCompatActivity {
     Handler handler = new Handler();
     final int delayed = 2500;
     Animation logo;
-    LinearLayout intro_Layout;
-    FrameLayout intro;
+    TextView intro_Txt;
+    RelativeLayout intro;
 
 
     FragmentManager fragmentManager;
@@ -48,14 +50,14 @@ public class IntroActivity extends AppCompatActivity {
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA}, 0);
 
-        intro_Layout = findViewById(R.id.introlayout);
+        intro_Txt = findViewById(R.id.introTxt);
         intro = findViewById(R.id.intro);
 
         //화면전환 프래그먼트 선언
         fragmentManager = getSupportFragmentManager();
 
         logo = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.logo_animation);
-        intro_Layout.startAnimation(logo);
+        intro_Txt.startAnimation(logo);
 
         handler.postDelayed(new Runnable() {
             @Override
