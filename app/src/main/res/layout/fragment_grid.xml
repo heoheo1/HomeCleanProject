@@ -51,12 +51,12 @@
         android:layout_marginTop="10dp"
             android:id="@+id/grid_layout">
 
-            <GridView
-                android:id="@+id/grid"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:numColumns="1" />
-        </RelativeLayout>
+        <GridView
+            android:id="@+id/grid"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:numColumns="1" />
+    </RelativeLayout>
 
 
 

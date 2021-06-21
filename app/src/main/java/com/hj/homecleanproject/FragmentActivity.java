@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -47,8 +48,10 @@ public class FragmentActivity extends AppCompatActivity {
         positions = new ArrayList<>();
         bottomNavigationView = findViewById(R.id.bottomNavi);
         setFrag(2); //첫 프로그먼트 화면을 무엇으로 지정
+        bottomNavigationView.getMenu().getItem(2).setChecked(true); //홈버튼이 눌러져있어야한다.
         bottomNavigationView.getMenu().getItem(lastPosition).setEnabled(false);
         positions.add(lastPosition);
+
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -56,7 +59,6 @@ public class FragmentActivity extends AppCompatActivity {
                     case R.id.action_login:
                         setFrag(0);
                         position = 0;
-
                         break;
                     case R.id.action_family:
                         setFrag(1);
@@ -78,9 +80,9 @@ public class FragmentActivity extends AppCompatActivity {
 
                 bottomNavigationView.getMenu().getItem(position).setEnabled(false); //현재 선택한 버튼은 잠그고
 
-                if(lastPosition != position){ //만약 전에 선택한 버튼과 이번에 선택한 버튼이 다르다면
+                if (lastPosition != position) { //만약 전에 선택한 버튼과 이번에 선택한 버튼이 다르다면
                     bottomNavigationView.getMenu().getItem(lastPosition).setEnabled(true); //전에 선택한 버튼은 다시 활성화시키고
-                    positions.remove(positions.size()-1); // list의 전 position값은 제거
+                    positions.remove(positions.size() - 1); // list의 전 position값은 제거
                 }
                 lastPosition = position; //전 position값에 현 position값을 저장하고
                 positions.add(position); //list에 저장
@@ -95,13 +97,12 @@ public class FragmentActivity extends AppCompatActivity {
         ft = fm.beginTransaction();
         switch (n) {
             case 0:
-
                 ft.replace(R.id.main_frame, loginFragment, "login");
                 bottomNavigationView.removeAllViews();
                 //login후, 여러 fragment를 클릭후, 다시 로그인페이지로 왔을때
                 //back버튼을 누르면 로그인페이지를 누르기전의 Fragment로 이동함
                 //BackStack에 들어있는 모든 갯수를 Count해서 한개씩 지운다.
-                for(int i = 0; i<fm.getBackStackEntryCount(); i++){
+                for (int i = 0; i < fm.getBackStackEntryCount(); i++) {
                     fm.popBackStack();
                 }
                 ft.commit();
@@ -161,7 +162,7 @@ public class FragmentActivity extends AppCompatActivity {
             super.onBackPressed();
             //Back버튼 클릭시, 잠금 현상이 발생, 만약 back버튼 클릭시, lastPosition값을 바꾸고
             lastPosition = positions.get(positions.size() - 1);
-            bottomNavigationView.getMenu().getItem(positions.get(positions.size()-1)).setEnabled(true); //선택이 가능하도록 바꿔준다.
+            bottomNavigationView.getMenu().getItem(positions.get(positions.size() - 1)).setEnabled(true); //선택이 가능하도록 바꿔준다.
             updateBottomMenu(bottomNavigationView);
         }
     }

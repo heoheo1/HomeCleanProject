@@ -35,15 +35,12 @@ public class LoginFragment extends Fragment  {
         btn_Login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                Intent intent =new Intent(getActivity(),FragmentActivity.class);
                startActivity(intent);
             }
         });
 
         return viewGroup;
-
     }
-
 }
 

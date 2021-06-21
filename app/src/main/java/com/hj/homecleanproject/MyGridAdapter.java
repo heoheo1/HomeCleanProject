@@ -2,15 +2,27 @@ package com.hj.homecleanproject;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Toast;
+
+import com.hj.homecleanproject.customDialog.GridDialogFragment;
+import com.hj.homecleanproject.customInterface.ImageViewClickListener;
+import com.hj.homecleanproject.customInterface.TextViewClickListener;
+import com.hj.homecleanproject.customInterface.onDialogResultListener;
 
 import java.util.ArrayList;
 
 public class MyGridAdapter extends BaseAdapter {
 
     ArrayList<MyWork> list = new ArrayList<>();
+
+    private ImageViewClickListener listener;
+    private TextViewClickListener textViewClickListener;
+    private GridDialogFragment dialog;
 
     @Override
     public int getCount() {
@@ -47,10 +59,32 @@ public class MyGridAdapter extends BaseAdapter {
         }
         view.setTextView(work.getContent());
 
+        view.imageView.setOnClickListener(v ->{
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            if(listener != null){
+                listener.adapterToFragment(intent,position);
+            }
+        });
+
+        view.textView.setOnClickListener(v -> {
+            dialog = new GridDialogFragment();
+            if(textViewClickListener != null){
+                textViewClickListener.textViewClicked(dialog, position);
+            }
+        });
+
         return view;
     }
 
     public void addItem(MyWork work){
         list.add(work);
+    }
+
+    public void setOnImageViewClickListener(ImageViewClickListener listener){
+        this.listener = listener;
+    }
+
+    public void setOnTextViewClickListener(TextViewClickListener listener){
+        textViewClickListener = listener;
     }
 }
