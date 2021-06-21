@@ -2,6 +2,9 @@ package com.hj.homecleanproject;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -29,5 +32,13 @@ public class MyWork_View extends LinearLayout {
 
     public void setTextView(String text){
         textView.setText(text);
+    }
+
+    public void setImageViewToBitmap(byte[] resID){
+        //encoder된 이미지를 다시 decode해 ImageView에 붙인다.
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inSampleSize = 4;
+        Bitmap bitmap = BitmapFactory.decodeByteArray(resID,0,resID.length,options);
+        imageView.setImageBitmap(bitmap);
     }
 }

@@ -1,5 +1,7 @@
 package com.hj.homecleanproject;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 
@@ -15,6 +17,7 @@ import android.widget.GridView;
 
 import com.google.android.material.navigation.NavigationView;
 import com.hj.homecleanproject.customDialog.GridDialogFragment;
+import com.hj.homecleanproject.customInterface.onDialogResultListener;
 
 import java.util.ArrayList;
 
@@ -53,7 +56,6 @@ public class GridFragment extends Fragment{
         adapter.addItem(new MyWork(R.drawable.iu, "하이요"));
         adapter.notifyDataSetChanged();
 
-
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -68,6 +70,16 @@ public class GridFragment extends Fragment{
                 }
                 dialog.setCancelable(false);
                 dialog.show(getFragmentManager(), null);
+
+                dialog.setDialogResult(new onDialogResultListener() {
+                    @Override
+                    public void onMyDialogResult(byte[] resID, String contents) {
+                        ((MyWork) adapter.getItem(position)).setResID(0); //기존 CardView의 이미지는 없애고
+                        ((MyWork) adapter.getItem(position)).setEncodeResID(resID); // Dialog의 이미지와
+                        ((MyWork) adapter.getItem(position)).setContent(contents); // Contents의 내용을 붙인다.
+                        adapter.notifyDataSetChanged();
+                    }
+                });
             }
         });
 
@@ -75,8 +87,5 @@ public class GridFragment extends Fragment{
             navigation.setVisibility(View.VISIBLE);
         });
         return viewGroup;
-
     }
-
-
 }
