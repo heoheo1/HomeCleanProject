@@ -23,7 +23,6 @@ import android.view.LayoutInflater;
 
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 
@@ -40,6 +39,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+
+//Fragment란, 어플리케이션에서 화면에 직접 보이는 공간의 Activity내에서 분할시키고 다른 화면으로 전환할 수 있는 화면 공간의 단위
+//Fragment를 이용하려면, 상위에 있는 Activity에서 출력할 layout을 제어
+//하지만 Fragment 내부에서 다른 Fragment로 이동하는 것은 그 Fragment가 자신의 하위레벨이 아니기 때문에
+//내부에서 직접 제어할 수 없으므로 , 상위 레벨인 Activity를 호출하여 제어하는 형태가 되어야 함
 
 public class GridFragment extends Fragment{
 
@@ -139,7 +143,7 @@ public class GridFragment extends Fragment{
 
             // 카메라를 가로/세로로 전환시 Destory까지 내려가 팅기는 현상 발생 -> ConfigurationChanged 사용
             if(configuration.orientation == Configuration.ORIENTATION_PORTRAIT) { //세로일때
-                ExifInterface exif = null;
+                ExifInterface exif = null; //이미지가 갖고 있는 정보의 집합 클래스다
                 try {
                     exif = new ExifInterface(file.getCanonicalPath());
 

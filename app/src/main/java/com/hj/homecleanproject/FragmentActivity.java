@@ -6,6 +6,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -25,7 +26,6 @@ public class FragmentActivity extends AppCompatActivity {
     private FragmentTransaction ft;
     private GridFragment gridFragment;
     private MyFamilyFragment myFamilyFragment;
-    private LoginFragment loginFragment;
     private PictureFragment pictureFragment;
     private Service_Center_Fragment serviceCenterFragment;
 
@@ -42,7 +42,6 @@ public class FragmentActivity extends AppCompatActivity {
 
         gridFragment = new GridFragment();
         myFamilyFragment = new MyFamilyFragment();
-        loginFragment = new LoginFragment();
         pictureFragment = new PictureFragment();
         serviceCenterFragment = new Service_Center_Fragment();
         positions = new ArrayList<>();
@@ -97,20 +96,23 @@ public class FragmentActivity extends AppCompatActivity {
         ft = fm.beginTransaction();
         switch (n) {
             case 0:
-                ft.replace(R.id.main_frame, loginFragment, "login");
-                bottomNavigationView.removeAllViews();
-                //login후, 여러 fragment를 클릭후, 다시 로그인페이지로 왔을때
-                //back버튼을 누르면 로그인페이지를 누르기전의 Fragment로 이동함
-                //BackStack에 들어있는 모든 갯수를 Count해서 한개씩 지운다.
-                for (int i = 0; i < fm.getBackStackEntryCount(); i++) {
-                    fm.popBackStack();
-                }
-                ft.commit();
+
+                Intent intent =new Intent(FragmentActivity.this,LoginActivity.class);
+                startActivity(intent);
+                finish();
+
+
                 break;
             case 1:
                 ft.replace(R.id.main_frame, myFamilyFragment, "family");
                 ft.addToBackStack(null);
                 ft.commit();
+                //login후, 여러 fragment를 클릭후, 다시 로그인페이지로 왔을때
+                //back버튼을 누르면 로그인페이지를 누르기전의 Fragment로 이동함
+                //BackStack에 들어있는 모든 갯수를 Count해서 한개씩 지운다.
+                // for (int i = 0; i < fm.getBackStackEntryCount(); i++) {
+                //    fm.popBackStack();
+                // }
                 break;
             case 2:
                 ft.replace(R.id.main_frame, gridFragment, "home");
@@ -148,6 +150,13 @@ public class FragmentActivity extends AppCompatActivity {
         else if (tag5 != null && tag5.isVisible())
             bottomNavi.getMenu().findItem(R.id.action_ServiceCenter).setChecked(true);
     }
+    public void replaceFragment(Fragment fragment) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.main_frame, fragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();// Fragment로 사용할 MainActivity내의 layout공간을 선택합니다.
+    }
 
     @Override
     public void onBackPressed() {
@@ -166,4 +175,5 @@ public class FragmentActivity extends AppCompatActivity {
             updateBottomMenu(bottomNavigationView);
         }
     }
+
 }

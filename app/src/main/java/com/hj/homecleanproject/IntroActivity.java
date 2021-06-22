@@ -1,6 +1,5 @@
 package com.hj.homecleanproject;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
@@ -11,24 +10,11 @@ import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationView;
-
-import java.io.File;
-import java.util.List;
 
 public class IntroActivity extends AppCompatActivity {
 
@@ -47,6 +33,9 @@ public class IntroActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro);
 
+
+
+
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA}, 0);
 
@@ -54,16 +43,18 @@ public class IntroActivity extends AppCompatActivity {
         intro = findViewById(R.id.intro);
 
         //화면전환 프래그먼트 선언
-        fragmentManager = getSupportFragmentManager();
+
 
         logo = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.logo_animation);
         intro_Txt.startAnimation(logo);
-
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                fragmentManager.beginTransaction().add(R.id.intro, new LoginFragment(), null).commitAllowingStateLoss();
+                Intent intent =new Intent(IntroActivity.this,LoginActivity.class);
+                startActivity(intent);
+                finish();
                 onWindowFocusChanged(false);
+
             }
         }, delayed);
     }
@@ -103,6 +94,10 @@ public class IntroActivity extends AppCompatActivity {
                         | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
     }
+
+
+
+
 }
 
 
