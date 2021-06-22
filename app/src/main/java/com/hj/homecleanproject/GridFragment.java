@@ -8,6 +8,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -49,6 +50,7 @@ public class GridFragment extends Fragment{
     MyGridAdapter adapter;
     FragmentActivity fragmentActivity;
     ImageView cardView;
+    File file;
 
     NavigationView navigation;
     private GridDialogFragment dialog;
@@ -119,7 +121,7 @@ public class GridFragment extends Fragment{
     public File createFile() throws IOException {
         String fileName = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
         //Data/data/패키지/에 app_HomeCleanProject라는 파일이 생성된다.
-        File file = File.createTempFile(fileName,".jpg",getContext().getDir("HomeCleanProject", Context.MODE_PRIVATE));
+        file = File.createTempFile(fileName,".jpg",getContext().getDir("HomeCleanProject", Context.MODE_PRIVATE));
 
         return file;
     }
@@ -137,11 +139,46 @@ public class GridFragment extends Fragment{
 
             // 카메라를 가로/세로로 전환시 Destory까지 내려가 팅기는 현상 발생 -> ConfigurationChanged 사용
             if(configuration.orientation == Configuration.ORIENTATION_PORTRAIT) { //세로일때
-                Matrix matrix = new Matrix();
-                matrix.postRotate(90); //이미지가 90도 돌아간상태로 등장하기때문에 원상태로 돌리기위해 90도 회전
+                ExifInterface exif = null;
+                try {
+                    exif = new ExifInterface(file.getCanonicalPath());
 
-                //좌표값 (0,0) 에서 (이미지의 넓이, 이미지의 높이)까지
-                bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+                    int exifOrientation = exif.getAttributeInt(
+                            ExifInterface.TAG_ORIENTATION,
+                            ExifInterface.ORIENTATION_NORMAL);
+
+                    int rotate = 0;
+
+                    switch (exifOrientation) {
+                        case ExifInterface.ORIENTATION_ROTATE_90:
+                            rotate = 90;
+                            break;
+
+                        case ExifInterface.ORIENTATION_ROTATE_180:
+                            rotate = 180;
+                            break;
+
+                        case ExifInterface.ORIENTATION_ROTATE_270:
+                            rotate = 270;
+                            break;
+                    }
+
+                    if (rotate != 0) {
+                        int w = bitmap.getWidth();
+                        int h = bitmap.getHeight();
+
+// Setting pre rotate
+                        Matrix mtx = new Matrix();
+                        mtx.preRotate(rotate);
+
+                        // Rotating Bitmap & convert to ARGB_8888, required by tess
+                        bitmap = Bitmap.createBitmap(bitmap, 0, 0, w, h, mtx, false);
+                        bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+                    }
+                }catch (IOException e) {
+                    e.printStackTrace();
+                }
+
             }
 
             //Bitmap 을 구한후, 디코딩

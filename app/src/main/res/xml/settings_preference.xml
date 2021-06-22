@@ -4,21 +4,20 @@
     android:iconSpaceReserved="false"
     >
     <PreferenceCategory
-        android:title="Functions"
-        app:iconSpaceReserved="false">
+        android:title="프로필"
+        app:iconSpaceReserved="false"
+        >
 
-        <CheckBoxPreference
+        <Preference
             android:key="key_add_shortcut"
-            android:title="Add shortcuts"
             android:icon="@mipmap/ic_launcher"
-            android:defaultValue="true" />
 
-        <SwitchPreference
-            android:key="key_switch_on"
-            android:title="Screen on"
-            android:icon="@mipmap/ic_launcher"
-            android:defaultValue="false"/>
+             />
 
+        <PreferenceScreen android:summary="asdasd"
+            app:iconSpaceReserved="false"
+            app:layout="@layout/family_item"
+          />
     </PreferenceCategory>
 
     <PreferenceCategory

@@ -4,10 +4,11 @@
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.CAMERA" />
 
-    <uses-feature android:name="android.hardware.camera"
-    android:required="true" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -16,36 +17,30 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.HomeCleanProject">
-        <activity android:name=".FragmentActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"></activity>
-        <activity android:name=".IntroActivity">
+        <activity
+            android:name=".FragmentActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+
+            />
+        <activity android:name=".IntroActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
+
         <provider
-            android:authorities="com.hj.homecleanproject.fileprovider"
             android:name="androidx.core.content.FileProvider"
+            android:authorities="com.hj.homecleanproject.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/path"/>
+                android:resource="@xml/path" />
         </provider>
     </application>
+
 </manifest>
-
-    <!--
-            <provider> = 컨텐츠 프로바이더 구성요소를 선언한다.
-            android:authorities = 일반적으로 제공자를 의미
-            android:name = 컨텐츠 제공자를 구현하는 클래스
-            android:exported = ture/false를 통해 다른 어플리케이션의 제공자를 이용할수 있다/없다. 주로 false를 주고 grantUriPermissions를 통해 권한을 체크한다.
-            android:grantUriPermissions = 권한을 줄것인지 사용자에게 액세스 권한을 줌으로써, 제공자를 이용할수있게 만들어준다.
-
-            <meta-data> = 상위 구성요소에 제공될수있는 내용을 Bundle(키, 값) 형식의 값이다.
-            android:name = 항목의 고유한 이름 android.support.FILE_PROVIDER_PATHS <- 이거안쓰면 튕겨버림
-            android:resource = 항목에 할당된 값
-     -->

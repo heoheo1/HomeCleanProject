@@ -42,11 +42,14 @@ public class MyGridAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         MyWork_View view = null;
+
         if(convertView == null){
             view = new MyWork_View(parent.getContext());
         }else{
             view = (MyWork_View) convertView;
         }
+
+
 
         MyWork work = list.get(position);
 
