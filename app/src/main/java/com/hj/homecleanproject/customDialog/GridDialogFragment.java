@@ -97,4 +97,12 @@ public class GridDialogFragment extends DialogFragment {
     public void setDialogResult (onDialogResultListener listener){
         result = listener;
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        int width = getResources().getDimensionPixelSize(R.dimen.fragment_horizontal_margin);
+        int height = getResources().getDimensionPixelSize(R.dimen.fragment_vertical_margin);
+        getDialog().getWindow().setLayout(width,height);
+    }
 }

@@ -54,7 +54,6 @@ public class GridFragment extends Fragment{
     MyGridAdapter adapter;
     FragmentActivity fragmentActivity;
     ImageView cardView;
-    File file;
 
     NavigationView navigation;
     private GridDialogFragment dialog;
@@ -125,7 +124,7 @@ public class GridFragment extends Fragment{
     public File createFile() throws IOException {
         String fileName = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
         //Data/data/패키지/에 app_HomeCleanProject라는 파일이 생성된다.
-        file = File.createTempFile(fileName,".jpg",getContext().getDir("HomeCleanProject", Context.MODE_PRIVATE));
+        File file = File.createTempFile(fileName,".jpg",getContext().getDir("HomeCleanProject", Context.MODE_PRIVATE));
 
         return file;
     }
@@ -145,7 +144,7 @@ public class GridFragment extends Fragment{
             if(configuration.orientation == Configuration.ORIENTATION_PORTRAIT) { //세로일때
                 ExifInterface exif = null; //이미지가 갖고 있는 정보의 집합 클래스다
                 try {
-                    exif = new ExifInterface(file.getCanonicalPath());
+                    exif = new ExifInterface(photoFile.getCanonicalPath());
 
                     int exifOrientation = exif.getAttributeInt(
                             ExifInterface.TAG_ORIENTATION,
@@ -171,7 +170,7 @@ public class GridFragment extends Fragment{
                         int w = bitmap.getWidth();
                         int h = bitmap.getHeight();
 
-// Setting pre rotate
+                        // Setting pre rotate
                         Matrix mtx = new Matrix();
                         mtx.preRotate(rotate);
 
@@ -184,7 +183,6 @@ public class GridFragment extends Fragment{
                 }
 
             }
-
             //Bitmap 을 구한후, 디코딩
             ByteArrayOutputStream output = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.PNG,40,output);
