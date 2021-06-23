@@ -9,13 +9,12 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-
     <RelativeLayout
         android:id="@+id/aa"
         android:layout_width="match_parent"
-        android:layout_height="125dp"
-        android:background="@drawable/title"
-        android:elevation="10dp"
+        android:layout_height="100dp"
+        android:background="@drawable/card_view"
+        android:elevation="20dp"
         android:gravity="center"
 
         >
@@ -28,12 +27,11 @@
 
 
             <TextView
-                android:src="@drawable/ic_launcher_foreground"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:textStyle="bold"
-                android:text="My Family clean"
+                android:text="나의 가족"
                 android:textSize="30dp"
                 android:fontFamily="@font/font"
                 android:textColor="#000000"

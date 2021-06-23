@@ -10,31 +10,32 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <LinearLayout
-            android:layout_width="300dp"
+            android:layout_width="350dp"
             android:layout_height="500dp"
             android:gravity="center"
             android:orientation="vertical"
             android:layout_gravity="center"
-            android:layout_marginTop="60dp"
-            android:layout_marginLeft="15dp"
+
             android:elevation="10dp"
             android:background="@drawable/backgroundcolor"
             android:padding="10dp"
+            android:layout_marginLeft="15dp"
             >
 
         </LinearLayout>
 
 
         <LinearLayout
-            android:layout_width="300dp"
+            android:layout_width="350dp"
             android:layout_height="500dp"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="10dp"
             android:gravity="center"
             android:orientation="vertical"
             android:layout_gravity="center"
             android:elevation="10dp"
             android:background="@drawable/backgroundcolor"
             android:padding="15dp"
+
             >
             <RelativeLayout
                 android:layout_width="wrap_content"
