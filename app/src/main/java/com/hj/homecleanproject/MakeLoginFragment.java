@@ -36,7 +36,7 @@ public class MakeLoginFragment extends Fragment implements onBackPressedListener
     }
     //프래그먼트 종료
     private void goToMain(){
-        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager(); //requireActivity=getActivity(있다는걸 보장,없으면 Excepion. app crash 발생) activity가 null한 상황을 아예 없애려고 쓰인다.
         fragmentManager.beginTransaction().remove(MakeLoginFragment.this).commit();
         fragmentManager.popBackStack();
     }
