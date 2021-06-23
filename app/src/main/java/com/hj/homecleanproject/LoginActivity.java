@@ -10,7 +10,10 @@ import android.content.Intent;
 import android.media.Ringtone;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +29,8 @@ public class LoginActivity extends AppCompatActivity {
     FragmentTransaction ft;
     private long lastTimeBackPressed;
     MakeLoginFragment makeLoginFragment;
+    Animation login;
+    LinearLayout layout_anim,layout_anim2;
 
 
 
@@ -33,6 +38,9 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        layout_anim=findViewById(R.id.login_anim);
+        layout_anim2=findViewById(R.id.login_anim2);
 
 
         makeLoginFragment=new MakeLoginFragment();
@@ -55,7 +63,9 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+
                 frgManagerbeginTransaction(R.id.login_layout,makeLoginFragment); //프래그먼트 매니저를 계속 생성해주어야함
+
             }
         });
 

@@ -8,11 +8,14 @@ import androidx.fragment.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.LinearLayout;
 
-import com.hj.homecleanproject.R;
+
 import com.hj.homecleanproject.customInterface.onBackPressedListener;
 
-import java.util.Objects;
+import java.security.acl.AclNotFoundException;
 
 
 public class MakeLoginFragment extends Fragment implements onBackPressedListener {
@@ -22,12 +25,24 @@ public class MakeLoginFragment extends Fragment implements onBackPressedListener
         return new MakeLoginFragment();
     }
 
+    Animation animation,animation2;
+    ViewGroup viewGroup;
+    LinearLayout login_anim3;
+    LinearLayout login_anim4;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        viewGroup=(ViewGroup)inflater.inflate(R.layout.fragment_make_login,container,false);
+       login_anim3= viewGroup.findViewById(R.id.login_anim3);
+       login_anim4= viewGroup.findViewById(R.id.login_anim4);
+       animation2 =AnimationUtils.loadAnimation(getContext(), R.anim.login_animation2);
+        animation = AnimationUtils.loadAnimation(getContext(), R.anim.login_animation);
+        login_anim3.startAnimation(animation);
+        login_anim4.startAnimation(animation2);
 
-        return inflater.inflate(R.layout.fragment_make_login, container, false);
+        return viewGroup;
     }
 
     @Override

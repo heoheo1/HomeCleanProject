@@ -19,6 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <LinearLayout
+            android:id="@+id/login_anim"
             android:layout_width="350dp"
             android:layout_height="500dp"
             android:gravity="center"
@@ -33,6 +34,7 @@
 
 
     <LinearLayout
+        android:id="@+id/login_anim2"
         android:layout_width="350dp"
         android:layout_height="500dp"
         android:layout_marginTop="10dp"
