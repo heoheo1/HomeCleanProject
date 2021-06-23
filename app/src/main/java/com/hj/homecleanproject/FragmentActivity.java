@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
@@ -32,6 +33,7 @@ public class FragmentActivity extends AppCompatActivity {
     private long lastPressed = 0;
     private ArrayList<Integer> positions; // position을 저장할 list
     private int position = 0, lastPosition = 2; //현재 선택값, 마지막에 선택한 값
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -165,7 +167,7 @@ public class FragmentActivity extends AppCompatActivity {
                 ActivityCompat.finishAffinity(this);
             } else {
                 lastPressed = System.currentTimeMillis();
-                Toast.makeText(getApplicationContext(), "한번 더 클릭하면 종료됩니다.", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "'뒤로' 버튼을 한 번 더 누르면 종료됩니다.", Toast.LENGTH_LONG).show();
             }
         } else {
             super.onBackPressed();

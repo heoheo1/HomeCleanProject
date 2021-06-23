@@ -3,15 +3,19 @@ package com.hj.homecleanproject;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.hj.homecleanproject.R;
+import com.hj.homecleanproject.customInterface.onBackPressedListener;
+
+import java.util.Objects;
 
 
-public class MakeLoginFragment extends Fragment {
+public class MakeLoginFragment extends Fragment implements onBackPressedListener {
 
     // 각각의 Fragment마다 Instance를 반환해 줄 메소드를 생성합니다.
     public static MakeLoginFragment newInstance() {
@@ -24,5 +28,16 @@ public class MakeLoginFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         return inflater.inflate(R.layout.fragment_make_login, container, false);
+    }
+
+    @Override
+    public void onBackPressed() {
+        goToMain();
+    }
+    //프래그먼트 종료
+    private void goToMain(){
+        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+        fragmentManager.beginTransaction().remove(MakeLoginFragment.this).commit();
+        fragmentManager.popBackStack();
     }
 }

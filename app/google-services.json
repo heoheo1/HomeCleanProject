@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1077993524688",
+    "project_id": "homeclean-ba4fc",
+    "storage_bucket": "homeclean-ba4fc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1077993524688:android:182781f49aebfc3b04bdd5",
+        "android_client_info": {
+          "package_name": "com.hj.homecleanproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1077993524688-07i71fq4ollraf22po61qnd75o557fnb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCDqLnjlod0qFoKBNacTEW-BTR7XBCEGmI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1077993524688-07i71fq4ollraf22po61qnd75o557fnb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
