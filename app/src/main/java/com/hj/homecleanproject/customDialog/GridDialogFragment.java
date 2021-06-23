@@ -52,6 +52,7 @@ public class GridDialogFragment extends DialogFragment {
 
     String contents;
 
+
     onDialogResultListener result;
 
     public GridDialogFragment(String contents){ // GridView에 사진과 내용이 있을때
@@ -105,4 +106,6 @@ public class GridDialogFragment extends DialogFragment {
         int height = getResources().getDimensionPixelSize(R.dimen.fragment_vertical_margin);
         getDialog().getWindow().setLayout(width,height);
     }
+
+
 }
