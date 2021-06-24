@@ -29,6 +29,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.hj.homecleanproject.customInterface.onBackPressedListener;
 
+import java.security.acl.LastOwnerException;
+
 
 public class SignInFragment extends Fragment implements onBackPressedListener {
 
@@ -47,6 +49,8 @@ public class SignInFragment extends Fragment implements onBackPressedListener {
     FirebaseAuth auth;
     String email,passwordCheck,password;
     Context context;
+    FirebaseUser user;
+    String email1;
 
 
     @Override
@@ -109,9 +113,9 @@ public class SignInFragment extends Fragment implements onBackPressedListener {
     }
 
     private void registerUser(){
-        email =edt_SignEmail.getText().toString().trim();
-        password =edt_SignPassword.getText().toString().trim();
-        passwordCheck =edt_SignPasswordCheck.getText().toString().trim();
+        email =edt_SignEmail.getText().toString();
+        password =edt_SignPassword.getText().toString();
+        passwordCheck =edt_SignPasswordCheck.getText().toString();
 
 
         auth = FirebaseAuth.getInstance();
@@ -120,22 +124,27 @@ public class SignInFragment extends Fragment implements onBackPressedListener {
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                FirebaseUser user = auth.getCurrentUser();
-                assert user != null;
-                String email1 = user.getEmail();
-                if (task.isSuccessful()) {
-                    startActivity(new Intent(getContext(), LoginActivity.class));
-                    getActivity().finish();
-                }else {
+                user = auth.getCurrentUser();
+                email1 = user.getEmail();
+                int position=0;
 
-                        Toast.makeText(getContext(), "회원가입에 실패하였습니다.(이미존재하는 계정이거나 비밀번호를 6자리이상입력해주세요)", Toast.LENGTH_SHORT).show();
-                }
+                    if (task.isSuccessful()) {
+                        startActivity(new Intent(getContext(), LoginActivity.class));
+                        getActivity().finish();
+                    }
+                    else{
+                        if(email1.equals(email)){
+                            Log.d("dd",email1+","+email);
+                            Toast.makeText(context,"이메일이 존재합니다  ",Toast.LENGTH_SHORT).show();
+                        }else {
+                            Toast.makeText(context, "비밀번호를 6자리 입력해주세요", Toast.LENGTH_SHORT).show();
+                        }
+                    }
 
 
             }
         });
         progressDialog.dismiss();
-
     }
 
 
