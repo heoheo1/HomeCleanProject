@@ -12,10 +12,10 @@
         android:id="@+id/aa"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:background="@drawable/card_view"
+        android:background="@drawable/backgroundcolor2"
         android:elevation="20dp"
         android:gravity="center"
-
+        android:layout_marginBottom="20dp"
         >
 
 

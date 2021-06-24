@@ -7,17 +7,15 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-
     <RelativeLayout
         android:id="@+id/aa"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:background="@drawable/card_view"
-        android:elevation="20dp"
+        android:background="@drawable/backgroundcolor2"
+        android:elevation="30dp"
         android:gravity="center"
-
+        android:layout_marginBottom="20dp"
         >
-
 
         <LinearLayout
             android:layout_width="match_parent"

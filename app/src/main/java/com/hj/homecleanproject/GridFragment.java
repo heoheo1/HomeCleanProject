@@ -79,8 +79,8 @@ public class GridFragment extends Fragment{
         gridView.setAdapter(adapter);
         navigation = viewGroup.findViewById(R.id.nav_view);
 
-        adapter.addItem(new MyWork(R.drawable.iu, "화장실 청소 완료"));
-        adapter.addItem(new MyWork(R.drawable.iu, "설거지 완료"));
+        adapter.addItem(new MyWork(R.drawable.baseline_add_a_photo_black_18, "화장실 청소 완료"));
+        adapter.addItem(new MyWork(R.drawable.baseline_add_a_photo_black_18, "설거지 완료"));
         adapter.notifyDataSetChanged();
 
         adapter.setOnImageViewClickListener(new ImageViewClickListener() {
