@@ -21,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import java.io.File;
 import java.util.concurrent.Flow;
@@ -61,6 +62,16 @@ public class PictureFragment extends Fragment {
 
         imageList = getContext().getDir("HomeCleanProject", Context.MODE_PRIVATE).listFiles();
 
+        adapter.setOnImageViewLongClickListener(position -> {
+            File file = imageList[position];
+            file.delete();
+            Toast.makeText(getContext().getApplicationContext(), "사진을 삭제했습니다.", Toast.LENGTH_SHORT).show();
+            handler.post(() -> {
+                adapter.removeItem(position);
+                adapter.notifyDataSetChanged();
+            });
+        });
+
         //Ui 스레드에 직접 접근 불가 -> just메서드가 UI Blocking에 걸림
         //그래서 create메서드를 통해서 직접 subscribe를 구현
         Observable<String> filePath = Observable.create(subscriber -> { //생산자
@@ -87,7 +98,6 @@ public class PictureFragment extends Fragment {
                             });
                         }
                 );
-
         return view;
     }
 }

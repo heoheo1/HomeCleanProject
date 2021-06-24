@@ -57,9 +57,9 @@ public class SignInFragment extends Fragment implements onBackPressedListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         viewGroup=(ViewGroup)inflater.inflate(R.layout.fragment_sign_in,container,false);
-       login_anim3= viewGroup.findViewById(R.id.login_anim3);
-       login_anim4= viewGroup.findViewById(R.id.login_anim4);
-       animation2 =AnimationUtils.loadAnimation(getContext(), R.anim.login_animation2);
+        login_anim3= viewGroup.findViewById(R.id.login_anim3);
+        login_anim4= viewGroup.findViewById(R.id.login_anim4);
+        animation2 =AnimationUtils.loadAnimation(getContext(), R.anim.login_animation2);
         animation = AnimationUtils.loadAnimation(getContext(), R.anim.login_animation);
         login_anim3.startAnimation(animation);
         login_anim4.startAnimation(animation2);
@@ -128,26 +128,24 @@ public class SignInFragment extends Fragment implements onBackPressedListener {
                 email1 = user.getEmail();
                 int position=0;
 
-                    if (task.isSuccessful()) {
-                        startActivity(new Intent(getContext(), LoginActivity.class));
-                        getActivity().finish();
+                if (task.isSuccessful()) {
+                    startActivity(new Intent(getContext(), LoginActivity.class));
+                    getActivity().finish();
+                }
+                else{
+                    if(email1.equals(email)){
+                        Log.d("dd",email1+","+email);
+                        Toast.makeText(context,"이메일이 존재합니다  ",Toast.LENGTH_SHORT).show();
+                    }else {
+                        Toast.makeText(context, "비밀번호를 6자리 입력해주세요", Toast.LENGTH_SHORT).show();
                     }
-                    else{
-                        if(email1.equals(email)){
-                            Log.d("dd",email1+","+email);
-                            Toast.makeText(context,"이메일이 존재합니다  ",Toast.LENGTH_SHORT).show();
-                        }else {
-                            Toast.makeText(context, "비밀번호를 6자리 입력해주세요", Toast.LENGTH_SHORT).show();
-                        }
-                    }
+                }
 
 
             }
         });
         progressDialog.dismiss();
     }
-
-
 
     @Override
     public void onBackPressed() {
