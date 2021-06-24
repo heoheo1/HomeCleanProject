@@ -1,17 +1,14 @@
 package com.hj.homecleanproject;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
-import android.media.Ringtone;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -21,16 +18,14 @@ import com.hj.homecleanproject.customInterface.onBackPressedListener;
 
 import java.util.List;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
-    long lastPressed =0;
-    TextView txtSinUp;
+    LinearLayout layout_SignIn;
     FragmentManager fm;
     FragmentTransaction ft;
     private long lastTimeBackPressed;
-    MakeLoginFragment makeLoginFragment;
-    Animation login;
-    LinearLayout layout_anim,layout_anim2;
+    SignInFragment signInFragment;
+    Button btn_login;
 
 
 
@@ -39,37 +34,25 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        layout_anim=findViewById(R.id.login_anim);
-        layout_anim2=findViewById(R.id.login_anim2);
+        signInFragment =new SignInFragment();
 
+        btn_login =findViewById(R.id.login);
+        layout_SignIn=findViewById(R.id.layout_SignIn);
 
-        makeLoginFragment=new MakeLoginFragment();
+        btn_login.setOnClickListener(this);
+        layout_SignIn.setOnClickListener(this);
 
-        Button button =findViewById(R.id.login);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent =new Intent(LoginActivity.this,FragmentActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
+    }
 
-        txtSinUp=findViewById(R.id.makeLogin);
-
-
-
-        txtSinUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-
-                frgManagerbeginTransaction(R.id.login_layout,makeLoginFragment); //프래그먼트 매니저를 계속 생성해주어야함
-
-            }
-        });
-
-
+    @Override
+    public void onClick(View v) {
+        if(v==btn_login){
+            Intent intent =new Intent(LoginActivity.this,FragmentActivity.class);
+            startActivity(intent);
+            finish();
+        }else if(v==layout_SignIn){
+            frgManagerBeginTransaction(R.id.login_layout, signInFragment); //프래그먼트 매니저를 계속 생성해주어야함
+        }
 
     }
     @Override
@@ -95,16 +78,11 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    public void frgManagerbeginTransaction(int layout,Fragment fragment){
+    public void frgManagerBeginTransaction(int layout,Fragment fragment){
         fm =getSupportFragmentManager();
         ft =fm.beginTransaction();
         ft.replace(layout,fragment,null);
         ft.commit();
     }
-
-
-
-
-
 
 }

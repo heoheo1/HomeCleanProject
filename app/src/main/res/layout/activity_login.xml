@@ -95,7 +95,7 @@
                     />
 
             <EditText
-                android:id="@+id/edt_Id"
+                android:id="@+id/edt_Email"
                 android:layout_width="300dp"
                 android:layout_height="50dp"
                 android:hint="이메일을 입력해주세요"
@@ -150,12 +150,13 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
                 android:layout_marginTop="20dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:id="@+id/layout_SignIn">
 
                 <TextView
-                    android:id="@+id/makeLogin"
+
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:text="회원가입"
                     android:textColor="@color/black"

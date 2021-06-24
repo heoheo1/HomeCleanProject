@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MakeLoginFragment"
+    tools:context=".SignInFragment"
     android:background="@color/white">
 
     <FrameLayout
@@ -91,7 +91,7 @@
                     android:layout_marginLeft="12dp"
                     />
                 <EditText
-                    android:id="@+id/edt_Id"
+                    android:id="@+id/edt_SignEmail"
                     android:layout_width="300dp"
                     android:layout_height="50dp"
                     android:hint="이메일을 입력해주세요"
@@ -119,7 +119,7 @@
 
 
                 <EditText
-                    android:id="@+id/edt_password"
+                    android:id="@+id/edt_SignPassword"
                     android:layout_width="300dp"
                     android:layout_height="50dp"
                     android:hint="비밀번호를 입력해주세요"
@@ -146,7 +146,7 @@
 
 
                 <EditText
-                    android:id="@+id/edt_PasswordCheck"
+                    android:id="@+id/edt_SignPasswordCheck"
                     android:layout_width="300dp"
                     android:layout_height="50dp"
                     android:hint="비밀번호를 다시 입력해주세요"
@@ -157,7 +157,7 @@
             </RelativeLayout>
 
             <Button
-                android:id="@+id/sinUp"
+                android:id="@+id/btn_SingIn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
