@@ -20,7 +20,7 @@
             android:layout_height="match_parent">
             <LinearLayout
                 android:id="@+id/login_anim"
-                android:layout_width="300dp"
+                android:layout_width="280dp"
                 android:layout_height="450dp"
                 android:gravity="center"
                 android:orientation="vertical"
@@ -36,7 +36,7 @@
 
             <LinearLayout
                 android:id="@+id/login_anim2"
-                android:layout_width="300dp"
+                android:layout_width="280dp"
                 android:layout_height="450dp"
                 android:layout_marginTop="10dp"
                 android:gravity="center"
