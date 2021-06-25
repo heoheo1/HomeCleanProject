@@ -11,7 +11,7 @@
         android:layout_height="match_parent">
         <LinearLayout
             android:id="@+id/login_anim3"
-            android:layout_width="290dp"
+            android:layout_width="295dp"
             android:layout_height="450dp"
             android:gravity="center"
             android:orientation="vertical"
@@ -27,14 +27,13 @@
 
         <LinearLayout
             android:id="@+id/login_anim4"
-            android:layout_width="290dp"
+            android:layout_width="295dp"
             android:layout_height="450dp"
             android:layout_marginTop="10dp"
             android:gravity="center"
             android:orientation="vertical"
             android:layout_gravity="center"
             android:elevation="10dp"
-            android:layout_marginRight="5dp"
             android:background="@drawable/backgroundcolor"
             android:padding="15dp"
 
