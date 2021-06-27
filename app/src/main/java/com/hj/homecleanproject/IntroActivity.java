@@ -33,17 +33,10 @@ public class IntroActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro);
 
-
-
-
-
-
         intro_Txt = findViewById(R.id.introTxt);
         intro = findViewById(R.id.intro);
 
         //화면전환 프래그먼트 선언
-
-
         logo = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.logo_animation);
         intro_Txt.startAnimation(logo);
         handler.postDelayed(new Runnable() {

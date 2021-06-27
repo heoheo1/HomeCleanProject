@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -23,13 +24,16 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.hj.homecleanproject.customDialog.GridDialogFragment;
 import com.hj.homecleanproject.customInterface.onBackPressedListener;
 
 import java.security.acl.LastOwnerException;
+import java.util.Iterator;
 
 
 public class SignInFragment extends Fragment implements onBackPressedListener {
@@ -51,6 +55,8 @@ public class SignInFragment extends Fragment implements onBackPressedListener {
     Context context;
     FirebaseUser user;
     String email1;
+    SignInDialogFragment signInDialogFragment;
+    Fragment fragment;
 
 
     @Override
@@ -64,6 +70,7 @@ public class SignInFragment extends Fragment implements onBackPressedListener {
         login_anim3.startAnimation(animation);
         login_anim4.startAnimation(animation2);
         context =container.getContext();
+        signInDialogFragment=new SignInDialogFragment();
 
 
         edt_SignEmail=viewGroup.findViewById(R.id.edt_SignEmail);
@@ -96,10 +103,13 @@ public class SignInFragment extends Fragment implements onBackPressedListener {
 
                     }
                 } else if(!(password.equals(passwordCheck))) {
-                    Log.d("dd","dd");
                     Toast.makeText(getContext(), "비밀번호를 다시 확인해주세요", Toast.LENGTH_SHORT).show();
                     return;
-                }else {
+                }else if(password.length()<6){
+                    Toast.makeText(context, "비밀번호는 최소 6자 이상으로 입력해주세요.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                else {
                     progressDialog.setMessage("등록중입니다.");
                     progressDialog.show();
                     registerUser();
@@ -121,30 +131,24 @@ public class SignInFragment extends Fragment implements onBackPressedListener {
         auth = FirebaseAuth.getInstance();
 
 
-        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        auth.createUserWithEmailAndPassword(email, password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
             @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                user = auth.getCurrentUser();
-                email1 = user.getEmail();
-                int position=0;
+            public void onSuccess(AuthResult authResult) {
+                Toast.makeText(context, "성공", Toast.LENGTH_SHORT).show();
+                signInDialogFragment.show(getActivity().getSupportFragmentManager(),"dialog");
+                SignInDialogFragment signInDialogFragment =(SignInDialogFragment)fragment;
+            }
 
-                if (task.isSuccessful()) {
-                    startActivity(new Intent(getContext(), LoginActivity.class));
-                    getActivity().finish();
-                }
-                else{
-                    if(email1.equals(email)){
-                        Log.d("dd",email1+","+email);
-                        Toast.makeText(context,"이메일이 존재합니다  ",Toast.LENGTH_SHORT).show();
-                    }else {
-                        Toast.makeText(context, "비밀번호를 6자리 입력해주세요", Toast.LENGTH_SHORT).show();
-                    }
-                }
-
-
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(context, "이미 존재하는 아이디", Toast.LENGTH_SHORT).show();
             }
         });
         progressDialog.dismiss();
+
+
+
     }
 
     @Override

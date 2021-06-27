@@ -11,7 +11,7 @@
         android:layout_height="match_parent">
         <LinearLayout
             android:id="@+id/login_anim3"
-            android:layout_width="295dp"
+            android:layout_width="298dp"
             android:layout_height="450dp"
             android:gravity="center"
             android:orientation="vertical"
@@ -19,7 +19,7 @@
             android:elevation="10dp"
             android:background="@drawable/backgroundcolor"
             android:padding="10dp"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="13dp"
             >
 
         </LinearLayout>
@@ -27,7 +27,7 @@
 
         <LinearLayout
             android:id="@+id/login_anim4"
-            android:layout_width="295dp"
+            android:layout_width="298dp"
             android:layout_height="450dp"
             android:layout_marginTop="10dp"
             android:gravity="center"
@@ -94,7 +94,7 @@
                     android:id="@+id/edt_SignEmail"
                     android:layout_width="300dp"
                     android:layout_height="50dp"
-                    android:hint="이메일을 입력해주세요"
+                    android:hint="이메일"
                     android:inputType="textEmailAddress"
                     android:background="@null"
                     android:paddingLeft="40dp"
@@ -122,7 +122,7 @@
                     android:id="@+id/edt_SignPassword"
                     android:layout_width="300dp"
                     android:layout_height="50dp"
-                    android:hint="비밀번호를 입력해주세요"
+                    android:hint="비밀번호"
                     android:inputType="textPassword"
                     android:background="@null"
                     android:paddingLeft="40dp"
@@ -149,7 +149,7 @@
                     android:id="@+id/edt_SignPasswordCheck"
                     android:layout_width="300dp"
                     android:layout_height="50dp"
-                    android:hint="비밀번호를 다시 입력해주세요"
+                    android:hint="비밀번호 확인"
                     android:inputType="textPassword"
                     android:background="@null"
                     android:paddingLeft="40dp"
