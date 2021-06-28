@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/gridActivityDrawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -12,12 +12,10 @@
         android:id="@+id/aa"
         android:layout_width="match_parent"
         android:layout_height="100dp"
+        android:layout_marginBottom="20dp"
         android:background="@drawable/backgroundcolor2"
         android:elevation="20dp"
-        android:gravity="center"
-        android:layout_marginBottom="20dp"
-        >
-
+        android:gravity="center">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -29,26 +27,39 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:textStyle="bold"
-                android:text="청소 완료"
-                android:textSize="30dp"
                 android:fontFamily="@font/font"
+                android:text="청소 완료"
                 android:textColor="#000000"
-                />
+                android:textSize="30dp"
+                android:textStyle="bold" />
         </LinearLayout>
     </RelativeLayout>
 
+    <LinearLayout
+        android:id="@+id/fabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/aa"
+        android:gravity="center"
+        android:orientation="horizontal" >
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:enabled="false"
+            android:clickable="false"
+            />
+    </LinearLayout>
 
 
 
 
     <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-        android:layout_below="@+id/aa"
-        android:layout_marginTop="10dp"
-            android:id="@+id/grid_layout">
+        android:id="@+id/grid_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/fabLayout"
+        android:layout_marginTop="10dp">
 
         <GridView
             android:id="@+id/grid"
@@ -56,24 +67,4 @@
             android:layout_height="match_parent"
             android:numColumns="1" />
     </RelativeLayout>
-
-
-
-    <com.google.android.material.navigation.NavigationView
-        android:id="@+id/nav_view"
-        android:layout_width="wrap_content"
-        android:visibility="invisible"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
-        app:headerLayout="@layout/drawer_header">
-
-        <include
-            android:layout_height="match_parent"
-            android:layout_width="wrap_content"
-            layout="@layout/drawer_main"
-            />
-    </com.google.android.material.navigation.NavigationView>
-
-
-
 </RelativeLayout>

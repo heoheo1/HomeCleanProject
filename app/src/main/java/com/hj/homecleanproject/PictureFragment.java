@@ -1,6 +1,7 @@
 package com.hj.homecleanproject;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -73,7 +74,7 @@ public class PictureFragment extends Fragment {
         });
 
         //Ui 스레드에 직접 접근 불가 -> just메서드가 UI Blocking에 걸림
-        //그래서 create메서드를 통해서 직접 subscribe를 구현
+        //그래서 create메서드를 통해서 직접 subscribe를
         Observable<String> filePath = Observable.create(subscriber -> { //생산자
             try {
                 if (!subscriber.isDisposed()) {

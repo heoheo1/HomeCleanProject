@@ -136,7 +136,6 @@ public class SignInFragment extends Fragment implements onBackPressedListener {
             public void onSuccess(AuthResult authResult) {
                 Toast.makeText(context, "성공", Toast.LENGTH_SHORT).show();
                 signInDialogFragment.show(getActivity().getSupportFragmentManager(),"dialog");
-                SignInDialogFragment signInDialogFragment =(SignInDialogFragment)fragment;
             }
 
         }).addOnFailureListener(new OnFailureListener() {

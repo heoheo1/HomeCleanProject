@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.FragmentActivity;
 
 import com.hj.homecleanproject.customDialog.GridDialogFragment;
@@ -21,7 +22,7 @@ import com.hj.homecleanproject.customInterface.onDialogResultListener;
 public class MyWork_View extends LinearLayout {
     ImageView imageView;
     TextView textView;
-
+    CardView cardView;
 
 
     public MyWork_View(Context context) {
@@ -35,8 +36,7 @@ public class MyWork_View extends LinearLayout {
         inflater.inflate(R.layout.show_my_work, this, true);
         imageView = findViewById(R.id.CardViewimage);
         textView = findViewById(R.id.CardViewText);
-
-
+        cardView = findViewById(R.id.cardView);
 
     }
 
@@ -54,5 +54,9 @@ public class MyWork_View extends LinearLayout {
         options.inSampleSize = 4;
         Bitmap bitmap = BitmapFactory.decodeByteArray(resID,0,resID.length,options);
         imageView.setImageBitmap(bitmap);
+    }
+
+    public void setScaleTypeImageView(ImageView.ScaleType scaleType){
+        imageView.setScaleType(scaleType);
     }
 }

@@ -2,11 +2,18 @@ package com.hj.homecleanproject;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.drawable.AnimatedImageDrawable;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.hj.homecleanproject.customDialog.GridDialogFragment;
@@ -16,13 +23,15 @@ import com.hj.homecleanproject.customInterface.onDialogResultListener;
 
 import java.util.ArrayList;
 
-public class MyGridAdapter extends BaseAdapter {
+public class MyGridAdapter extends BaseAdapter{
 
     ArrayList<MyWork> list = new ArrayList<>();
 
     private ImageViewClickListener listener;
     private TextViewClickListener textViewClickListener;
     private GridDialogFragment dialog;
+
+    Animation animation;
 
     @Override
     public int getCount() {
@@ -49,8 +58,6 @@ public class MyGridAdapter extends BaseAdapter {
             view = (MyWork_View) convertView;
         }
 
-
-
         MyWork work = list.get(position);
 
         //기존 없는 이미지 -> 카메라모양의 이미지를 Drawable을 통해서 이용할 예정
@@ -62,10 +69,11 @@ public class MyGridAdapter extends BaseAdapter {
         }
         view.setTextView(work.getContent());
 
+        MyWork_View finalView = view;
         view.imageView.setOnClickListener(v ->{
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             if(listener != null){
-                listener.adapterToFragment(intent,position);
+                listener.adapterToFragment(intent,position,finalView);
             }
         });
 

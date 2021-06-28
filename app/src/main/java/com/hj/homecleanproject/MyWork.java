@@ -6,6 +6,12 @@ public class MyWork {
     String content; // CardView에 사용될 TextView
 
     byte[] encodeResID; //Bitmap을 통해 image Resource사용
+    String name; // 보내는 사람
+
+    public MyWork(String name, byte[] encodeResID){
+        this.name = name;
+        this.encodeResID = encodeResID;
+    }
 
 
     public MyWork(int resID, String content){

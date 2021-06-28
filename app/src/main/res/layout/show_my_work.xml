@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="165dp"
     android:orientation="vertical"
-
+    android:id="@+id/cardView"
     card_view:cardElevation="8dp"
     card_view:cardCornerRadius="15dp"
     card_view:cardUseCompatPadding="true"
