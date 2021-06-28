@@ -24,7 +24,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="30dp"
-                android:text="추가 정보"
+                android:text="프로필"
 
                 android:textColor="@color/black"
                 android:fontFamily="@font/font"/>

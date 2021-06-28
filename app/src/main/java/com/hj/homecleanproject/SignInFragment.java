@@ -53,10 +53,7 @@ public class SignInFragment extends Fragment implements onBackPressedListener {
     FirebaseAuth auth;
     String email,passwordCheck,password;
     Context context;
-    FirebaseUser user;
-    String email1;
     SignInDialogFragment signInDialogFragment;
-    Fragment fragment;
 
 
     @Override
@@ -92,7 +89,6 @@ public class SignInFragment extends Fragment implements onBackPressedListener {
                         Toast.makeText(getActivity(), "이메일 주소를 입력해주세요", Toast.LENGTH_SHORT).show();
                         Log.d("dd", "dd");
                         return;
-
                     } else if (password.isEmpty()) {
                         Toast.makeText(context, "비밀번호를 입력해주세요", Toast.LENGTH_SHORT).show();
                         return;
@@ -108,11 +104,12 @@ public class SignInFragment extends Fragment implements onBackPressedListener {
                 }else if(password.length()<6){
                     Toast.makeText(context, "비밀번호는 최소 6자 이상으로 입력해주세요.", Toast.LENGTH_SHORT).show();
                     return;
+                }else if (!(email.contains("@"))){
+                    Toast.makeText(context,"이메일형식으로 입력해주세요",Toast.LENGTH_SHORT).show();
                 }
                 else {
-                    progressDialog.setMessage("등록중입니다.");
-                    progressDialog.show();
                     registerUser();
+
 
                 }
             }
@@ -122,19 +119,21 @@ public class SignInFragment extends Fragment implements onBackPressedListener {
         return viewGroup;
     }
 
+
+
     private void registerUser(){
         email =edt_SignEmail.getText().toString();
         password =edt_SignPassword.getText().toString();
         passwordCheck =edt_SignPasswordCheck.getText().toString();
 
-
         auth = FirebaseAuth.getInstance();
-
-
+        progressDialog.setMessage("등록중입니다.");
+        progressDialog.show();
         auth.createUserWithEmailAndPassword(email, password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
             @Override
             public void onSuccess(AuthResult authResult) {
-                Toast.makeText(context, "성공", Toast.LENGTH_SHORT).show();
+
+                progressDialog.dismiss();
                 signInDialogFragment.show(getActivity().getSupportFragmentManager(),"dialog");
             }
 
@@ -144,9 +143,6 @@ public class SignInFragment extends Fragment implements onBackPressedListener {
                 Toast.makeText(context, "이미 존재하는 아이디", Toast.LENGTH_SHORT).show();
             }
         });
-        progressDialog.dismiss();
-
-
 
     }
 

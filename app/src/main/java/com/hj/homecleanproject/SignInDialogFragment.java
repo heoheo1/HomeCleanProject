@@ -23,7 +23,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.UserInfo;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -45,13 +44,7 @@ public class SignInDialogFragment extends DialogFragment implements onBackPresse
     RadioGroup rdo_Group;
     String position;
     String name,groupName;
-    boolean search = true;
-    boolean a=false;
-
     FirebaseFirestore db;
-
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -64,23 +57,20 @@ public class SignInDialogFragment extends DialogFragment implements onBackPresse
         btn_Ok=viewGroup.findViewById(R.id.btn_Ok);
 
 
-
-
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-
-
-
 
         rdo_Group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (checkedId){
                     case R.id.rdo_leader :
+                        edt_GropName.setHint("그룹을 생성해주세요");
                         position="리더";
                         break;
 
                     case R.id.rdo_member :
+                        edt_GropName.setHint("존재하는 그룹을 입력해주세요");
                         position="구성원";
                         break;
                 }
@@ -95,17 +85,18 @@ public class SignInDialogFragment extends DialogFragment implements onBackPresse
                if(edt_Name.getText().toString().isEmpty()||edt_GropName.getText().toString().isEmpty()) {
                    Toast.makeText(getActivity(),"정보를 입력해주세요",Toast.LENGTH_SHORT).show();
                }else {
+                   if(position.equals("리더")){
 
-                   selectWhereDoc();
+                       saveGroup();
+                   }else{
+                       pluseGroup();
+                   }
                }
             }
         });
 
-
         return viewGroup;
     }
-
-
 
     private void selectDoc() {
 
@@ -113,11 +104,9 @@ public class SignInDialogFragment extends DialogFragment implements onBackPresse
         name = edt_Name.getText().toString();
         groupName = edt_GropName.getText().toString();
 
-
         member.put("Name", name);
         member.put("GroupName", groupName);
         member.put("Position", position);
-
 
         db.collection(groupName).document(name).set(member).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
@@ -128,11 +117,13 @@ public class SignInDialogFragment extends DialogFragment implements onBackPresse
             @Override
             public void onFailure(@NonNull Exception e) {
 
+
             }
         });
+
     }
 
-        private void selectWhereDoc()
+        private void saveGroup()
         {
             name = edt_Name.getText().toString();
             groupName = edt_GropName.getText().toString();
@@ -142,8 +133,8 @@ public class SignInDialogFragment extends DialogFragment implements onBackPresse
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
 
                     if (task.isSuccessful()) {
-                        QuerySnapshot document = task.getResult();
-                       Iterator<QueryDocumentSnapshot> iterator = document.iterator();
+                        QuerySnapshot collection = task.getResult();
+                       Iterator<QueryDocumentSnapshot> iterator = collection.iterator();
 
 
                         if (iterator.hasNext()) //존재하면
@@ -154,6 +145,7 @@ public class SignInDialogFragment extends DialogFragment implements onBackPresse
                         }
                         else {
                             selectDoc();
+                            Toast.makeText(getActivity(),"회원가입이 완료 되었습니다.",Toast.LENGTH_SHORT).show();
                             dismiss();
                         }
                     } else {
@@ -166,38 +158,40 @@ public class SignInDialogFragment extends DialogFragment implements onBackPresse
 
                 }
             });
-//            DocumentReference docRef = db.collection("Member").document(groupName); //문서를 참조 하겠다.
-//
-//            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() //문서안의 내용들을 가지고온다.
-//            {
-//                @Override
-//                public void onComplete(@NonNull Task<DocumentSnapshot> task) //task 실행의 상태
-//                {
-//                    if (task.isSuccessful()) {
-//                        DocumentSnapshot document = task.getResult();
-//
-//                        if (document.exists()) //존재하면
-//                        {
-//                            Toast.makeText(getActivity(),"그룹이 존재합니다.",Toast.LENGTH_SHORT).show();
-//                        }
-//                        else {
-//                            selectDoc();
-//                            dismiss();
-//                        }
-//                    } else {
-//                        Log.d("Data", "get failed with ", task.getException());
-//                    }
-//                }
-//            }).addOnFailureListener(new OnFailureListener() {
-//                @Override
-//                public void onFailure(@NonNull Exception e) {
-//
-//                }
-//            });
             }
 
+         private  void pluseGroup(){
+        name = edt_Name.getText().toString();
+        groupName = edt_GropName.getText().toString();
+        DocumentReference docRef = db.collection(groupName).document(name); //문서를 참조 하겠다.
+            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() //문서안의 내용들을 가지고온다.
+            {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) //task 실행의 상태
+                {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
 
+                        if (document.exists()) //존재하면
+                        {
+                            selectDoc();
+                            Toast.makeText(getActivity(),"회원가입이 완료 되었습니다.",Toast.LENGTH_SHORT).show();
+                            dismiss();
+                        }
+                        else {
+                            Toast.makeText(getActivity(),"그룹이 존재 하지 않습니다.",Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Log.d("Data", "get failed with ", task.getException());
+                    }
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
 
+                }
+            });
+    }
 
 
     @Override
@@ -210,8 +204,5 @@ public class SignInDialogFragment extends DialogFragment implements onBackPresse
         fragmentManager.beginTransaction().remove(fragment).commit();//프래그먼트를 지운다.
         fragmentManager.popBackStack();
     }
-
-
-
 
 }

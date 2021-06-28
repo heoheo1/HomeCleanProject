@@ -163,7 +163,7 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="50dp"
                 android:backgroundTintMode="add"
-                android:text="회원가입"
+                android:text="추가 정보"
                 android:background="@drawable/button_color"
                 android:elevation="20dp"
                 android:textColor="@color/black"/>
