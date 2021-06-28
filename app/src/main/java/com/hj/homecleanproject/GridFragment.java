@@ -173,7 +173,7 @@ public class GridFragment extends Fragment{
                     @Override
                     public void onMyDialogResult(String contents) {
                         msg = contents;
-
+                        setData(msg);
                         ((MyWork) adapter.getItem(adapterPosition)).setContent(contents);
                         adapter.notifyDataSetChanged();
                     }
@@ -290,7 +290,6 @@ public class GridFragment extends Fragment{
     }
 
     public void setData(byte[] bytes){
-
         Observable<Object> observable = Observable.create(emitter -> {
            myData.put("position"+adapterPosition,Blob.fromBytes(bytes));
            myData.put("content"+adapterPosition,msg);
@@ -302,6 +301,20 @@ public class GridFragment extends Fragment{
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(data -> {
                    db.collection("yousin").document("yousin").set(data, SetOptions.merge());
+                });
+    }
+
+    public void setData(String msg){
+        Observable<Object> observable = Observable.create(emitter -> {
+            myData.put("content"+adapterPosition,msg);
+            emitter.onNext(myData);
+            emitter.onComplete();
+        });
+
+        observable.observeOn(Schedulers.io())
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(data -> {
+                    db.collection("yousin").document("yousin").set(data, SetOptions.merge());
                 });
     }
 }
