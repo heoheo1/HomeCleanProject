@@ -104,7 +104,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
         @Override
         public void onBackPressed () {
-
             //프래그먼트 onBackPressedListener사용
             List<Fragment> fragmentList = getSupportFragmentManager().getFragments();
             getSupportFragmentManager().getBackStackEntryCount();
@@ -133,8 +132,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
 
         public  void userLogin(){
-            email = edt_Email.getText().toString();
-            password = edt_Password.getText().toString();
+            email = edt_Email.getText().toString().trim();
+            password = edt_Password.getText().toString().trim();
 
             progressDialog.setMessage("로그인중입니다.");
             progressDialog.show();
@@ -147,7 +146,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         startActivity(intent);
                         finish();
                     }else{
-                        Toast.makeText(LoginActivity.this,"로그인에 실패하였습니다.",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this,"이메일과 비밀번호를 확인해주세요",Toast.LENGTH_SHORT).show();
                     }
 
                 }
