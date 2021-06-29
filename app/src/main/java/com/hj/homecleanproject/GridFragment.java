@@ -53,6 +53,8 @@ import com.hj.homecleanproject.customInterface.onDialogResultListener;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -184,7 +186,29 @@ public class GridFragment extends Fragment {
                                 @Override
                                 public void onSuccess(Uri uri) {
                                     Toast.makeText(fragmentActivity, "잘 다운로드됨", Toast.LENGTH_SHORT).show();
+                                    String frontUrl = "https://firebasestorage.googleapis.com";
+                                    String name =uri.getEncodedPath();
+                                    name.replace(" ","%20");
+                                    String backUrl = "?alt=media";
+                                    String resultUrl = frontUrl + name +backUrl;
+                                    Log.d("re",resultUrl);
+                                    Bitmap bitmap = null;
+                                    try {
+                                        URL url = new URL(resultUrl);
+                                        bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                                        ByteArrayOutputStream output = new ByteArrayOutputStream();
+                                        bitmap.compress(Bitmap.CompressFormat.PNG, 40, output);
+                                        byte[] bytes = output.toByteArray();
+                                        adapter.addItem(new MyWork(bytes,msg));
 
+                                        adapter.notifyDataSetChanged();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+
+
+
+                                    Log.d("yousin",name);
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
@@ -220,7 +244,7 @@ public class GridFragment extends Fragment {
     public File createFile() throws IOException { //임시파일생성
         fileName = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss").format(new Date());
         //Data/data/패키지/에 app_HomeCleanProject라는 파일이 생성된다.
-        File file = File.createTempFile(fileName, ".jpg", getContext().getDir("HomeCleanProject", Context.MODE_PRIVATE));
+        File file = File.createTempFile(fileName, ".png", getContext().getDir("HomeCleanProject", Context.MODE_PRIVATE));
 
         return file;
     }
