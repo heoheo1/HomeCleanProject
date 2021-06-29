@@ -86,10 +86,9 @@ public class SignInDialogFragment extends DialogFragment implements onBackPresse
                    Toast.makeText(getActivity(),"정보를 입력해주세요",Toast.LENGTH_SHORT).show();
                }else {
                    if(position.equals("리더")){
-
-                       saveGroup();
-                   }else{
                        pluseGroup();
+                   }else{
+                       saveGroup();
                    }
                }
             }
@@ -123,7 +122,7 @@ public class SignInDialogFragment extends DialogFragment implements onBackPresse
 
     }
 
-        private void saveGroup()
+        private void pluseGroup()
         {
             name = edt_Name.getText().toString();
             groupName = edt_GropName.getText().toString();
@@ -137,17 +136,17 @@ public class SignInDialogFragment extends DialogFragment implements onBackPresse
                        Iterator<QueryDocumentSnapshot> iterator = collection.iterator();
 
 
-                        if (iterator.hasNext()) //존재하면
-                        {
+                        if (iterator.hasNext()){ //존재하면
                             String n =iterator.next().getId();
                             Log.d("dd",n);
                             Toast.makeText(getActivity(),"그룹이 존재합니다.",Toast.LENGTH_SHORT).show();
-                        }
-                        else {
+
+                        }else {
                             selectDoc();
-                            Toast.makeText(getActivity(),"회원가입이 완료 되었습니다.",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "회원가입이 완료 되었습니다.", Toast.LENGTH_SHORT).show();
                             dismiss();
                         }
+
                     } else {
                         Log.d("Data", "get failed with ", task.getException());
                     }
@@ -160,37 +159,41 @@ public class SignInDialogFragment extends DialogFragment implements onBackPresse
             });
             }
 
-         private  void pluseGroup(){
+    private void saveGroup()
+    {
         name = edt_Name.getText().toString();
         groupName = edt_GropName.getText().toString();
-        DocumentReference docRef = db.collection(groupName).document(name); //문서를 참조 하겠다.
-            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() //문서안의 내용들을 가지고온다.
-            {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) //task 실행의 상태
-                {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
+        CollectionReference rocRef=db.collection(groupName);
+        rocRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
 
-                        if (document.exists()) //존재하면
-                        {
-                            selectDoc();
-                            Toast.makeText(getActivity(),"회원가입이 완료 되었습니다.",Toast.LENGTH_SHORT).show();
-                            dismiss();
-                        }
-                        else {
-                            Toast.makeText(getActivity(),"그룹이 존재 하지 않습니다.",Toast.LENGTH_SHORT).show();
-                        }
-                    } else {
-                        Log.d("Data", "get failed with ", task.getException());
+                if (task.isSuccessful()) {
+                    QuerySnapshot collection = task.getResult();
+                    Iterator<QueryDocumentSnapshot> iterator = collection.iterator();
+
+
+                    if (iterator.hasNext()){
+                        selectDoc();
+                        Toast.makeText(getActivity(), "회원가입이 완료 되었습니다.", Toast.LENGTH_SHORT).show();
+                        dismiss();
+
+
+                    }else {
+                        Toast.makeText(getActivity(),"그룹이 존재하지않습니다.",Toast.LENGTH_SHORT).show();
                     }
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
 
+                } else {
+                    Log.d("Data", "get failed with ", task.getException());
                 }
-            });
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
+
     }
 
 

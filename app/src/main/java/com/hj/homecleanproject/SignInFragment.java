@@ -135,11 +135,13 @@ public class SignInFragment extends Fragment implements onBackPressedListener {
 
                 progressDialog.dismiss();
                 signInDialogFragment.show(getActivity().getSupportFragmentManager(),"dialog");
+                goToMain();
             }
 
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
+                progressDialog.dismiss();
                 Toast.makeText(context, "이미 존재하는 아이디", Toast.LENGTH_SHORT).show();
             }
         });
