@@ -42,6 +42,7 @@ public class MyWork_View extends LinearLayout {
 
     public void setImageView(int resID){
         imageView.setImageResource(resID);
+        imageView.setScaleType(ImageView.ScaleType.CENTER);
     }
 
     public void setTextView(String text){
@@ -54,6 +55,7 @@ public class MyWork_View extends LinearLayout {
         options.inSampleSize = 4;
         Bitmap bitmap = BitmapFactory.decodeByteArray(resID,0,resID.length,options);
         imageView.setImageBitmap(bitmap);
+        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
     }
 
     public void setScaleTypeImageView(ImageView.ScaleType scaleType){
