@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
@@ -45,6 +46,7 @@ public class SignInDialogFragment extends DialogFragment implements onBackPresse
     String position;
     String name,groupName;
     FirebaseFirestore db;
+    RadioButton rdo_leader;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -55,6 +57,9 @@ public class SignInDialogFragment extends DialogFragment implements onBackPresse
         edt_GropName=viewGroup.findViewById(R.id.edt_GropName);
         rdo_Group=viewGroup.findViewById(R.id.radio_Group);
         btn_Ok=viewGroup.findViewById(R.id.btn_Ok);
+        rdo_leader=viewGroup.findViewById(R.id.rdo_leader);
+
+        rdo_leader.setChecked(true);
 
 
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));

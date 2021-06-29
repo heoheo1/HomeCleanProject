@@ -33,7 +33,7 @@
                 android:textStyle="bold"
                 android:text="나의 가족"
                 android:textSize="30dp"
-                android:fontFamily="@font/font"
+                android:fontFamily="@font/one_mobile_title"
                 android:textColor="#000000"
                 />
         </LinearLayout>

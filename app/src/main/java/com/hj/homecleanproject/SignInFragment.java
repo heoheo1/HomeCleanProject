@@ -135,6 +135,7 @@ public class SignInFragment extends Fragment implements onBackPressedListener {
 
                 progressDialog.dismiss();
                 signInDialogFragment.show(getActivity().getSupportFragmentManager(),"dialog");
+                signInDialogFragment.setCancelable(false);
                 goToMain();
             }
 
