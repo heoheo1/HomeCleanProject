@@ -31,23 +31,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.appcheck.FirebaseAppCheck;
-import com.google.firebase.appcheck.safetynet.SafetyNetAppCheckProviderFactory;
-import com.google.firebase.firestore.Blob;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
-import com.google.firebase.storage.FileDownloadTask;
+
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.hj.homecleanproject.customDialog.GridDialogFragment;
 import com.hj.homecleanproject.customInterface.ImageViewClickListener;
 import com.hj.homecleanproject.customInterface.TextViewClickListener;
@@ -56,18 +47,14 @@ import com.hj.homecleanproject.customInterface.onDialogResultListener;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
+
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.schedulers.Schedulers;
 
 
 //Fragment란, 어플리케이션에서 화면에 직접 보이는 공간의 Activity내에서 분할시키고 다른 화면으로 전환할 수 있는 화면 공간의 단위
@@ -106,10 +93,11 @@ public class GridFragment extends Fragment {
         viewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_grid, container, false);
         init(viewGroup); // 초기화
 
-        FirebaseApp.initializeApp(getContext());
-        FirebaseAppCheck firebaseAppCheck = FirebaseAppCheck.getInstance();
-        firebaseAppCheck.installAppCheckProviderFactory(
-                SafetyNetAppCheckProviderFactory.getInstance());
+//        FirebaseApp.initializeApp(getContext());
+//        FirebaseAppCheck firebaseAppCheck = FirebaseAppCheck.getInstance();
+//        firebaseAppCheck.installAppCheckProviderFactory(
+//                SafetyNetAppCheckProviderFactory.getInstance());
+
 
         fabLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -203,9 +191,8 @@ public class GridFragment extends Fragment {
                                     //Bitmap bitmap = null;
                                     try {
                                         URL url = new URL(resultUrl);
-
-
-                                        imgTask(url.toString(),);
+                                       ImageView im=adapter.getImageView(getContext());
+                                        imgTask(url.toString(),im);
 
 //                                        bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
 //                                        ByteArrayOutputStream output = new ByteArrayOutputStream();

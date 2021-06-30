@@ -1,6 +1,7 @@
 package com.hj.homecleanproject;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.AnimatedImageDrawable;
 import android.os.Parcel;
@@ -31,6 +32,7 @@ public class MyGridAdapter extends BaseAdapter{
     private TextViewClickListener textViewClickListener;
     private GridDialogFragment dialog;
     MyWork_View view;
+    MyWork work;
 
     Animation animation;
 
@@ -59,7 +61,7 @@ public class MyGridAdapter extends BaseAdapter{
             view = (MyWork_View) convertView;
         }
 
-        MyWork work = list.get(position);
+        work = list.get(position);
 
         //기존 없는 이미지 -> 카메라모양의 이미지를 Drawable을 통해서 이용할 예정
         if(list.get(position).getResID() == 0){ //만약 카메라에서 사진을 찍었다면, 그 사진을 붙이고
@@ -99,7 +101,8 @@ public class MyGridAdapter extends BaseAdapter{
     public void setOnTextViewClickListener(TextViewClickListener listener){
         textViewClickListener = listener;
     }
-    public ImageView getImageView(){
+    public ImageView getImageView(Context context){
+        view = new MyWork_View(context);
         return  view.imageView;
     }
 }

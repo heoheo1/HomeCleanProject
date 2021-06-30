@@ -16,6 +16,8 @@ import android.view.animation.AnimationUtils;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseUser;
+
 public class IntroActivity extends AppCompatActivity {
 
 
@@ -27,6 +29,7 @@ public class IntroActivity extends AppCompatActivity {
 
 
     FragmentManager fragmentManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
