@@ -191,7 +191,7 @@ public class GridFragment extends Fragment {
                                     //Bitmap bitmap = null;
                                     try {
                                         URL url = new URL(resultUrl);
-                                       ImageView im=adapter.getImageView(getContext());
+                                       ImageView im=adapter.getImageView();
                                         imgTask(url.toString(),im);
 
 //                                        bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());

@@ -101,8 +101,7 @@ public class MyGridAdapter extends BaseAdapter{
     public void setOnTextViewClickListener(TextViewClickListener listener){
         textViewClickListener = listener;
     }
-    public ImageView getImageView(Context context){
-        view = new MyWork_View(context);
+    public ImageView getImageView(){
         return  view.imageView;
     }
 }
