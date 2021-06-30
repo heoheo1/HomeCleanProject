@@ -10,78 +10,77 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <LinearLayout
-            android:id="@+id/login_anim3"
-            android:layout_width="298dp"
-            android:layout_height="450dp"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:layout_gravity="center"
-            android:elevation="10dp"
-            android:background="@drawable/backgroundcolor"
-            android:padding="10dp"
-            android:layout_marginLeft="13dp"
-            >
-
-        </LinearLayout>
 
 
         <LinearLayout
             android:id="@+id/login_anim4"
-            android:layout_width="298dp"
-            android:layout_height="450dp"
-            android:layout_marginTop="10dp"
-            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="15dp"
+            android:gravity="center|top"
             android:orientation="vertical"
-            android:layout_gravity="center"
             android:elevation="10dp"
             android:background="@drawable/backgroundcolor"
             android:padding="15dp"
 
             >
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
 
                 >
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="40dp"
                     android:textSize="40dp"
                     android:text="회원 가입"
-                    android:layout_marginBottom="20dp"
                     android:gravity="center"
                     android:textColor="@color/black"
                     android:fontFamily="@font/one_mobile_title">
 
                 </TextView>
-            </RelativeLayout>
+            </LinearLayout>
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:gravity="center"
 
                 >
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="10dp"
+                    android:textSize="13dp"
                     android:text="실제 존재하는 이메일을 입력해야 비밀번호를 찾을수 있습니다."
-                    android:layout_marginBottom="20dp"
-                    android:gravity="center"
-                    >
 
-                </TextView>
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="13dp"
+                    android:text="이메일 형식으로 입력해주세요."
 
-            </RelativeLayout>
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="13dp"
+                    android:text="비밀번호는 6자리 이상입니다."
+                    />
+
+
+
+            </LinearLayout>
 
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:background="@drawable/intro_background"
+                android:layout_marginTop="60dp"
                 >
 
                 <ImageView
@@ -162,9 +161,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="60dp"
                 android:backgroundTintMode="add"
-
                 app:backgroundTint="@null"
                 android:text="프로필 작성"
                 android:elevation="20dp"

@@ -30,6 +30,7 @@ public class MyGridAdapter extends BaseAdapter{
     private ImageViewClickListener listener;
     private TextViewClickListener textViewClickListener;
     private GridDialogFragment dialog;
+    MyWork_View view;
 
     Animation animation;
 
@@ -50,7 +51,7 @@ public class MyGridAdapter extends BaseAdapter{
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        MyWork_View view = null;
+        view = null;
 
         if(convertView == null){
             view = new MyWork_View(parent.getContext());
@@ -97,5 +98,8 @@ public class MyGridAdapter extends BaseAdapter{
 
     public void setOnTextViewClickListener(TextViewClickListener listener){
         textViewClickListener = listener;
+    }
+    public ImageView getImageView(){
+        return  view.imageView;
     }
 }

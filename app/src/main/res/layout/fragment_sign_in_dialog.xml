@@ -25,9 +25,9 @@
                 android:layout_height="wrap_content"
                 android:textSize="30dp"
                 android:text="프로필"
-
                 android:textColor="@color/black"
-                android:fontFamily="@font/font"/>
+                android:fontFamily="@font/one_mobile_title"
+                />
 
             <ImageView
                 android:id="@+id/imageView"

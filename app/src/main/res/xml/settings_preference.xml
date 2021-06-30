@@ -3,46 +3,77 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:iconSpaceReserved="false"
     >
-    <PreferenceCategory
-        android:title="프로필"
-        app:iconSpaceReserved="false"
-        >
 
-        <Preference
-            android:key="key_add_shortcut"
-            android:icon="@mipmap/ic_launcher"
 
-             />
-
-        <PreferenceScreen android:summary="asdasd"
+        <PreferenceScreen
             app:iconSpaceReserved="false"
             app:layout="@layout/family_item"
+
           />
-    </PreferenceCategory>
+
 
     <PreferenceCategory
-        android:title="Options"
+        android:title="프로필 수정"
         app:iconSpaceReserved="false">
 
         <EditTextPreference
             android:key="key_edit_name"
-            android:title="Edit name"
-            android:summary="Edit your name"
+            android:title="이름 변경"
+            android:summary="이름을 변경 하시려면 클릭해주세요"
             android:dialogTitle="Edit your name"
             app:iconSpaceReserved="false"/>
 
-        <ListPreference
+        <SwitchPreference
             android:key="key_set_item"
-            android:title="Main action"
-            android:summary="set main action"
+            android:title="알림 설정"
             android:entries="@array/action_list"
             android:entryValues="@array/action_values"
             android:dialogTitle="set main action"
             app:iconSpaceReserved="false"/>
 
         <PreferenceScreen
-            android:title="Go to android.com"
-            android:summary="browse android.com"
+            android:title="문의 하기"
+            android:summary="카카오 페이지 이동"
+            app:iconSpaceReserved="false">
+            <intent android:action="android.intent.action.VIEW"
+                android:data="http://www.android.com" />
+        </PreferenceScreen>
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="결제"
+        app:iconSpaceReserved="false">
+        <PreferenceScreen
+            android:title="포인트 충전"
+            app:iconSpaceReserved="false">
+            <intent android:action="android.intent.action.VIEW"
+                android:data="http://www.android.com" />
+        </PreferenceScreen>
+        <PreferenceScreen
+            android:title="포인트 전환"
+            app:iconSpaceReserved="false">
+            <intent android:action="android.intent.action.VIEW"
+                android:data="http://www.android.com" />
+        </PreferenceScreen>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="정보"
+        app:iconSpaceReserved="false">
+        <PreferenceScreen
+            android:title="앱 정보"
+            app:iconSpaceReserved="false">
+            <intent android:action="android.intent.action.VIEW"
+                android:data="http://www.android.com" />
+        </PreferenceScreen>
+        <PreferenceScreen
+            android:title="이용 약관"
+            app:iconSpaceReserved="false">
+            <intent android:action="android.intent.action.VIEW"
+                android:data="http://www.android.com" />
+        </PreferenceScreen>
+
+        <PreferenceScreen
+            android:title="회원 탈퇴"
             app:iconSpaceReserved="false">
             <intent android:action="android.intent.action.VIEW"
                 android:data="http://www.android.com" />

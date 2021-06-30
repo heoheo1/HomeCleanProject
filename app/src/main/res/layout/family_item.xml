@@ -1,58 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">'
+    android:layout_height="wrap_content">
+
 
     <com.google.android.material.card.MaterialCardView
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:id="@+id/family_card"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        card_view:cardCornerRadius="20dp"
-        card_view:elevation="20dp"
+        android:layout_height="wrap_content"
+        card_view:elevation="10dp"
+        card_view:cardCornerRadius="5dp"
         android:layout_margin="10dp"
+        card_view:strokeColor="#8f8f8f"
+        card_view:strokeWidth="1dp"
        >
-      <RelativeLayout
+      <LinearLayout
           android:layout_width="match_parent"
           android:layout_height="match_parent"
+          android:gravity="center"
+          android:orientation="vertical"
           >
+          <androidx.cardview.widget.CardView
+              android:layout_width="130dp"
+              android:layout_height="130dp"
+              card_view:cardCornerRadius="15dp"
+              android:layout_marginTop="10dp"
+              card_view:cardElevation="8dp">
           <ImageView
               android:id="@+id/iv_photo"
-              android:layout_width="100dp"
-              android:layout_height="match_parent"
-              android:src="@drawable/ic_launcher_foreground"/>
+              android:layout_width="130dp"
+              android:layout_height="130dp"
+              android:src="@drawable/ic_launcher_foreground"
+              android:scaleType="fitXY"
+
+              />
+          </androidx.cardview.widget.CardView>
 
           <RelativeLayout
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:layout_toRightOf="@+id/iv_photo"
-              android:layout_marginLeft="20dp"
               android:gravity="center">
 
           <TextView
               android:layout_marginTop="10dp"
               android:id="@+id/name"
               android:layout_width="match_parent"
-              android:layout_height="wrap_content">
+              android:layout_height="wrap_content"
+              android:gravity="center"
+              android:text="ddddd">
           </TextView>
           <TextView
-              android:layout_marginTop="10dp"
+              android:layout_marginTop="5dp"
               android:id="@+id/family_group"
               android:layout_below="@+id/name"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
+              android:gravity="center"
               >
           </TextView>
           <TextView
-              android:layout_marginTop="10dp"
+              android:layout_marginTop="5dp"
+              android:layout_marginBottom="10dp"
               android:id="@+id/phone_Number"
               android:layout_below="@+id/family_group"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:layout_gravity="center">
+              android:gravity="center">
           </TextView>
           </RelativeLayout>
-      </RelativeLayout>
+      </LinearLayout>
 
 
 

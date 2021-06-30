@@ -46,7 +46,7 @@ public class SignInDialogFragment extends DialogFragment implements onBackPresse
     String position;
     String name,groupName;
     FirebaseFirestore db;
-    RadioButton rdo_leader;
+    RadioButton rdo_leader,rdo_member;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -58,8 +58,9 @@ public class SignInDialogFragment extends DialogFragment implements onBackPresse
         rdo_Group=viewGroup.findViewById(R.id.radio_Group);
         btn_Ok=viewGroup.findViewById(R.id.btn_Ok);
         rdo_leader=viewGroup.findViewById(R.id.rdo_leader);
+        rdo_member=viewGroup.findViewById(R.id.rdo_member);
 
-        rdo_leader.setChecked(true);
+
 
 
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -88,8 +89,11 @@ public class SignInDialogFragment extends DialogFragment implements onBackPresse
 
                 db =FirebaseFirestore.getInstance();
                if(edt_Name.getText().toString().isEmpty()||edt_GropName.getText().toString().isEmpty()) {
-                   Toast.makeText(getActivity(),"정보를 입력해주세요",Toast.LENGTH_SHORT).show();
-               }else {
+                   Toast.makeText(getActivity(),"정보를 입력해주세요.",Toast.LENGTH_SHORT).show();
+               }else if (!(rdo_leader.isChecked()||rdo_member.isChecked())){
+                   Toast.makeText(getActivity(),"그룹장과 구성원중 선택해주세요.",Toast.LENGTH_SHORT).show();
+               }
+               else {
                    if(position.equals("리더")){
                        pluseGroup();
                    }else{

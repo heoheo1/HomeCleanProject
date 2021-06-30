@@ -36,6 +36,9 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.appcheck.FirebaseAppCheck;
+import com.google.firebase.appcheck.safetynet.SafetyNetAppCheckProviderFactory;
 import com.google.firebase.firestore.Blob;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -102,6 +105,11 @@ public class GridFragment extends Fragment {
 
         viewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_grid, container, false);
         init(viewGroup); // 초기화
+
+        FirebaseApp.initializeApp(getContext());
+        FirebaseAppCheck firebaseAppCheck = FirebaseAppCheck.getInstance();
+        firebaseAppCheck.installAppCheckProviderFactory(
+                SafetyNetAppCheckProviderFactory.getInstance());
 
         fabLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -189,24 +197,26 @@ public class GridFragment extends Fragment {
                                     String frontUrl = "https://firebasestorage.googleapis.com";
                                     String name =uri.getEncodedPath();
                                     name.replace(" ","%20");
-                                    String backUrl = "?alt=media";
+                                    String backUrl="?alt=media";
                                     String resultUrl = frontUrl + name +backUrl;
                                     Log.d("re",resultUrl);
-                                    Bitmap bitmap = null;
+                                    //Bitmap bitmap = null;
                                     try {
                                         URL url = new URL(resultUrl);
-                                        bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-                                        ByteArrayOutputStream output = new ByteArrayOutputStream();
-                                        bitmap.compress(Bitmap.CompressFormat.PNG, 40, output);
-                                        byte[] bytes = output.toByteArray();
-                                        adapter.addItem(new MyWork(bytes,msg));
 
-                                        adapter.notifyDataSetChanged();
+
+                                        imgTask(url.toString(),);
+
+//                                        bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+//                                        ByteArrayOutputStream output = new ByteArrayOutputStream();
+//                                        bitmap.compress(Bitmap.CompressFormat.PNG, 40, output);
+//                                        byte[] bytes = output.toByteArray();
+//                                        adapter.addItem(new MyWork(bytes,msg));
+
+
                                     } catch (IOException e) {
                                         e.printStackTrace();
                                     }
-
-
 
                                     Log.d("yousin",name);
                                 }
@@ -224,6 +234,13 @@ public class GridFragment extends Fragment {
                 }
             }
         });
+    }
+
+    private void imgTask(String imgUrl, ImageView imageView) {
+
+        ImageLoadTask task = new ImageLoadTask(imgUrl, imageView);
+        task.execute();
+
     }
 
     public void init(ViewGroup viewGroup) { //초기화

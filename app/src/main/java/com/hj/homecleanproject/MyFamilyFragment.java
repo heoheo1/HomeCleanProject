@@ -3,6 +3,7 @@ package com.hj.homecleanproject;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -41,7 +42,9 @@ public class MyFamilyFragment extends Fragment {
         familyItemArrayList.add(new FamilyItem("아이유","딸","01033333333",R.drawable.iu));
 
         FamilyAdapter familyAdapter =new FamilyAdapter(familyItemArrayList);
-        recyclerView.setLayoutManager(new LinearLayoutManager(fragmentActivity));
+        GridLayoutManager gridLayoutManager =new GridLayoutManager(getActivity(),2);
+        recyclerView.setLayoutManager(gridLayoutManager);
+       // recyclerView.setLayoutManager(new LinearLayoutManager(fragmentActivity));
         recyclerView.setAdapter(familyAdapter);
 
 
