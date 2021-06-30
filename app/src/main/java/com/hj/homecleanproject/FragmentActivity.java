@@ -33,12 +33,15 @@ public class FragmentActivity extends AppCompatActivity {
     private long lastPressed = 0;
     private ArrayList<Integer> positions; // position을 저장할 list
     private int position = 0, lastPosition = 2; //현재 선택값, 마지막에 선택한 값
+    FirebaseAuth auth;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fragment);
+
+        auth=FirebaseAuth.getInstance();
 
         bottomNavigationView = findViewById(R.id.bottomNavi);
 
@@ -98,6 +101,7 @@ public class FragmentActivity extends AppCompatActivity {
         ft = fm.beginTransaction();
         switch (n) {
             case 0:
+                auth.signOut(); //로그아웃
 
                 Intent intent =new Intent(FragmentActivity.this,LoginActivity.class);
                 startActivity(intent);
