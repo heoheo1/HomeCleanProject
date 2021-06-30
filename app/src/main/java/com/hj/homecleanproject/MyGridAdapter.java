@@ -64,7 +64,7 @@ public class MyGridAdapter extends BaseAdapter{
         work = list.get(position);
 
         //기존 없는 이미지 -> 카메라모양의 이미지를 Drawable을 통해서 이용할 예정
-        if(list.get(position).getResID() == 0){ //만약 카메라에서 사진을 찍었다면, 그 사진을 붙이고
+        if(list.get(position).getResID() == R.drawable.baseline_add_a_photo_black_18){ //만약 카메라에서 사진을 찍었다면, 그 사진을 붙이고
 
             view.setImageViewToBitmap(work.getEncodeResID());
         }else{ // 이용안한 카드뷰라면? 기본 이미지를 사용하도록 한다.

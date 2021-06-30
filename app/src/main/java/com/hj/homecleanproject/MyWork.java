@@ -1,5 +1,7 @@
 package com.hj.homecleanproject;
 
+import android.graphics.Bitmap;
+
 public class MyWork {
 
     int resID; //CardView에 사용될 Image Resource

@@ -20,6 +20,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 
+import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,14 +32,21 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.firestore.Blob;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
-
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.hj.homecleanproject.customDialog.GridDialogFragment;
 import com.hj.homecleanproject.customInterface.ImageViewClickListener;
 import com.hj.homecleanproject.customInterface.TextViewClickListener;
@@ -46,15 +54,22 @@ import com.hj.homecleanproject.customInterface.onDialogResultListener;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 
 //Fragment란, 어플리케이션에서 화면에 직접 보이는 공간의 Activity내에서 분할시키고 다른 화면으로 전환할 수 있는 화면 공간의 단위
@@ -82,6 +97,8 @@ public class GridFragment extends Fragment {
     FirebaseStorage storage;
     StorageReference reference;
 
+    String msg;
+
     public static GridFragment newInstance() {
         return new GridFragment();
     }
@@ -93,18 +110,12 @@ public class GridFragment extends Fragment {
         viewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_grid, container, false);
         init(viewGroup); // 초기화
 
-//        FirebaseApp.initializeApp(getContext());
-//        FirebaseAppCheck firebaseAppCheck = FirebaseAppCheck.getInstance();
-//        firebaseAppCheck.installAppCheckProviderFactory(
-//                SafetyNetAppCheckProviderFactory.getInstance());
-
-
         fabLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 adapter.addItem(new MyWork(R.drawable.baseline_add_a_photo_black_18, " "));
                 myData.put("size", adapter.getCount());
-                db.collection("yousin").document("yousin").set(myData,SetOptions.merge());
+                db.collection("kim").document("yousin").set(myData,SetOptions.merge());
                 adapter.notifyDataSetChanged();
             }
         });
@@ -138,6 +149,7 @@ public class GridFragment extends Fragment {
                 dialogFragment.setDialogResult(new onDialogResultListener() {
                     @Override
                     public void onMyDialogResult(String contents) {
+                        msg = contents;
                         myData.put("myContentsTo" + adapterPosition, contents);
                         db.collection("yousin").document("yousin").set(myData, SetOptions.merge());
                         ((MyWork) adapter.getItem(adapterPosition)).setContent(contents);
@@ -148,86 +160,6 @@ public class GridFragment extends Fragment {
         });
 
         return viewGroup;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        restoreMyData();
-    }
-
-    public void restoreMyData() {
-        db.collection("yousin").document("yousin").get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                Long size = documentSnapshot.getLong("size") == null ? 0 : documentSnapshot.getLong("size");
-                myData.put("size",size);
-                if(size > 0){
-                    for(int i = 0; i<size; i++){
-                        String msg = String.valueOf(documentSnapshot.get("myContentsTo"+i)) == "null" ? " " : String.valueOf(documentSnapshot.get("myContentsTo"+i));
-                        myData.put("myContentsTo"+i,msg);
-                        Log.d("yousin",myData.get("myContentsTo"+i)+" : contents"+i);
-
-                        String imgName = String.valueOf(documentSnapshot.get("ImageNameTo"+i)) == "null" ? " " :String.valueOf(documentSnapshot.get("ImageNameTo"+i));
-                        myData.put("ImageNameTo"+i,imgName);
-                        Log.d("yousin",myData.get("ImageNameTo"+i)+"");
-
-                        if(imgName.equals(" ")) {
-                            adapter.addItem(new MyWork(R.drawable.baseline_add_a_photo_black_18, msg));
-                        }else{
-                            StorageReference imgReference = storage.getReferenceFromUrl("gs://homeclean-ba4fc.appspot.com").child("userName/"+imgName);
-                            Log.d("yousin",imgReference.getPath());
-
-                            imgReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                @Override
-                                public void onSuccess(Uri uri) {
-                                    Toast.makeText(fragmentActivity, "잘 다운로드됨", Toast.LENGTH_SHORT).show();
-                                    String frontUrl = "https://firebasestorage.googleapis.com";
-                                    String name =uri.getEncodedPath();
-                                    name.replace(" ","%20");
-                                    String backUrl="?alt=media";
-                                    String resultUrl = frontUrl + name +backUrl;
-                                    Log.d("re",resultUrl);
-                                    //Bitmap bitmap = null;
-                                    try {
-                                        URL url = new URL(resultUrl);
-                                       ImageView im=adapter.getImageView();
-                                        imgTask(url.toString(),im);
-
-//                                        bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-//                                        ByteArrayOutputStream output = new ByteArrayOutputStream();
-//                                        bitmap.compress(Bitmap.CompressFormat.PNG, 40, output);
-//                                        byte[] bytes = output.toByteArray();
-//                                        adapter.addItem(new MyWork(bytes,msg));
-
-
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
-
-                                    Log.d("yousin",name);
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    e.printStackTrace();
-                                }
-                            });
-
-                            Log.d("yousin","끝");
-                        }
-                        adapter.notifyDataSetChanged();
-                    }
-                }
-            }
-        });
-    }
-
-    private void imgTask(String imgUrl, ImageView imageView) {
-
-        ImageLoadTask task = new ImageLoadTask(imgUrl, imageView);
-        task.execute();
-
     }
 
     public void init(ViewGroup viewGroup) { //초기화
@@ -268,21 +200,46 @@ public class GridFragment extends Fragment {
             bitmap.compress(Bitmap.CompressFormat.PNG, 40, output);
             byte[] bytes = output.toByteArray();
 
-            //FirebaseStorage에 저장하기 -> userName을 collection으로 바꿀 예정
-            storage.getReferenceFromUrl("gs://homeclean-ba4fc.appspot.com").child("userName/" + fileName + ".png".trim()).putBytes(bytes);
+            saveStorage(bytes);
+            SystemClock.sleep(2000);
+            loadStorage();
 
-
-            myData.put("ImageNameTo" + adapterPosition, fileName+".png".trim());
-            db.collection("yousin").document("yousin").set(myData);
-
-
-            ((MyWork) adapter.getItem(adapterPosition)).setResID(0);
-            ((MyWork) adapter.getItem(adapterPosition)).setEncodeResID(bytes);
-            adapter.notifyDataSetChanged();
         }
     }
 
+    private void saveStorage(byte[] bytes) { //Storage에 압축한 file 저장하기! -> 그래서 byte[]로 넣음.
+        reference.child("userName/"+fileName).putBytes(bytes).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Toast.makeText(fragmentActivity, "잘 들어갔어여!", Toast.LENGTH_SHORT).show();
+            }
+        });
 
+    }
+
+    private void loadStorage(){
+        storage.getReferenceFromUrl("gs://homeclean-ba4fc.appspot.com/").child("userName/"+fileName).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Log.d("yousin",uri.toString());
+                //FireStore에 uri집어넣기
+                myData.put("uri"+adapterPosition,uri.toString());
+                db.collection("kim").document("yousin").set(myData);
+
+                try {
+                    URL url = new URL(uri.toString());
+                    Bitmap bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }finally {
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        });
+    }
     public void ChangeRotate() { //이미지 각도 돌리기
         Resources resources = Resources.getSystem(); //어느곳에서든지 이렇게 사용하면 context의 내용을 사용할수있다. 무조건! (직접적인 접근 가능)
         Configuration configuration = resources.getConfiguration();
