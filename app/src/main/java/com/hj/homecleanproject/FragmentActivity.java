@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.preference.PreferenceFragmentCompat;
 
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -55,6 +56,16 @@ public class FragmentActivity extends AppCompatActivity {
         bottomNavigationView.getMenu().getItem(2).setChecked(true); //홈버튼이 눌러져있어야한다.
         bottomNavigationView.getMenu().getItem(lastPosition).setEnabled(false);
         positions.add(lastPosition);
+
+       Intent intent =getIntent();
+       if(intent!=null){
+           String rootKey =intent.getStringExtra("target");
+           if(rootKey!=null){
+               Bundle bundle =new Bundle();
+               bundle.putString(PreferenceFragmentCompat.ARG_PREFERENCE_ROOT,rootKey);
+               serviceCenterFragment.setArguments(bundle);
+           }
+       }
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -112,6 +123,7 @@ public class FragmentActivity extends AppCompatActivity {
             case 1:
                 ft.replace(R.id.main_frame, myFamilyFragment, "family");
                 ft.addToBackStack(null);
+
                 ft.commit();
                 //login후, 여러 fragment를 클릭후, 다시 로그인페이지로 왔을때
                 //back버튼을 누르면 로그인페이지를 누르기전의 Fragment로 이동함

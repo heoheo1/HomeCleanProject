@@ -40,17 +40,22 @@
     <LinearLayout
         android:id="@+id/fabLayout"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="75dp"
         android:layout_below="@id/aa"
         android:layout_marginTop="10dp"
         android:gravity="center"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        >
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:enabled="false"
-            android:clickable="false"
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_baseline_touch_app_24"
+            android:background="@color/white"
+            app:backgroundTintMode="@null"
+            app:backgroundTint="@color/white"
             />
     </LinearLayout>
 

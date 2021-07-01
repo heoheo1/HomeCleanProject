@@ -54,8 +54,8 @@ public class ImageLoadTask extends AsyncTask<Void,Void, Bitmap> {
     @Override
     protected void onPostExecute(Bitmap bitmap) {
         super.onPostExecute(bitmap);
-
         imageView.setImageBitmap(bitmap);
         imageView.invalidate();
     }
+
 }

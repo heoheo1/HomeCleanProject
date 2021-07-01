@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -22,25 +21,18 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.hj.homecleanproject.customDialog.GridDialogFragment;
 import com.hj.homecleanproject.customInterface.onBackPressedListener;
 
-import java.security.acl.LastOwnerException;
-import java.util.Iterator;
 
-
-public class SignInFragment extends Fragment implements onBackPressedListener {
+public class SignUpFragment extends Fragment implements onBackPressedListener {
 
     // 각각의 Fragment마다 Instance를 반환해 줄 메소드를 생성합니다.
-    public static SignInFragment newInstance() {
-        return new SignInFragment();
+    public static SignUpFragment newInstance() {
+        return new SignUpFragment();
     }
 
     Animation animation,animation2;
@@ -53,26 +45,26 @@ public class SignInFragment extends Fragment implements onBackPressedListener {
     FirebaseAuth auth;
     String email,passwordCheck,password;
     Context context;
-    SignInDialogFragment signInDialogFragment;
+    SignUpDialogFragment signUpDialogFragment;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        viewGroup=(ViewGroup)inflater.inflate(R.layout.fragment_sign_in,container,false);
+        viewGroup=(ViewGroup)inflater.inflate(R.layout.fragment_sign_up,container,false);
         login_anim4= viewGroup.findViewById(R.id.login_anim4);
         animation2 =AnimationUtils.loadAnimation(getContext(), R.anim.login_animation2);
         animation = AnimationUtils.loadAnimation(getContext(), R.anim.login_animation);
 
         login_anim4.startAnimation(animation2);
         context =container.getContext();
-        signInDialogFragment=new SignInDialogFragment();
+        signUpDialogFragment =new SignUpDialogFragment();
 
 
         edt_SignEmail=viewGroup.findViewById(R.id.edt_SignEmail);
         edt_SignPassword=viewGroup.findViewById(R.id.edt_SignPassword);
         edt_SignPasswordCheck=viewGroup.findViewById(R.id.edt_SignPasswordCheck);
-        btn_Sign=viewGroup.findViewById(R.id.btn_SingIn);
+        btn_Sign=viewGroup.findViewById(R.id.btn_profile);
         progressDialog =new ProgressDialog(getContext());
 
         btn_Sign.setOnClickListener(new View.OnClickListener() {
@@ -119,11 +111,13 @@ public class SignInFragment extends Fragment implements onBackPressedListener {
     }
 
 
-
     private void registerUser(){
         email =edt_SignEmail.getText().toString();
         password =edt_SignPassword.getText().toString();
         passwordCheck =edt_SignPasswordCheck.getText().toString();
+        Bundle emailResult = new Bundle();
+        emailResult.putString("email",email);
+        signUpDialogFragment.setArguments(emailResult);
 
         auth = FirebaseAuth.getInstance();
         progressDialog.setMessage("등록중입니다.");
@@ -133,8 +127,8 @@ public class SignInFragment extends Fragment implements onBackPressedListener {
             public void onSuccess(AuthResult authResult) {
 
                 progressDialog.dismiss();
-                signInDialogFragment.show(getActivity().getSupportFragmentManager(),"dialog");
-                signInDialogFragment.setCancelable(false);
+                signUpDialogFragment.show(getActivity().getSupportFragmentManager(),"dialog");
+                signUpDialogFragment.setCancelable(false);
                 goToMain();
             }
 
@@ -155,7 +149,7 @@ public class SignInFragment extends Fragment implements onBackPressedListener {
     //프래그먼트 종료
     private void goToMain(){
         FragmentManager fragmentManager = requireActivity().getSupportFragmentManager(); //requireActivity=getActivity(있다는걸 보장,없으면 Excepion. app crash 발생) activity가 null한 상황을 아예 없애려고 쓰인다.
-        fragmentManager.beginTransaction().remove(SignInFragment.this).commit();//프래그먼트를 지운다.
+        fragmentManager.beginTransaction().remove(SignUpFragment.this).commit();//프래그먼트를 지운다.
         fragmentManager.popBackStack();
     }
 }

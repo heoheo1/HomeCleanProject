@@ -25,6 +25,7 @@ public class MyWork_View extends LinearLayout {
     CardView cardView;
 
 
+
     public MyWork_View(Context context) {
         super(context);
 
@@ -51,11 +52,13 @@ public class MyWork_View extends LinearLayout {
 
     public void setImageViewToBitmap(byte[] resID){
         //encoder된 이미지를 다시 decode해 ImageView에 붙인다.
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inSampleSize = 4;
-        Bitmap bitmap = BitmapFactory.decodeByteArray(resID,0,resID.length,options);
-        imageView.setImageBitmap(bitmap);
-        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+        if(resID!=null) {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inSampleSize = 4;
+            Bitmap bitmap = BitmapFactory.decodeByteArray(resID, 0, resID.length, options);
+            imageView.setImageBitmap(bitmap);
+            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+        }
     }
 
     public void setScaleTypeImageView(ImageView.ScaleType scaleType){

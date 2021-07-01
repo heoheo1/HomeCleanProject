@@ -12,11 +12,9 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -34,7 +32,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     FragmentManager fm;
     FragmentTransaction ft;
     private long lastTimeBackPressed;
-    SignInFragment signInFragment;
+    SignUpFragment signUpFragment;
     ProgressDialog progressDialog;
     Button btn_login;
     EditText edt_Email,edt_Password;
@@ -65,7 +63,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA}, 0);
 
 
-        signInFragment =new SignInFragment();
+        signUpFragment =new SignUpFragment();
 
         btn_login =findViewById(R.id.login);
         layout_SignIn=findViewById(R.id.layout_SignIn);
@@ -109,7 +107,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
 
             } else if (v == layout_SignIn) {
-                frgManagerBeginTransaction(R.id.login_layout, signInFragment); //프래그먼트 매니저를 계속 생성해주어야함
+                frgManagerBeginTransaction(R.id.login_layout, signUpFragment); //프래그먼트 매니저를 계속 생성해주어야함
             }
 
         }

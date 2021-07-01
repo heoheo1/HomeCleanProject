@@ -25,8 +25,6 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -37,24 +35,25 @@ import java.util.Iterator;
 import java.util.Map;
 
 
-public class SignInDialogFragment extends DialogFragment implements onBackPressedListener {
+public class SignUpDialogFragment extends DialogFragment implements onBackPressedListener {
 
     ViewGroup viewGroup;
-    EditText edt_Name,edt_GropName;
+    EditText edt_Name,edt_GroupName;
     Button btn_Ok;
     RadioGroup rdo_Group;
     String position;
     String name,groupName;
     FirebaseFirestore db;
     RadioButton rdo_leader,rdo_member;
+    String email;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        viewGroup=(ViewGroup)inflater.inflate(R.layout.fragment_sign_in_dialog,container,false);
+        viewGroup=(ViewGroup)inflater.inflate(R.layout.fragment_sign_up_dialog,container,false);
         edt_Name=viewGroup.findViewById(R.id.editTextPersonName);
-        edt_GropName=viewGroup.findViewById(R.id.edt_GropName);
+        edt_GroupName=viewGroup.findViewById(R.id.edt_GroupName);
         rdo_Group=viewGroup.findViewById(R.id.radio_Group);
         btn_Ok=viewGroup.findViewById(R.id.btn_Ok);
         rdo_leader=viewGroup.findViewById(R.id.rdo_leader);
@@ -71,12 +70,12 @@ public class SignInDialogFragment extends DialogFragment implements onBackPresse
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (checkedId){
                     case R.id.rdo_leader :
-                        edt_GropName.setHint("그룹을 생성해주세요");
+                        edt_GroupName.setHint("그룹을 생성해주세요");
                         position="리더";
                         break;
 
                     case R.id.rdo_member :
-                        edt_GropName.setHint("존재하는 그룹을 입력해주세요");
+                        edt_GroupName.setHint("존재하는 그룹을 입력해주세요");
                         position="구성원";
                         break;
                 }
@@ -88,7 +87,7 @@ public class SignInDialogFragment extends DialogFragment implements onBackPresse
             public void onClick(View v) {
 
                 db =FirebaseFirestore.getInstance();
-               if(edt_Name.getText().toString().isEmpty()||edt_GropName.getText().toString().isEmpty()) {
+               if(edt_Name.getText().toString().isEmpty()||edt_GroupName.getText().toString().isEmpty()) {
                    Toast.makeText(getActivity(),"정보를 입력해주세요.",Toast.LENGTH_SHORT).show();
                }else if (!(rdo_leader.isChecked()||rdo_member.isChecked())){
                    Toast.makeText(getActivity(),"그룹장과 구성원중 선택해주세요.",Toast.LENGTH_SHORT).show();
@@ -110,11 +109,17 @@ public class SignInDialogFragment extends DialogFragment implements onBackPresse
 
         Map<String, Object> member = new HashMap<>();
         name = edt_Name.getText().toString();
-        groupName = edt_GropName.getText().toString();
+        groupName = edt_GroupName.getText().toString();
+        Bundle emailResult =getArguments();//번들 받기
+
+        if(emailResult != null){
+            email = emailResult.getString("email");
+        }
 
         member.put("Name", name);
         member.put("GroupName", groupName);
         member.put("Position", position);
+        member.put("email",email);
 
         db.collection(groupName).document(name).set(member).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
@@ -134,7 +139,7 @@ public class SignInDialogFragment extends DialogFragment implements onBackPresse
         private void pluseGroup()
         {
             name = edt_Name.getText().toString();
-            groupName = edt_GropName.getText().toString();
+            groupName = edt_GroupName.getText().toString();
             CollectionReference rocRef=db.collection(groupName);
             rocRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
@@ -171,7 +176,7 @@ public class SignInDialogFragment extends DialogFragment implements onBackPresse
     private void saveGroup()
     {
         name = edt_Name.getText().toString();
-        groupName = edt_GropName.getText().toString();
+        groupName = edt_GroupName.getText().toString();
         CollectionReference rocRef=db.collection(groupName);
         rocRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -208,7 +213,7 @@ public class SignInDialogFragment extends DialogFragment implements onBackPresse
 
     @Override
     public void onBackPressed() {
-        goToMain(SignInDialogFragment.this);
+        goToMain(SignUpDialogFragment.this);
     }
     //프래그먼트 종료
     private void goToMain(Fragment fragment){

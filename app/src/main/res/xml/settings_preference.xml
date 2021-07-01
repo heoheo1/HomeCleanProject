@@ -36,7 +36,7 @@
             android:summary="카카오 페이지 이동"
             app:iconSpaceReserved="false">
             <intent android:action="android.intent.action.VIEW"
-                android:data="http://www.android.com" />
+                android:data="https://pf.kakao.com/_xkyKPs" />
         </PreferenceScreen>
     </PreferenceCategory>
     <PreferenceCategory

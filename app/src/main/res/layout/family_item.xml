@@ -12,7 +12,7 @@
         card_view:elevation="10dp"
         card_view:cardCornerRadius="5dp"
         android:layout_margin="10dp"
-        card_view:strokeColor="#8f8f8f"
+        card_view:strokeColor="#2fc600"
         card_view:strokeWidth="1dp"
        >
       <LinearLayout
@@ -21,6 +21,15 @@
           android:gravity="center"
           android:orientation="vertical"
           >
+          <TextView
+              android:id="@+id/group_Email"
+              android:layout_below="@+id/family_group"
+              android:layout_width="match_parent"
+              android:layout_marginTop="5dp"
+              android:layout_height="wrap_content"
+              android:gravity="center"
+              android:text="이름"
+              />
           <androidx.cardview.widget.CardView
               android:layout_width="130dp"
               android:layout_height="130dp"
@@ -49,8 +58,8 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:gravity="center"
-              android:text="ddddd">
-          </TextView>
+              android:text="그룹명"/>
+
           <TextView
               android:layout_marginTop="5dp"
               android:id="@+id/family_group"
@@ -58,8 +67,9 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:gravity="center"
-              >
-          </TextView>
+              android:text="이메일"
+              />
+
           <TextView
               android:layout_marginTop="5dp"
               android:layout_marginBottom="10dp"
@@ -67,8 +77,11 @@
               android:layout_below="@+id/family_group"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:gravity="center">
-          </TextView>
+              android:gravity="center"
+              android:text="그룹포지션"
+              />
+
+
           </RelativeLayout>
       </LinearLayout>
 

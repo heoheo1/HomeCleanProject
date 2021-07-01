@@ -8,14 +8,13 @@
         android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        card_view:elevation="8dp"
+        card_view:elevation="10dp"
         card_view:cardCornerRadius="10dp"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        card_view:strokeColor="#c5ffff"
-        card_view:strokeWidth="1dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+
         >
 
     <LinearLayout
@@ -26,14 +25,14 @@
         >
         <androidx.cardview.widget.CardView
             android:layout_width="140dp"
-            android:layout_height="match_parent"
-            card_view:cardElevation="8dp"
+            android:layout_height="140dp"
+            card_view:cardElevation="15dp"
             >
 
         <ImageView
             android:id="@+id/CardViewimage"
             android:layout_width="140dp"
-            android:layout_height="match_parent"
+            android:layout_height="140dp"
             android:scaleType="center"
             android:adjustViewBounds="true"
             android:background="#dfdfdf"
@@ -54,7 +53,7 @@
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:background="#c5ffff">
+                android:background="#dfdfdf">
 
             </LinearLayout>
             <LinearLayout
