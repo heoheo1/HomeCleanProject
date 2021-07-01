@@ -3,6 +3,7 @@ package com.hj.homecleanproject;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -10,7 +11,9 @@ import androidx.fragment.app.FragmentTransaction;
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -39,14 +42,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     String email,password;
     FirebaseAuth auth;
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        FirebaseUser currentUser = auth.getCurrentUser();
-        if(currentUser != null){
-            startActivity(new Intent(this,FragmentActivity.class));
-        }
-    }
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//        FirebaseUser currentUser = auth.getCurrentUser();
+//        if(currentUser != null){
+//            startActivity(new Intent(this,FragmentActivity.class));
+//        }
+//    }
+
+
 
 
 
@@ -58,6 +63,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.ACCESS_NOTIFICATION_POLICY}, 0);
+
+        if (ContextCompat.checkSelfPermission(LoginActivity.this,Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED) {
+
+            if (ActivityCompat.shouldShowRequestPermissionRationale(LoginActivity.this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+
+            } else {
+                // No explanation needed; request the permission
+                ActivityCompat.requestPermissions(LoginActivity.this,
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},505);
+            }
+        }
 
 
 
@@ -159,6 +176,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 }
             });
         }
+
+
+
 
 
 }

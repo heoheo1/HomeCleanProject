@@ -25,7 +25,8 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".IntroActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:requestLegacyExternalStorage="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
