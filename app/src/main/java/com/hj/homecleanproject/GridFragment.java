@@ -149,10 +149,12 @@ public class GridFragment extends Fragment {
         //저기로 가는걸 시스템에게 부탁하는 인텐트 생성
         builder.setContentIntent(pendingIntent);
         //빌드가 연결 되어있으닌까 notify가 알수있다.
+        PendingIntent addActionIntent =PendingIntent.getBroadcast(getContext(),20,new Intent(getContext(),MyReceiver.class)
+                ,PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.addAction(new NotificationCompat.Action.Builder(android.R.drawable.ic_menu_share,"알람 해제",addActionIntent).build());
 
         Bitmap largeIcon = BitmapFactory.decodeResource(getResources(),R.drawable.iu);
         builder.setLargeIcon(largeIcon); //큰아이콘 오른쪽에 뜨는 아이콘
-
 
     }
 
