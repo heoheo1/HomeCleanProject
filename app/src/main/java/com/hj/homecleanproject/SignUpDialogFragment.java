@@ -1,6 +1,7 @@
 package com.hj.homecleanproject;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -39,6 +40,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.hj.homecleanproject.customInterface.onBackPressedListener;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -63,6 +65,8 @@ public class SignUpDialogFragment extends DialogFragment implements onBackPresse
     FirebaseStorage firebaseStorage;
     StorageReference reference;
     Map<String, Object> member;
+    LoginActivity loginActivity;
+    private File tempFile;
 
 
     @Override
@@ -76,17 +80,18 @@ public class SignUpDialogFragment extends DialogFragment implements onBackPresse
         btn_Ok=viewGroup.findViewById(R.id.btn_Ok);
         rdo_leader=viewGroup.findViewById(R.id.rdo_leader);
         rdo_member=viewGroup.findViewById(R.id.rdo_member);
-        img_profile=viewGroup.findViewById(R.id.img_profile);
         firebaseStorage = FirebaseStorage.getInstance();
         reference = firebaseStorage.getReference();
+        loginActivity=(LoginActivity)getActivity();
 
         img_profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //갤러리 로 이동
-                Intent intent=new Intent();
+                Intent intent=new Intent(Intent.ACTION_PICK);
                 intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
                 startActivityForResult(intent,1);
+
             }
         });
 
@@ -255,27 +260,48 @@ public class SignUpDialogFragment extends DialogFragment implements onBackPresse
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==1){
+        if (requestCode == 1) {
+
+            Uri photoUri = data.getData();
+
+            Cursor cursor = null;
+
             try {
-            Uri uri =data.getData();
 
-                URL url =new URL(uri.toString());
-                InputStream is = new LoginActivity().getContentResolver().openInputStream(data.getData());
-                Bitmap bm = BitmapFactory.decodeStream(is);
-                is.close();
-                img_profile.setImageBitmap(bm);
+                /*
+                 *  Uri 스키마를
+                 *  content:/// 에서 file:/// 로  변경한다.
+                 */
+                String[] proj = { MediaStore.Images.Media.DATA };
 
-               member.put("url",url);
+                assert photoUri != null;
+                cursor = loginActivity.getContentResolver().query(photoUri, proj, null, null, null);
 
+                assert cursor != null;
+                int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
 
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
+                cursor.moveToFirst();
+
+                tempFile = new File(cursor.getString(column_index));
+
+            } finally {
+                if (cursor != null) {
+                    cursor.close();
+                }
             }
 
+            setImage();
 
         }
+    }
+
+    private void setImage() {
+
+
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        Bitmap originalBm = BitmapFactory.decodeFile(tempFile.getAbsolutePath(), options);
+        img_profile=viewGroup.findViewById(R.id.img_profile);
+        img_profile.setImageBitmap(originalBm);
     }
 
     private void imgTask(String imgUrl, ImageView imageView) {
