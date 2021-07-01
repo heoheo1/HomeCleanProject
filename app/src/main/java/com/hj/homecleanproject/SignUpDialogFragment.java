@@ -260,7 +260,11 @@ public class SignUpDialogFragment extends DialogFragment implements onBackPresse
             Uri uri =data.getData();
 
                 URL url =new URL(uri.toString());
-               imgTask(url.toString(),img_profile);
+                InputStream is = new LoginActivity().getContentResolver().openInputStream(data.getData());
+                Bitmap bm = BitmapFactory.decodeStream(is);
+                is.close();
+                img_profile.setImageBitmap(bm);
+
                member.put("url",url);
 
 
