@@ -1,14 +1,20 @@
 package com.hj.homecleanproject;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +22,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -28,8 +35,14 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.hj.homecleanproject.customInterface.onBackPressedListener;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -46,6 +59,11 @@ public class SignUpDialogFragment extends DialogFragment implements onBackPresse
     FirebaseFirestore db;
     RadioButton rdo_leader,rdo_member;
     String email;
+    ImageView img_profile;
+    FirebaseStorage firebaseStorage;
+    StorageReference reference;
+    Map<String, Object> member;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -58,7 +76,19 @@ public class SignUpDialogFragment extends DialogFragment implements onBackPresse
         btn_Ok=viewGroup.findViewById(R.id.btn_Ok);
         rdo_leader=viewGroup.findViewById(R.id.rdo_leader);
         rdo_member=viewGroup.findViewById(R.id.rdo_member);
+        img_profile=viewGroup.findViewById(R.id.img_profile);
+        firebaseStorage = FirebaseStorage.getInstance();
+        reference = firebaseStorage.getReference();
 
+        img_profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //갤러리 로 이동
+                Intent intent=new Intent();
+                intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
+                startActivityForResult(intent,1);
+            }
+        });
 
 
 
@@ -107,7 +137,7 @@ public class SignUpDialogFragment extends DialogFragment implements onBackPresse
 
     private void selectDoc() {
 
-        Map<String, Object> member = new HashMap<>();
+         member = new HashMap<>();
         name = edt_Name.getText().toString();
         groupName = edt_GroupName.getText().toString();
         Bundle emailResult =getArguments();//번들 받기
@@ -221,5 +251,34 @@ public class SignUpDialogFragment extends DialogFragment implements onBackPresse
         fragmentManager.beginTransaction().remove(fragment).commit();//프래그먼트를 지운다.
         fragmentManager.popBackStack();
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==1){
+            try {
+            Uri uri =data.getData();
+
+                URL url =new URL(uri.toString());
+               imgTask(url.toString(),img_profile);
+               member.put("url",url);
+
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+        }
+    }
+
+    private void imgTask(String imgUrl, ImageView imageView) {
+        ImageLoadTask task = new ImageLoadTask(imgUrl, imageView);
+        task.execute();
+
+    }
+
 
 }

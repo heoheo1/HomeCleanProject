@@ -20,6 +20,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.DialogFragment;
@@ -78,31 +79,29 @@ public class GridFragment extends Fragment {
     File photoFile; // 찍은 사진에 대한 임시파일
     Bitmap bitmap; // 내장 카메라에서 찍은 사진파일형식
     int adapterPosition; //내가 선택한 cardView의 Position
-    String collections, documents; // 그룹명, 유저이름
+
     Map<String, Object> myData; // FireStore에 넣어 주기 위한 Map
     String fileName; // TimeStamp! 현재 시간을 뽑아냄
-    ImageView imageView;
     FloatingActionButton fab;
-
     FirebaseFirestore db;
     FirebaseStorage storage;
     StorageReference reference;
     NotificationManager manager;
     NotificationCompat.Builder builder;
     boolean a = true;
-    PendingIntent pendingIntent;
+
+    NotificationChannel channel =null;
 
     String msg;
 
-
     public void notifiCM(){
-        manager =(NotificationManager) getContext().getSystemService(NOTIFICATION_SERVICE); //시스템에 발생시키는 SystemService
+        manager =(NotificationManager) fragmentActivity.getSystemService(NOTIFICATION_SERVICE); //시스템에 발생시키는 SystemService
         //그냥 이벤트가 아니라 담당하는 시스템 에게 알림 처리를 하기위해서 사용 (인스턴스)
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O) { //25미만은 돌아가지가 않는다.변화가 이러난 시점을 써줘야한다.
             String channelID = "one-channel"; // 채널아이디(식별자) 채널 이름
             String channelName = "My channel One";
             String channelDescription = "My channel one Description";//Description = 보충 설명
-            NotificationChannel channel =null;// headsup 을 쓸려고 전역으로 뺌
+          // headsup 을 쓸려고 전역으로 뺌
             channel = new NotificationChannel(channelID, channelName, NotificationManager.IMPORTANCE_HIGH);
             //알림 채널을 정해주고 각각의 알림 정의를하기위해서 사용
             //headsup은 중요알림 설정할때
@@ -111,9 +110,9 @@ public class GridFragment extends Fragment {
             channel.enableLights(true); //여기서도 설정가능,아래에서도 설정가능 25이상버전만 불빛을 사용하겠다.
             channel.setVibrationPattern(new long[]{100});//100 200 300 진동을 준다.
             manager.createNotificationChannel(channel);//매니저가 이제 자기 채널로 인식한다.
-            builder = new NotificationCompat.Builder(getContext(), channelID);//오레오버전이하일때는 this 이이름으로 된 빌더를 하나만들겠다.
+            builder = new NotificationCompat.Builder(fragmentActivity, channelID);//오레오버전이하일때는 this 이이름으로 된 빌더를 하나만들겠다.
         }else{
-            builder =new NotificationCompat.Builder(getContext()); //이전버전일 경우 25이하 버전은 채널이란 존재를 모른다. builder로 만들어 줘야한다.
+            builder =new NotificationCompat.Builder(fragmentActivity); //이전버전일 경우 25이하 버전은 채널이란 존재를 모른다. builder로 만들어 줘야한다.
         }
         //오래오버전이상이나 이하나 누구나 사용가능
         builder.setSmallIcon(android.R.drawable.ic_menu_camera);//작은 아이콘이미지
@@ -124,19 +123,18 @@ public class GridFragment extends Fragment {
         builder.setAutoCancel(true); //기본이 트루,터치 시 작동 삭제 여부,터치 시 삭제됨
 
         //앱으로 돌아가고 싶을때.
-        Intent intent =new Intent(getContext(),FragmentActivity.class);//this 다른곳이아니닌까
+        Intent intent =new Intent(fragmentActivity,FragmentActivity.class);//this 다른곳이아니닌까
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(getContext(),10,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(fragmentActivity,10,intent,PendingIntent.FLAG_UPDATE_CURRENT);
         //저기로 가는걸 시스템에게 부탁하는 인텐트 생성
 //        builder.setContentIntent(pendingIntent);
         //빌드가 연결 되어있으닌까 notify가 알수있다.
-        builder.setFullScreenIntent(pendingIntent,true);
 //        PendingIntent addActionIntent =PendingIntent.getBroadcast(getContext(),20,new Intent(getContext(),MyReceiver.class)
 //                ,PendingIntent.FLAG_UPDATE_CURRENT);
 //        builder.addAction(new NotificationCompat.Action.Builder(android.R.drawable.ic_menu_share,"알람 해제",addActionIntent).build());
-
         Bitmap largeIcon = BitmapFactory.decodeResource(getResources(),R.drawable.iu);
         builder.setLargeIcon(largeIcon); //큰아이콘 오른쪽에 뜨는 아이콘
+        builder.setFullScreenIntent(pendingIntent,true);
 
         manager.notify(1000,builder.build());
     }
@@ -158,8 +156,9 @@ public class GridFragment extends Fragment {
 
 
         fab.setOnClickListener(new View.OnClickListener() {
-            @Override
+
             public void onClick(View v) {
+                notifiCM();
 
                 adapter.addItem(new MyWork(R.drawable.baseline_add_a_photo_black_18, " "));
                 myData.put("size", adapter.getCount());
@@ -243,7 +242,6 @@ public class GridFragment extends Fragment {
             bitmap = BitmapFactory.decodeFile(photoFile.getAbsolutePath(), options); //photoFile로 만든 이미지를 bitmap으로 형식변경
 
             ChangeRotate(); //이미지 각도 돌리기
-
             //Bitmap 을 구한후, 디코딩 -> Bitmap을 통째로 넘기기는 좀 그러니,
             ByteArrayOutputStream output = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.PNG, 40, output);
@@ -284,8 +282,7 @@ public class GridFragment extends Fragment {
                 }finally {
                     adapter.notifyDataSetChanged();
                     Log.d("yousin","실행함");
-                    builder.setFullScreenIntent(pendingIntent, true); //상위 우선순위를 쓰겠다 highProiority //퍼미션설정을 해야함.
-                    notifiCM();
+
                 }
             }
         });

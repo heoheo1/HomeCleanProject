@@ -48,6 +48,7 @@ public class SignUpFragment extends Fragment implements onBackPressedListener {
     SignUpDialogFragment signUpDialogFragment;
 
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
