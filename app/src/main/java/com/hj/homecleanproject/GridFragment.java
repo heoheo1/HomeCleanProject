@@ -11,7 +11,6 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
@@ -26,33 +25,22 @@ import androidx.core.content.FileProvider;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
-
-import android.os.SystemClock;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.firestore.Blob;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
-import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -63,22 +51,13 @@ import com.hj.homecleanproject.customInterface.onDialogResultListener;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
-
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.schedulers.Schedulers;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 
@@ -111,9 +90,10 @@ public class GridFragment extends Fragment {
     NotificationManager manager;
     NotificationCompat.Builder builder;
     boolean a = true;
+    PendingIntent pendingIntent;
 
     String msg;
-    ImageLoadTask imageLoadTask;
+
 
     public void notifiCM(){
         manager =(NotificationManager) getContext().getSystemService(NOTIFICATION_SERVICE); //시스템에 발생시키는 SystemService
@@ -145,11 +125,11 @@ public class GridFragment extends Fragment {
 
         //앱으로 돌아가고 싶을때.
         Intent intent =new Intent(getContext(),FragmentActivity.class);//this 다른곳이아니닌까
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(getContext(),10,intent,PendingIntent.FLAG_UPDATE_CURRENT);
         //저기로 가는걸 시스템에게 부탁하는 인텐트 생성
 //        builder.setContentIntent(pendingIntent);
         //빌드가 연결 되어있으닌까 notify가 알수있다.
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         builder.setFullScreenIntent(pendingIntent,true);
 //        PendingIntent addActionIntent =PendingIntent.getBroadcast(getContext(),20,new Intent(getContext(),MyReceiver.class)
 //                ,PendingIntent.FLAG_UPDATE_CURRENT);
@@ -159,7 +139,6 @@ public class GridFragment extends Fragment {
         builder.setLargeIcon(largeIcon); //큰아이콘 오른쪽에 뜨는 아이콘
 
         manager.notify(1000,builder.build());
-
     }
 
     public static GridFragment newInstance() {
@@ -305,6 +284,7 @@ public class GridFragment extends Fragment {
                 }finally {
                     adapter.notifyDataSetChanged();
                     Log.d("yousin","실행함");
+                    builder.setFullScreenIntent(pendingIntent, true); //상위 우선순위를 쓰겠다 highProiority //퍼미션설정을 해야함.
                     notifiCM();
                 }
             }
