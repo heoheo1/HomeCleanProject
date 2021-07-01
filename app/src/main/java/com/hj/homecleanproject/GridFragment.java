@@ -123,10 +123,10 @@ public class GridFragment extends Fragment {
             String channelName = "My channel One";
             String channelDescription = "My channel one Description";//Description = 보충 설명
             NotificationChannel channel =null;// headsup 을 쓸려고 전역으로 뺌
-                channel = new NotificationChannel(channelID, channelName, NotificationManager.IMPORTANCE_DEFAULT);
-                //알림 채널을 정해주고 각각의 알림 정의를하기위해서 사용
-                //headsup은 중요알림 설정할때
-                //정상적인 알림이다.IMPORTANCE_DEFAULT
+            channel = new NotificationChannel(channelID, channelName, NotificationManager.IMPORTANCE_HIGH);
+            //알림 채널을 정해주고 각각의 알림 정의를하기위해서 사용
+            //headsup은 중요알림 설정할때
+            //정상적인 알림이다.IMPORTANCE_DEFAULT
             channel.setDescription(channelDescription);// 보충 설명을 내앱에 담겠다.
             channel.enableLights(true); //여기서도 설정가능,아래에서도 설정가능 25이상버전만 불빛을 사용하겠다.
             channel.setVibrationPattern(new long[]{100});//100 200 300 진동을 준다.
@@ -147,14 +147,18 @@ public class GridFragment extends Fragment {
         Intent intent =new Intent(getContext(),FragmentActivity.class);//this 다른곳이아니닌까
         PendingIntent pendingIntent = PendingIntent.getActivity(getContext(),10,intent,PendingIntent.FLAG_UPDATE_CURRENT);
         //저기로 가는걸 시스템에게 부탁하는 인텐트 생성
-        builder.setContentIntent(pendingIntent);
+//        builder.setContentIntent(pendingIntent);
         //빌드가 연결 되어있으닌까 notify가 알수있다.
-        PendingIntent addActionIntent =PendingIntent.getBroadcast(getContext(),20,new Intent(getContext(),MyReceiver.class)
-                ,PendingIntent.FLAG_UPDATE_CURRENT);
-        builder.addAction(new NotificationCompat.Action.Builder(android.R.drawable.ic_menu_share,"알람 해제",addActionIntent).build());
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        builder.setFullScreenIntent(pendingIntent,true);
+//        PendingIntent addActionIntent =PendingIntent.getBroadcast(getContext(),20,new Intent(getContext(),MyReceiver.class)
+//                ,PendingIntent.FLAG_UPDATE_CURRENT);
+//        builder.addAction(new NotificationCompat.Action.Builder(android.R.drawable.ic_menu_share,"알람 해제",addActionIntent).build());
 
         Bitmap largeIcon = BitmapFactory.decodeResource(getResources(),R.drawable.iu);
         builder.setLargeIcon(largeIcon); //큰아이콘 오른쪽에 뜨는 아이콘
+
+        manager.notify(1000,builder.build());
 
     }
 
@@ -273,13 +277,13 @@ public class GridFragment extends Fragment {
     }
 
     private void saveStorage(byte[] bytes) { //Storage에 압축한 file 저장하기! -> 그래서 byte[]로 넣음.
-        reference.child("userName/"+fileName).putBytes(bytes).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        reference.child("userName/"+fileName).putBytes(bytes).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                 Toast.makeText(fragmentActivity, "잘 들어갔어여!", Toast.LENGTH_SHORT).show();
+                loadStorage();
             }
         });
-
     }
 
     private void loadStorage(){
@@ -300,6 +304,8 @@ public class GridFragment extends Fragment {
                     e.printStackTrace();
                 }finally {
                     adapter.notifyDataSetChanged();
+                    Log.d("yousin","실행함");
+                    notifiCM();
                 }
             }
         });
@@ -352,7 +358,6 @@ public class GridFragment extends Fragment {
         }
     }
     private void imgTask(String imgUrl, ImageView imageView) {
-
         ImageLoadTask task = new ImageLoadTask(imgUrl, imageView);
         task.execute();
 
