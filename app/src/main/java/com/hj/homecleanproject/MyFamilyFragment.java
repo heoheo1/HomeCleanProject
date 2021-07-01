@@ -1,7 +1,9 @@
 package com.hj.homecleanproject;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -9,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +26,9 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 
 
@@ -37,6 +43,12 @@ public class MyFamilyFragment extends Fragment {
     FirebaseStorage firebaseStorage;
     StorageReference storageReference;
     FirebaseAuth auth;
+    String url;
+    String group;
+    String email;
+    String name;
+    String position;
+    Uri uri;
 
 
 
@@ -53,18 +65,15 @@ public class MyFamilyFragment extends Fragment {
 
         recyclerView =viewGroup.findViewById(R.id.recyclerView);
 
-        familyItemArrayList=new ArrayList<>();
-        FamilyAdapter familyAdapter =new FamilyAdapter(familyItemArrayList);
-        GridLayoutManager gridLayoutManager =new GridLayoutManager(getActivity(),2);
-        recyclerView.setLayoutManager(gridLayoutManager);
-       // recyclerView.setLayoutManager(new LinearLayoutManager(fragmentActivity));
-        recyclerView.setAdapter(familyAdapter);
+
+
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = auth.getCurrentUser();
         String eamil =currentUser.getEmail();
         SharedPreferences prf = fragmentActivity.getSharedPreferences("test", Context.MODE_PRIVATE);
         String groupName = prf.getString("groupName",null);
+
 
         if(groupName!=null) {
             Log.d("dd", groupName);
@@ -83,9 +92,22 @@ public class MyFamilyFragment extends Fragment {
                         Log.d("dd",userInfo.getEmail());
                         Log.d("dd",userInfo.getPosition());
                         Log.d("dd",userInfo.getUrl());
+                        url =userInfo.getUrl();
 
+                         group =userInfo.getGroupName();
+                         name =userInfo.getName();
+                        email =userInfo.getEmail();
+                        position=userInfo.getPosition();
+                         uri = Uri.parse(url);
 
-
+                        familyItemArrayList=new ArrayList<>();
+                        familyItemArrayList.add(new FamilyItem(group,name,email,position,uri));
+                        FamilyAdapter familyAdapter =new FamilyAdapter(familyItemArrayList);
+                        GridLayoutManager gridLayoutManager =new GridLayoutManager(getActivity(),2);
+                        recyclerView.setLayoutManager(gridLayoutManager);
+                        // recyclerView.setLayoutManager(new LinearLayoutManager(fragmentActivity));
+                        recyclerView.setAdapter(familyAdapter);
+                        familyAdapter.notifyDataSetChanged();
 
 
 
