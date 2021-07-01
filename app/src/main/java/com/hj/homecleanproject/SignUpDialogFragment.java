@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import android.os.ParcelFileDescriptor;
+import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -138,12 +139,11 @@ public class SignUpDialogFragment extends DialogFragment implements onBackPresse
                 else {
                     if (position.equals("리더")) {
                         pluseGroup();
-                        storageSave();
-
 
                     } else {
+
                         saveGroup();
-                        storageSave();
+
 
                     }
                 }
@@ -182,8 +182,8 @@ public class SignUpDialogFragment extends DialogFragment implements onBackPresse
             @Override
             public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
                 @SuppressWarnings("VisibleFortests") //계산할때 오류가 날수 있다 (경고를 띄워준다)
-                        double progress = (100 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount();//바이트 단위로 내가 전송하는걸 보여주겠다.
-                progressDialog.setMessage("UPLOAD " + (int) progress + "%...");
+                        double progress = (100.0 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount();
+                progressDialog.setMessage("UPLOAD "+(int)progress+"%...");
             }
         });
     }
@@ -241,6 +241,7 @@ public class SignUpDialogFragment extends DialogFragment implements onBackPresse
                         Toast.makeText(getActivity(),"그룹이 존재합니다.",Toast.LENGTH_SHORT).show();
 
                     }else {
+                        storageSave();
                         selectDoc();
                         Toast.makeText(getActivity(), "회원가입이 완료 되었습니다.", Toast.LENGTH_SHORT).show();
 
@@ -274,6 +275,7 @@ public class SignUpDialogFragment extends DialogFragment implements onBackPresse
 
 
                     if (iterator.hasNext()){
+                        storageSave();
                         selectDoc();
                         Toast.makeText(getActivity(), "회원가입이 완료 되었습니다.", Toast.LENGTH_SHORT).show();
 
