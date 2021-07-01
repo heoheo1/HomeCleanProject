@@ -1,17 +1,30 @@
 package com.hj.homecleanproject;
 
+import android.graphics.Bitmap;
+
+import java.net.URL;
+
 public class FamilyItem {
     String name;
     String family_group;
-    int image;
-    String phone_Number;
+    String email;
+    String position;
+    Bitmap bitmap;
 
-    public FamilyItem(String name, String family_group, String phone_Number, int image) {
+    public FamilyItem(String name, String family_group, String email,String position, Bitmap bitmap) {
         this.name = name;
         this.family_group = family_group;
-        this.phone_Number = phone_Number;
-        this.image = image;
+        this.email = email;
+        this.position = position;
+        this.bitmap = bitmap;
+    }
 
+    public Bitmap getBitmap() {
+        return bitmap;
+    }
+
+    public void setBitmap(Bitmap bitmap) {
+        this.bitmap = bitmap;
     }
 
     public String getName() {
@@ -30,19 +43,21 @@ public class FamilyItem {
         this.family_group = family_group;
     }
 
-    public int getImage() {
-        return image;
+    public String getEmail() {
+        return email;
     }
 
-    public void setImage(int image) {
-        this.image = image;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public String getPhone_Number() {
-        return phone_Number;
+    public String getPosition() {
+        return position;
     }
 
-    public void setPhone_Number(String phone_Number) {
-        this.phone_Number = phone_Number;
+    public void setPosition(String position) {
+        this.position = position;
     }
+
+
 }

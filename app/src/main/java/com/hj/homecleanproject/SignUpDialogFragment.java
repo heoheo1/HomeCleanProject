@@ -1,8 +1,11 @@
 package com.hj.homecleanproject;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.ContentUris;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -76,9 +79,12 @@ public class SignUpDialogFragment extends DialogFragment implements onBackPresse
     Uri selectedImageUri;
 
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+
 
         viewGroup=(ViewGroup)inflater.inflate(R.layout.fragment_sign_up_dialog,container,false);
         edt_Name=viewGroup.findViewById(R.id.editTextPersonName);
@@ -186,6 +192,10 @@ public class SignUpDialogFragment extends DialogFragment implements onBackPresse
                 progressDialog.setMessage("UPLOAD "+(int)progress+"%...");
             }
         });
+
+
+
+
     }
 
 
@@ -197,14 +207,24 @@ public class SignUpDialogFragment extends DialogFragment implements onBackPresse
         groupName = edt_GroupName.getText().toString();
         Bundle emailResult =getArguments();//번들 받기
 
+
         if(emailResult != null){
             email = emailResult.getString("email");
         }
 
-        member.put("Name", name);
-        member.put("GroupName", groupName);
-        member.put("Position", position);
+        member.put("name", name);
+        member.put("groupName", groupName);
+        member.put("position", position);
         member.put("email",email);
+        member.put("url",selectedImageUri.toString());
+
+        SharedPreferences prf = loginActivity.getSharedPreferences("test", Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = prf.edit();
+        editor.putString("groupName",groupName);
+        editor.commit();
+
+
 
         db.collection(groupName).document(name).set(member).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
@@ -319,9 +339,4 @@ public class SignUpDialogFragment extends DialogFragment implements onBackPresse
 
         }
     }
-
-
-
-
-
 }

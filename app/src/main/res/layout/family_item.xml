@@ -22,7 +22,7 @@
           android:orientation="vertical"
           >
           <TextView
-              android:id="@+id/group_Email"
+              android:id="@+id/txt_name"
               android:layout_below="@+id/family_group"
               android:layout_width="match_parent"
               android:layout_marginTop="5dp"
@@ -36,6 +36,7 @@
               card_view:cardCornerRadius="15dp"
               android:layout_marginTop="10dp"
               card_view:cardElevation="8dp">
+
           <ImageView
               android:id="@+id/iv_photo"
               android:layout_width="130dp"
@@ -54,7 +55,7 @@
 
           <TextView
               android:layout_marginTop="10dp"
-              android:id="@+id/name"
+              android:id="@+id/txt_GroupName"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:gravity="center"
@@ -62,8 +63,8 @@
 
           <TextView
               android:layout_marginTop="5dp"
-              android:id="@+id/family_group"
-              android:layout_below="@+id/name"
+              android:id="@+id/txt_Email"
+              android:layout_below="@+id/txt_GroupName"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:gravity="center"
@@ -73,8 +74,8 @@
           <TextView
               android:layout_marginTop="5dp"
               android:layout_marginBottom="10dp"
-              android:id="@+id/phone_Number"
-              android:layout_below="@+id/family_group"
+              android:id="@+id/txt_Position"
+              android:layout_below="@+id/txt_Email"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:gravity="center"
