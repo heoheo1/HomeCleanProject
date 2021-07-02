@@ -1,7 +1,7 @@
 package com.hj.homecleanproject;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,26 +11,28 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.core.FirestoreClient;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
 
+import static android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION;
 
 
 public class MyFamilyFragment extends Fragment {
@@ -48,13 +50,8 @@ public class MyFamilyFragment extends Fragment {
     String email;
     String name;
     String position;
+    FirestoreClient firestoreCliente;
     Uri uri;
-
-
-
-    public static MyFamilyFragment newInstance() {
-        return new MyFamilyFragment();
-    }
 
 
     @Override
@@ -71,8 +68,11 @@ public class MyFamilyFragment extends Fragment {
         auth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = auth.getCurrentUser();
         String eamil =currentUser.getEmail();
-        SharedPreferences prf = fragmentActivity.getSharedPreferences("test", Context.MODE_PRIVATE);
+        SharedPreferences prf = fragmentActivity.getSharedPreferences("test",Context.MODE_PRIVATE);
         String groupName = prf.getString("groupName",null);
+
+
+
 
 
         if(groupName!=null) {
@@ -114,15 +114,9 @@ public class MyFamilyFragment extends Fragment {
                     }
                 }
             }
+
+
         });
-
-
-
-
-
-
-
-
 
 
 

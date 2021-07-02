@@ -1,12 +1,18 @@
 package com.hj.homecleanproject;
 
+import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
+import android.content.ContentUris;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,6 +21,8 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.os.ParcelFileDescriptor;
+import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -32,12 +40,15 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.hj.homecleanproject.customInterface.onBackPressedListener;
 
 import java.io.File;
@@ -66,12 +77,17 @@ public class SignUpDialogFragment extends DialogFragment implements onBackPresse
     StorageReference reference;
     Map<String, Object> member;
     LoginActivity loginActivity;
-    private File tempFile;
+    Uri selectedImageUri;
+    DatabaseReference realTime;
+
+
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+
 
         viewGroup=(ViewGroup)inflater.inflate(R.layout.fragment_sign_up_dialog,container,false);
         edt_Name=viewGroup.findViewById(R.id.editTextPersonName);
@@ -83,13 +99,15 @@ public class SignUpDialogFragment extends DialogFragment implements onBackPresse
         firebaseStorage = FirebaseStorage.getInstance();
         reference = firebaseStorage.getReference();
         loginActivity=(LoginActivity)getActivity();
+        img_profile=viewGroup.findViewById(R.id.img_profile);
+
 
         img_profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //갤러리 로 이동
                 Intent intent=new Intent(Intent.ACTION_PICK);
-                intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
+                intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,"image/*");
                 startActivityForResult(intent,1);
 
             }
@@ -122,39 +140,94 @@ public class SignUpDialogFragment extends DialogFragment implements onBackPresse
             public void onClick(View v) {
 
                 db =FirebaseFirestore.getInstance();
-               if(edt_Name.getText().toString().isEmpty()||edt_GroupName.getText().toString().isEmpty()) {
-                   Toast.makeText(getActivity(),"정보를 입력해주세요.",Toast.LENGTH_SHORT).show();
-               }else if (!(rdo_leader.isChecked()||rdo_member.isChecked())){
-                   Toast.makeText(getActivity(),"그룹장과 구성원중 선택해주세요.",Toast.LENGTH_SHORT).show();
-               }
-               else {
-                   if(position.equals("리더")){
-                       pluseGroup();
-                   }else{
-                       saveGroup();
-                   }
-               }
+                if(edt_Name.getText().toString().isEmpty()||edt_GroupName.getText().toString().isEmpty()) {
+                    Toast.makeText(getActivity(),"정보를 입력해주세요.",Toast.LENGTH_SHORT).show();
+                }else if (!(rdo_leader.isChecked()||rdo_member.isChecked())){
+                    Toast.makeText(getActivity(),"그룹장과 구성원중 선택해주세요.",Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    if (position.equals("리더")) {
+                        pluseGroup();
+
+                    } else {
+
+                        saveGroup();
+
+
+                    }
+                }
+
             }
+
         });
 
         return viewGroup;
     }
+    private void storageSave() {
+
+        name = edt_Name.getText().toString();
+        groupName = edt_GroupName.getText().toString();
+
+        ProgressDialog progressDialog = new ProgressDialog(loginActivity);
+        progressDialog.show();
+
+        firebaseStorage = FirebaseStorage.getInstance();
+        reference = firebaseStorage.getReferenceFromUrl("gs://homeclean-ba4fc.appspot.com").child(groupName + "/" + name+"/"+"myImage");
+
+        reference.putFile(selectedImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Toast.makeText(loginActivity, "업로드완료", Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
+                dismiss();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(loginActivity, "업로드 실패", Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
+            }
+        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+                @SuppressWarnings("VisibleFortests") //계산할때 오류가 날수 있다 (경고를 띄워준다)
+                        double progress = (100.0 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount();
+                progressDialog.setMessage("UPLOAD "+(int)progress+"%...");
+            }
+        });
+
+
+
+
+    }
+
+
 
     private void selectDoc() {
 
-         member = new HashMap<>();
+        member = new HashMap<>();
         name = edt_Name.getText().toString();
         groupName = edt_GroupName.getText().toString();
         Bundle emailResult =getArguments();//번들 받기
+
 
         if(emailResult != null){
             email = emailResult.getString("email");
         }
 
-        member.put("Name", name);
-        member.put("GroupName", groupName);
-        member.put("Position", position);
+        member.put("name", name);
+        member.put("groupName", groupName);
+        member.put("position", position);
         member.put("email",email);
+        member.put("url",selectedImageUri.toString());
+
+        SharedPreferences prf = loginActivity.getSharedPreferences("test", Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = prf.edit();
+        editor.putString("groupName",groupName);
+        editor.commit();
+
+
 
         db.collection(groupName).document(name).set(member).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
@@ -171,42 +244,44 @@ public class SignUpDialogFragment extends DialogFragment implements onBackPresse
 
     }
 
-        private void pluseGroup()
-        {
-            name = edt_Name.getText().toString();
-            groupName = edt_GroupName.getText().toString();
-            CollectionReference rocRef=db.collection(groupName);
-            rocRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+    private void pluseGroup()
+    {
+        name = edt_Name.getText().toString();
+        groupName = edt_GroupName.getText().toString();
+        CollectionReference rocRef=db.collection(groupName);
+        rocRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
 
-                    if (task.isSuccessful()) {
-                        QuerySnapshot collection = task.getResult();
-                       Iterator<QueryDocumentSnapshot> iterator = collection.iterator();
+                if (task.isSuccessful()) {
+                    QuerySnapshot collection = task.getResult();
+                    Iterator<QueryDocumentSnapshot> iterator = collection.iterator();
 
 
-                        if (iterator.hasNext()){ //존재하면
-                            String n =iterator.next().getId();
-                            Log.d("dd",n);
-                            Toast.makeText(getActivity(),"그룹이 존재합니다.",Toast.LENGTH_SHORT).show();
+                    if (iterator.hasNext()){ //존재하면
+                        String n =iterator.next().getId();
+                        Log.d("dd",n);
+                        Toast.makeText(getActivity(),"그룹이 존재합니다.",Toast.LENGTH_SHORT).show();
 
-                        }else {
-                            selectDoc();
-                            Toast.makeText(getActivity(), "회원가입이 완료 되었습니다.", Toast.LENGTH_SHORT).show();
-                            dismiss();
-                        }
+                    }else {
+                        storageSave();
+                        selectDoc();
+                        Toast.makeText(getActivity(), "회원가입이 완료 되었습니다.", Toast.LENGTH_SHORT).show();
 
-                    } else {
-                        Log.d("Data", "get failed with ", task.getException());
+
                     }
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
 
+                } else {
+                    Log.d("Data", "get failed with ", task.getException());
                 }
-            });
             }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
+    }
 
     private void saveGroup()
     {
@@ -223,9 +298,9 @@ public class SignUpDialogFragment extends DialogFragment implements onBackPresse
 
 
                     if (iterator.hasNext()){
+                        storageSave();
                         selectDoc();
                         Toast.makeText(getActivity(), "회원가입이 완료 되었습니다.", Toast.LENGTH_SHORT).show();
-                        dismiss();
 
 
                     }else {
@@ -262,53 +337,9 @@ public class SignUpDialogFragment extends DialogFragment implements onBackPresse
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
 
-            Uri photoUri = data.getData();
-
-            Cursor cursor = null;
-
-            try {
-
-                /*
-                 *  Uri 스키마를
-                 *  content:/// 에서 file:/// 로  변경한다.
-                 */
-                String[] proj = { MediaStore.Images.Media.DATA };
-
-                assert photoUri != null;
-                cursor = loginActivity.getContentResolver().query(photoUri, proj, null, null, null);
-
-                assert cursor != null;
-                int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-
-                cursor.moveToFirst();
-
-                tempFile = new File(cursor.getString(column_index));
-
-            } finally {
-                if (cursor != null) {
-                    cursor.close();
-                }
-            }
-
-            setImage();
+            selectedImageUri =data.getData();
+            img_profile.setImageURI(selectedImageUri);
 
         }
     }
-
-    private void setImage() {
-
-
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        Bitmap originalBm = BitmapFactory.decodeFile(tempFile.getAbsolutePath(), options);
-        img_profile=viewGroup.findViewById(R.id.img_profile);
-        img_profile.setImageBitmap(originalBm);
-    }
-
-    private void imgTask(String imgUrl, ImageView imageView) {
-        ImageLoadTask task = new ImageLoadTask(imgUrl, imageView);
-        task.execute();
-
-    }
-
-
 }
