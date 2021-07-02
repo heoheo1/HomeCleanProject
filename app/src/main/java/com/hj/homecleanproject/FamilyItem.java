@@ -10,22 +10,22 @@ public class FamilyItem {
     String family_group;
     String email;
     String position;
-    Uri uri;
+    Bitmap bitmap;
 
-    public FamilyItem(String name, String family_group, String email,String position, Uri uri) {
+    public FamilyItem(String name, String family_group, String email,String position, Bitmap bitmap) {
         this.name = name;
         this.family_group = family_group;
         this.email = email;
         this.position = position;
-        this.uri = uri;
+        this.bitmap = bitmap;
     }
 
-    public Uri getUri() {
-        return uri;
+    public Bitmap getBitmap() {
+        return bitmap;
     }
 
-    public void setUri(Uri uri) {
-        this.uri = uri;
+    public void setBitmap(Bitmap bitmap) {
+        this.bitmap = bitmap;
     }
 
     public String getName() {

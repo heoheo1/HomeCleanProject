@@ -67,8 +67,15 @@ public class MyGridAdapter extends BaseAdapter {
         //현재는 무조건 byte[] 의 값이 image에 찎힘
         if(list.get(position).getResID() == R.drawable.baseline_add_a_photo_black_18){
             view.setImageViewToBitmap(list.get(position).getEncodeResID());
-
         }
+
+        view.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                list.remove(position);
+                return false;
+            }
+        });
 
         //기존 없는 이미지 -> 카메라모양의 이미지를 Drawable을 통해서 이용할 예정
         view.setTextView(work.getContent());
@@ -105,5 +112,9 @@ public class MyGridAdapter extends BaseAdapter {
 
     public ImageView getImageView() {
         return view.imageView;
+    }
+
+    public void remove(int position){
+        list.remove(position);
     }
 }

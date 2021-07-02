@@ -36,7 +36,7 @@ public class FamilyAdapter extends RecyclerView.Adapter<FamilyAdapter.MyViewHold
         holder.txt_Name.setText(familyItemArrayList.get(position).getName());
         holder.txt_Email.setText(familyItemArrayList.get(position).getEmail());
         holder.txt_Position.setText(familyItemArrayList.get(position).getPosition());
-        holder.iv_photo.setImageURI(familyItemArrayList.get(position).getUri());
+        holder.iv_photo.setImageBitmap(familyItemArrayList.get(position).getBitmap());
 
     }
 

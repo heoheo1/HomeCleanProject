@@ -3,6 +3,8 @@ package com.hj.homecleanproject;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -11,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +24,11 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -29,8 +37,16 @@ import com.google.firebase.firestore.core.FirestoreClient;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
+
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 import static android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION;
 
@@ -41,17 +57,17 @@ public class MyFamilyFragment extends Fragment {
     FragmentActivity fragmentActivity;
     RecyclerView recyclerView;
     ArrayList<FamilyItem> familyItemArrayList;
-    FirebaseFirestore db;
-    FirebaseStorage firebaseStorage;
-    StorageReference storageReference;
     FirebaseAuth auth;
-    String url;
-    String group;
     String email;
     String name;
     String position;
-    FirestoreClient firestoreCliente;
-    Uri uri;
+    String groupName;
+    String url;
+    DatabaseReference realtime;
+    Handler handler;
+
+    FirebaseFirestore db;
+
 
 
     @Override
@@ -59,26 +75,54 @@ public class MyFamilyFragment extends Fragment {
                              Bundle savedInstanceState) {
         fragmentActivity=(FragmentActivity)getActivity();
         viewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_my_family, container, false);
+        init();
 
         recyclerView =viewGroup.findViewById(R.id.recyclerView);
 
-
-
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = auth.getCurrentUser();
-        String eamil =currentUser.getEmail();
-        SharedPreferences prf = fragmentActivity.getSharedPreferences("test",Context.MODE_PRIVATE);
-        String groupName = prf.getString("groupName",null);
+        realtime= FirebaseDatabase.getInstance().getReference("users");
+
+
+        String uid =currentUser.getUid();
+
+        Log.d("uid",uid);
+        realtime.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Iterator<DataSnapshot> child = snapshot.getChildren().iterator(); //아이터레이터를 얻어온다.
+                while (child.hasNext()) { //최상위 디렉토리를 가르키고있다. 다음이 있냐?
+                    if(child.next().getKey().equals(uid)){
+                        groupName = child.next().getValue().toString();
+                        Log.d("값갑삽가빋ㄱㄴㅇㄹ",groupName);
+                        profileSave();
+                    }
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
 
 
+        return viewGroup;
+    }
 
+    public void init(){
+        familyItemArrayList=new ArrayList<>();
+        handler = new Handler();
+    }
 
+    public void profileSave(){
         if(groupName!=null) {
             Log.d("dd", groupName);
         }
-        db.collection(groupName).whereEqualTo("email",eamil).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        db.collection(groupName).whereEqualTo("groupName",groupName).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful())
@@ -91,35 +135,57 @@ public class MyFamilyFragment extends Fragment {
                         Log.d("dd",userInfo.getName());
                         Log.d("dd",userInfo.getEmail());
                         Log.d("dd",userInfo.getPosition());
-                        Log.d("dd",userInfo.getUrl());
+
                         url =userInfo.getUrl();
 
-                         group =userInfo.getGroupName();
-                         name =userInfo.getName();
+                        groupName =userInfo.getGroupName();
+                        name =userInfo.getName();
                         email =userInfo.getEmail();
                         position=userInfo.getPosition();
-                         uri = Uri.parse(url);
 
-                        familyItemArrayList=new ArrayList<>();
-                        familyItemArrayList.add(new FamilyItem(group,name,email,position,uri));
-                        FamilyAdapter familyAdapter =new FamilyAdapter(familyItemArrayList);
-                        GridLayoutManager gridLayoutManager =new GridLayoutManager(getActivity(),2);
-                        recyclerView.setLayoutManager(gridLayoutManager);
-                        // recyclerView.setLayoutManager(new LinearLayoutManager(fragmentActivity));
-                        recyclerView.setAdapter(familyAdapter);
-                        familyAdapter.notifyDataSetChanged();
+                        try {
+                            Observable<URL> observable = Observable.create(emitter -> {
+                                emitter.onNext(new URL(url));
+                                emitter.onComplete();
+                            });
+
+                            observable.subscribeOn(AndroidSchedulers.mainThread())
+                                    .observeOn(Schedulers.io())
+                                    .subscribe(data -> {
+                                        HttpURLConnection connection =(HttpURLConnection) data.openConnection();
+                                        connection.setDoInput(true);
+                                        connection.connect();
+
+                                        InputStream inputStream = connection.getInputStream();
+                                        Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+
+                                        familyItemArrayList.add(new FamilyItem(groupName,name,email,position,bitmap));
+                                        FamilyAdapter familyAdapter =new FamilyAdapter(familyItemArrayList);
+                                        GridLayoutManager gridLayoutManager =new GridLayoutManager(getActivity(),2);
+
+                                        handler.post(() -> {
+                                            recyclerView.setLayoutManager(gridLayoutManager);
+                                            // recyclerView.setLayoutManager(new LinearLayoutManager(fragmentActivity));
+                                            recyclerView.setAdapter(familyAdapter);
+                                            familyAdapter.notifyDataSetChanged();
+                                        });
+                                    }, e -> {
+                                        e.printStackTrace();
+                                    });
 
 
 
+
+
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
 
 
         });
-
-
-
-        return viewGroup;
     }
 }

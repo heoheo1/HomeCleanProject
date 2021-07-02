@@ -40,7 +40,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -79,40 +82,37 @@ public class SignUpDialogFragment extends DialogFragment implements onBackPresse
     LoginActivity loginActivity;
     Uri selectedImageUri;
     DatabaseReference realTime;
-
-
-
+    FirebaseUser firebaseUser;
+    FirebaseAuth auth;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
 
-
-        viewGroup=(ViewGroup)inflater.inflate(R.layout.fragment_sign_up_dialog,container,false);
-        edt_Name=viewGroup.findViewById(R.id.editTextPersonName);
-        edt_GroupName=viewGroup.findViewById(R.id.edt_GroupName);
-        rdo_Group=viewGroup.findViewById(R.id.radio_Group);
-        btn_Ok=viewGroup.findViewById(R.id.btn_Ok);
-        rdo_leader=viewGroup.findViewById(R.id.rdo_leader);
-        rdo_member=viewGroup.findViewById(R.id.rdo_member);
+        viewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_sign_up_dialog, container, false);
+        edt_Name = viewGroup.findViewById(R.id.editTextPersonName);
+        edt_GroupName = viewGroup.findViewById(R.id.edt_GroupName);
+        rdo_Group = viewGroup.findViewById(R.id.radio_Group);
+        btn_Ok = viewGroup.findViewById(R.id.btn_Ok);
+        rdo_leader = viewGroup.findViewById(R.id.rdo_leader);
+        rdo_member = viewGroup.findViewById(R.id.rdo_member);
         firebaseStorage = FirebaseStorage.getInstance();
         reference = firebaseStorage.getReference();
-        loginActivity=(LoginActivity)getActivity();
-        img_profile=viewGroup.findViewById(R.id.img_profile);
+        loginActivity = (LoginActivity) getActivity();
+        img_profile = viewGroup.findViewById(R.id.img_profile);
 
 
         img_profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //갤러리 로 이동
-                Intent intent=new Intent(Intent.ACTION_PICK);
-                intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,"image/*");
-                startActivityForResult(intent,1);
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+                startActivityForResult(intent, 1);
 
             }
         });
-
 
 
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -121,15 +121,15 @@ public class SignUpDialogFragment extends DialogFragment implements onBackPresse
         rdo_Group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                switch (checkedId){
-                    case R.id.rdo_leader :
+                switch (checkedId) {
+                    case R.id.rdo_leader:
                         edt_GroupName.setHint("그룹을 생성해주세요");
-                        position="리더";
+                        position = "리더";
                         break;
 
-                    case R.id.rdo_member :
+                    case R.id.rdo_member:
                         edt_GroupName.setHint("존재하는 그룹을 입력해주세요");
-                        position="구성원";
+                        position = "구성원";
                         break;
                 }
             }
@@ -139,13 +139,12 @@ public class SignUpDialogFragment extends DialogFragment implements onBackPresse
             @Override
             public void onClick(View v) {
 
-                db =FirebaseFirestore.getInstance();
-                if(edt_Name.getText().toString().isEmpty()||edt_GroupName.getText().toString().isEmpty()) {
-                    Toast.makeText(getActivity(),"정보를 입력해주세요.",Toast.LENGTH_SHORT).show();
-                }else if (!(rdo_leader.isChecked()||rdo_member.isChecked())){
-                    Toast.makeText(getActivity(),"그룹장과 구성원중 선택해주세요.",Toast.LENGTH_SHORT).show();
-                }
-                else {
+                db = FirebaseFirestore.getInstance();
+                if (edt_Name.getText().toString().isEmpty() || edt_GroupName.getText().toString().isEmpty()) {
+                    Toast.makeText(getActivity(), "정보를 입력해주세요.", Toast.LENGTH_SHORT).show();
+                } else if (!(rdo_leader.isChecked() || rdo_member.isChecked())) {
+                    Toast.makeText(getActivity(), "그룹장과 구성원중 선택해주세요.", Toast.LENGTH_SHORT).show();
+                } else {
                     if (position.equals("리더")) {
                         pluseGroup();
 
@@ -163,6 +162,7 @@ public class SignUpDialogFragment extends DialogFragment implements onBackPresse
 
         return viewGroup;
     }
+
     private void storageSave() {
 
         name = edt_Name.getText().toString();
@@ -172,11 +172,19 @@ public class SignUpDialogFragment extends DialogFragment implements onBackPresse
         progressDialog.show();
 
         firebaseStorage = FirebaseStorage.getInstance();
-        reference = firebaseStorage.getReferenceFromUrl("gs://homeclean-ba4fc.appspot.com").child(groupName + "/" + name+"/"+"myImage");
+        reference = firebaseStorage.getReferenceFromUrl("gs://homeclean-ba4fc.appspot.com").child(groupName + "/" + name + "/" + "myImage");
 
         reference.putFile(selectedImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                firebaseStorage.getReferenceFromUrl("gs://homeclean-ba4fc.appspot.com").child(groupName + "/" + name + "/myImage").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        member.put("url", uri.toString());
+                        db.collection(groupName).document(name).set(member);
+                        Log.d("yousin", uri.toString());
+                    }
+                });
                 Toast.makeText(loginActivity, "업로드완료", Toast.LENGTH_SHORT).show();
                 progressDialog.dismiss();
                 dismiss();
@@ -192,15 +200,12 @@ public class SignUpDialogFragment extends DialogFragment implements onBackPresse
             public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
                 @SuppressWarnings("VisibleFortests") //계산할때 오류가 날수 있다 (경고를 띄워준다)
                         double progress = (100.0 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount();
-                progressDialog.setMessage("UPLOAD "+(int)progress+"%...");
+                progressDialog.setMessage("UPLOAD " + (int) progress + "%...");
             }
         });
 
 
-
-
     }
-
 
 
     private void selectDoc() {
@@ -208,25 +213,26 @@ public class SignUpDialogFragment extends DialogFragment implements onBackPresse
         member = new HashMap<>();
         name = edt_Name.getText().toString();
         groupName = edt_GroupName.getText().toString();
-        Bundle emailResult =getArguments();//번들 받기
+        Bundle emailResult = getArguments();//번들 받기
+        realTime = FirebaseDatabase.getInstance().getReference("users"); //인스턴스화 후 가르키고있다.
+        auth = FirebaseAuth.getInstance();
+        firebaseUser = auth.getCurrentUser();
+        String uid = auth.getInstance().getCurrentUser().getUid();
+
+        Log.d("uid", uid);
 
 
-        if(emailResult != null){
+        if (emailResult != null) {
             email = emailResult.getString("email");
+
+            realTime.child(uid).setValue(groupName);
+
         }
 
         member.put("name", name);
         member.put("groupName", groupName);
         member.put("position", position);
-        member.put("email",email);
-        member.put("url",selectedImageUri.toString());
-
-        SharedPreferences prf = loginActivity.getSharedPreferences("test", Context.MODE_PRIVATE);
-
-        SharedPreferences.Editor editor = prf.edit();
-        editor.putString("groupName",groupName);
-        editor.commit();
-
+        member.put("email", email);
 
 
         db.collection(groupName).document(name).set(member).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -241,14 +247,12 @@ public class SignUpDialogFragment extends DialogFragment implements onBackPresse
 
             }
         });
-
     }
 
-    private void pluseGroup()
-    {
+    private void pluseGroup() {
         name = edt_Name.getText().toString();
         groupName = edt_GroupName.getText().toString();
-        CollectionReference rocRef=db.collection(groupName);
+        CollectionReference rocRef = db.collection(groupName);
         rocRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -257,20 +261,15 @@ public class SignUpDialogFragment extends DialogFragment implements onBackPresse
                     QuerySnapshot collection = task.getResult();
                     Iterator<QueryDocumentSnapshot> iterator = collection.iterator();
 
-
-                    if (iterator.hasNext()){ //존재하면
-                        String n =iterator.next().getId();
-                        Log.d("dd",n);
-                        Toast.makeText(getActivity(),"그룹이 존재합니다.",Toast.LENGTH_SHORT).show();
-
-                    }else {
+                    if (iterator.hasNext()) { //존재하면
+                        String n = iterator.next().getId();
+                        Log.d("dd", n);
+                        Toast.makeText(getActivity(), "그룹이 존재합니다.", Toast.LENGTH_SHORT).show();
+                    } else {
                         storageSave();
                         selectDoc();
                         Toast.makeText(getActivity(), "회원가입이 완료 되었습니다.", Toast.LENGTH_SHORT).show();
-
-
                     }
-
                 } else {
                     Log.d("Data", "get failed with ", task.getException());
                 }
@@ -283,28 +282,22 @@ public class SignUpDialogFragment extends DialogFragment implements onBackPresse
         });
     }
 
-    private void saveGroup()
-    {
+    private void saveGroup() {
         name = edt_Name.getText().toString();
         groupName = edt_GroupName.getText().toString();
-        CollectionReference rocRef=db.collection(groupName);
+        CollectionReference rocRef = db.collection(groupName);
         rocRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-
                 if (task.isSuccessful()) {
                     QuerySnapshot collection = task.getResult();
                     Iterator<QueryDocumentSnapshot> iterator = collection.iterator();
-
-
-                    if (iterator.hasNext()){
+                    if (iterator.hasNext()) {
                         storageSave();
                         selectDoc();
                         Toast.makeText(getActivity(), "회원가입이 완료 되었습니다.", Toast.LENGTH_SHORT).show();
-
-
-                    }else {
-                        Toast.makeText(getActivity(),"그룹이 존재하지않습니다.",Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getActivity(), "그룹이 존재하지않습니다.", Toast.LENGTH_SHORT).show();
                     }
 
                 } else {
@@ -325,8 +318,9 @@ public class SignUpDialogFragment extends DialogFragment implements onBackPresse
     public void onBackPressed() {
         goToMain(SignUpDialogFragment.this);
     }
+
     //프래그먼트 종료
-    private void goToMain(Fragment fragment){
+    private void goToMain(Fragment fragment) {
         FragmentManager fragmentManager = requireActivity().getSupportFragmentManager(); //requireActivity=getActivity(있다는걸 보장,없으면 Excepion. app crash 발생) activity가 null한 상황을 아예 없애려고 쓰인다.
         fragmentManager.beginTransaction().remove(fragment).commit();//프래그먼트를 지운다.
         fragmentManager.popBackStack();
@@ -337,7 +331,7 @@ public class SignUpDialogFragment extends DialogFragment implements onBackPresse
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
 
-            selectedImageUri =data.getData();
+            selectedImageUri = data.getData();
             img_profile.setImageURI(selectedImageUri);
 
         }

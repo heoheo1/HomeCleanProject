@@ -299,6 +299,7 @@ public class GridFragment extends Fragment {
             }
         });
 
+
         return viewGroup;
     }
 
