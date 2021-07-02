@@ -147,12 +147,8 @@ public class SignUpDialogFragment extends DialogFragment implements onBackPresse
                 } else {
                     if (position.equals("리더")) {
                         pluseGroup();
-
                     } else {
-
                         saveGroup();
-
-
                     }
                 }
 
@@ -226,7 +222,6 @@ public class SignUpDialogFragment extends DialogFragment implements onBackPresse
             email = emailResult.getString("email");
 
             realTime.child(uid).setValue(groupName);
-
         }
 
         member.put("name", name);
@@ -330,10 +325,8 @@ public class SignUpDialogFragment extends DialogFragment implements onBackPresse
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
-
             selectedImageUri = data.getData();
             img_profile.setImageURI(selectedImageUri);
-
         }
     }
 }

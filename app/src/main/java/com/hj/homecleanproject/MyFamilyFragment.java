@@ -95,7 +95,7 @@ public class MyFamilyFragment extends Fragment {
                 while (child.hasNext()) { //최상위 디렉토리를 가르키고있다. 다음이 있냐?
                     if(child.next().getKey().equals(uid)){
                         groupName = child.next().getValue().toString();
-                        Log.d("값갑삽가빋ㄱㄴㅇㄹ",groupName);
+                        Log.d("yousin","groupName : " +groupName);
                         profileSave();
                     }
 
@@ -120,7 +120,7 @@ public class MyFamilyFragment extends Fragment {
 
     public void profileSave(){
         if(groupName!=null) {
-            Log.d("dd", groupName);
+            Log.d("yousin","groupName is null ?: "+ groupName);
         }
         db.collection(groupName).whereEqualTo("groupName",groupName).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -128,13 +128,12 @@ public class MyFamilyFragment extends Fragment {
                 if (task.isSuccessful())
                 {
                     for(QueryDocumentSnapshot document : task.getResult()){
-
-                        Log.d("Data",document.getId()+" => "+document.getData());
+                        Log.d("yousin",document.getId()+" => "+document.getData());
                         UserInfo userInfo = document.toObject(UserInfo.class);
-                        Log.d("dd",userInfo.getGroupName());
-                        Log.d("dd",userInfo.getName());
-                        Log.d("dd",userInfo.getEmail());
-                        Log.d("dd",userInfo.getPosition());
+                        Log.d("yousin","userInfo.getGroupName : "+userInfo.getGroupName());
+                        Log.d("yousin",userInfo.getName());
+                        Log.d("yousin",userInfo.getEmail());
+                        Log.d("yousin",userInfo.getPosition());
 
                         url =userInfo.getUrl();
 
