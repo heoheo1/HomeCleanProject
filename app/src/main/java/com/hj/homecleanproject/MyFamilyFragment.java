@@ -68,6 +68,8 @@ public class MyFamilyFragment extends Fragment {
 
     FirebaseFirestore db;
 
+    Bitmap bitmap;
+
 
 
     @Override
@@ -94,12 +96,12 @@ public class MyFamilyFragment extends Fragment {
                 Iterator<DataSnapshot> child = snapshot.getChildren().iterator(); //아이터레이터를 얻어온다.
                 while (child.hasNext()) { //최상위 디렉토리를 가르키고있다. 다음이 있냐?
                     if(child.next().getKey().equals(uid)){
-                        groupName = child.next().getValue().toString();
+                        groupName = snapshot.child(uid).getValue().toString();
                         Log.d("yousin","groupName : " +groupName);
                         profileSave();
                     }
-
                 }
+                realtime.removeEventListener(this);
             }
 
             @Override
@@ -142,32 +144,44 @@ public class MyFamilyFragment extends Fragment {
                         email =userInfo.getEmail();
                         position=userInfo.getPosition();
 
-                        try {
-                            Observable<URL> observable = Observable.create(emitter -> {
-                                emitter.onNext(new URL(url));
-                                emitter.onComplete();
+                            Observable<UserInfo> observable = Observable.create(emitter -> {
+                                emitter.onNext(userInfo);
                             });
 
                             observable.subscribeOn(AndroidSchedulers.mainThread())
                                     .observeOn(Schedulers.io())
                                     .subscribe(data -> {
-                                        HttpURLConnection connection =(HttpURLConnection) data.openConnection();
+                                        url =data.getUrl();
+                                        URL url2 = new URL(url);
+                                        HttpURLConnection connection =(HttpURLConnection) url2.openConnection();
                                         connection.setDoInput(true);
                                         connection.connect();
 
                                         InputStream inputStream = connection.getInputStream();
-                                        Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-
-                                        familyItemArrayList.add(new FamilyItem(groupName,name,email,position,bitmap));
-                                        FamilyAdapter familyAdapter =new FamilyAdapter(familyItemArrayList);
-                                        GridLayoutManager gridLayoutManager =new GridLayoutManager(getActivity(),2);
+                                        bitmap = BitmapFactory.decodeStream(inputStream);
 
                                         handler.post(() -> {
+
+                                            groupName =data.getGroupName();
+                                            name =data.getName();
+                                            email =data.getEmail();
+                                            position=data.getPosition();
+                                            Log.d("yousin","url : "+url);
+                                            Log.d("yousin","groupName : "+groupName);
+                                            Log.d("yousin","name : "+ name);
+                                            Log.d("yousin","email" + email);
+                                            Log.d("yousin","position : " +position);
+                                            familyItemArrayList.add(new FamilyItem(groupName,name,email,position,bitmap));
+                                            FamilyAdapter familyAdapter =new FamilyAdapter(familyItemArrayList);
+                                            GridLayoutManager gridLayoutManager =new GridLayoutManager(getActivity(),2);
+
                                             recyclerView.setLayoutManager(gridLayoutManager);
                                             // recyclerView.setLayoutManager(new LinearLayoutManager(fragmentActivity));
                                             recyclerView.setAdapter(familyAdapter);
                                             familyAdapter.notifyDataSetChanged();
+
                                         });
+
                                     }, e -> {
                                         e.printStackTrace();
                                     });
@@ -175,11 +189,6 @@ public class MyFamilyFragment extends Fragment {
 
 
 
-
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
                     }
                 }
             }
