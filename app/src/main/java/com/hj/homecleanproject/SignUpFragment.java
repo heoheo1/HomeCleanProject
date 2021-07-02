@@ -61,6 +61,7 @@ public class SignUpFragment extends Fragment implements onBackPressedListener {
         context =container.getContext();
         signUpDialogFragment =new SignUpDialogFragment();
 
+        setRetainInstance(true);
 
         edt_SignEmail=viewGroup.findViewById(R.id.edt_SignEmail);
         edt_SignPassword=viewGroup.findViewById(R.id.edt_SignPassword);

@@ -18,14 +18,18 @@ import android.os.Build;
 import android.os.Bundle;
 
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 
@@ -40,6 +44,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
@@ -53,12 +58,18 @@ import com.hj.homecleanproject.customInterface.onDialogResultListener;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 
@@ -79,29 +90,33 @@ public class GridFragment extends Fragment {
     File photoFile; // 찍은 사진에 대한 임시파일
     Bitmap bitmap; // 내장 카메라에서 찍은 사진파일형식
     int adapterPosition; //내가 선택한 cardView의 Position
-
+    String collections, documents; // 그룹명, 유저이름
     Map<String, Object> myData; // FireStore에 넣어 주기 위한 Map
     String fileName; // TimeStamp! 현재 시간을 뽑아냄
+    ImageView imageView;
     FloatingActionButton fab;
+
     FirebaseFirestore db;
     FirebaseStorage storage;
     StorageReference reference;
     NotificationManager manager;
     NotificationCompat.Builder builder;
     boolean a = true;
+    PendingIntent pendingIntent;
 
-    NotificationChannel channel =null;
+    Handler handler;
 
     String msg;
 
+
     public void notifiCM(){
-        manager =(NotificationManager) fragmentActivity.getSystemService(NOTIFICATION_SERVICE); //시스템에 발생시키는 SystemService
+        manager =(NotificationManager) getContext().getSystemService(NOTIFICATION_SERVICE); //시스템에 발생시키는 SystemService
         //그냥 이벤트가 아니라 담당하는 시스템 에게 알림 처리를 하기위해서 사용 (인스턴스)
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O) { //25미만은 돌아가지가 않는다.변화가 이러난 시점을 써줘야한다.
             String channelID = "one-channel"; // 채널아이디(식별자) 채널 이름
             String channelName = "My channel One";
             String channelDescription = "My channel one Description";//Description = 보충 설명
-          // headsup 을 쓸려고 전역으로 뺌
+            NotificationChannel channel =null;// headsup 을 쓸려고 전역으로 뺌
             channel = new NotificationChannel(channelID, channelName, NotificationManager.IMPORTANCE_HIGH);
             //알림 채널을 정해주고 각각의 알림 정의를하기위해서 사용
             //headsup은 중요알림 설정할때
@@ -110,9 +125,9 @@ public class GridFragment extends Fragment {
             channel.enableLights(true); //여기서도 설정가능,아래에서도 설정가능 25이상버전만 불빛을 사용하겠다.
             channel.setVibrationPattern(new long[]{100});//100 200 300 진동을 준다.
             manager.createNotificationChannel(channel);//매니저가 이제 자기 채널로 인식한다.
-            builder = new NotificationCompat.Builder(fragmentActivity, channelID);//오레오버전이하일때는 this 이이름으로 된 빌더를 하나만들겠다.
+            builder = new NotificationCompat.Builder(getContext(), channelID);//오레오버전이하일때는 this 이이름으로 된 빌더를 하나만들겠다.
         }else{
-            builder =new NotificationCompat.Builder(fragmentActivity); //이전버전일 경우 25이하 버전은 채널이란 존재를 모른다. builder로 만들어 줘야한다.
+            builder =new NotificationCompat.Builder(getContext()); //이전버전일 경우 25이하 버전은 채널이란 존재를 모른다. builder로 만들어 줘야한다.
         }
         //오래오버전이상이나 이하나 누구나 사용가능
         builder.setSmallIcon(android.R.drawable.ic_menu_camera);//작은 아이콘이미지
@@ -123,18 +138,19 @@ public class GridFragment extends Fragment {
         builder.setAutoCancel(true); //기본이 트루,터치 시 작동 삭제 여부,터치 시 삭제됨
 
         //앱으로 돌아가고 싶을때.
-        Intent intent =new Intent(fragmentActivity,FragmentActivity.class);//this 다른곳이아니닌까
+        Intent intent =new Intent(getContext(),FragmentActivity.class);//this 다른곳이아니닌까
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(fragmentActivity,10,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(getContext(),10,intent,PendingIntent.FLAG_UPDATE_CURRENT);
         //저기로 가는걸 시스템에게 부탁하는 인텐트 생성
 //        builder.setContentIntent(pendingIntent);
         //빌드가 연결 되어있으닌까 notify가 알수있다.
+        builder.setFullScreenIntent(pendingIntent,true);
 //        PendingIntent addActionIntent =PendingIntent.getBroadcast(getContext(),20,new Intent(getContext(),MyReceiver.class)
 //                ,PendingIntent.FLAG_UPDATE_CURRENT);
 //        builder.addAction(new NotificationCompat.Action.Builder(android.R.drawable.ic_menu_share,"알람 해제",addActionIntent).build());
+
         Bitmap largeIcon = BitmapFactory.decodeResource(getResources(),R.drawable.iu);
         builder.setLargeIcon(largeIcon); //큰아이콘 오른쪽에 뜨는 아이콘
-        builder.setFullScreenIntent(pendingIntent,true);
 
         manager.notify(1000,builder.build());
     }
@@ -143,26 +159,103 @@ public class GridFragment extends Fragment {
         return new GridFragment();
     }
 
+    ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), //startActivityForResult의 대용품
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) { //requestCode가 필요하지 않다.
+                        BitmapFactory.Options options = new BitmapFactory.Options();
+                        options.inSampleSize = 4; // 용량을 4분의1로 낮춤 -> 이미지는 용량이 크기 때문에 임의로 줄이지 않으면 앱이 죽어버릴수있음
+                        bitmap = BitmapFactory.decodeFile(photoFile.getAbsolutePath(), options); //photoFile로 만든 이미지를 bitmap으로 형식변경
 
+                        ChangeRotate(); //이미지 각도 돌리기
+
+                        //Bitmap 을 구한후, 디코딩 -> Bitmap을 통째로 넘기기는 좀 그러니,
+                        ByteArrayOutputStream output = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 40, output);
+                        byte[] bytes = output.toByteArray();
+
+                        Log.d("yousin", "압축까지는 잘 되었습니다.");
+
+                        saveStorage(bytes);
+
+//                        ((MyWork) adapter.getItem(adapterPosition)).setResID(0);
+                        ((MyWork) adapter.getItem(adapterPosition)).setEncodeResID(bytes);
+                        adapter.notifyDataSetChanged();
+                        notifiCM();
+                    }
+                }
+            });
+
+    public void restoreMyData() {
+        db.collection("kim").document("yousin").get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                Long size = documentSnapshot.getLong("size") == null ? 0 : documentSnapshot.getLong("size");
+                Log.d("yousin", size + "");
+
+                if (size > 0) {
+                    for (int i = 0; i < size; i++) {
+                        adapter.addItem(new MyWork(R.drawable.baseline_add_a_photo_black_18," "));
+                        String uri = documentSnapshot.getString("uri" + i) == null ? " " : documentSnapshot.getString("uri" + i);
+                        Log.d("yousin", uri);
+                        myData.put("uri" + i, uri);
+
+                        String msg = documentSnapshot.getString("myContentsTo" + i) == null ? " " : documentSnapshot.getString("myContentsTo" + i);
+                        Log.d("yousin", msg);
+                        myData.put("myContentsTo" + i, msg);
+
+                        Observable<URL> observable = Observable.create(emitter -> {
+                            if (!uri.equals(" ")) {
+                                emitter.onNext(new URL(uri));
+                            }
+                            emitter.onComplete();
+                        });
+
+                        int finalI = i;
+                        observable.observeOn(Schedulers.io())
+                                .subscribeOn(AndroidSchedulers.mainThread())
+                                .subscribe(data -> {
+                                    HttpURLConnection connection = (HttpURLConnection) data.openConnection();
+                                    connection.setDoInput(true);
+                                    connection.connect();
+
+                                    InputStream inputStream = connection.getInputStream();
+                                    Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+
+                                    //Bitmap 을 구한후, 디코딩 -> Bitmap을 통째로 넘기기는 좀 그러니,
+                                    ByteArrayOutputStream output = new ByteArrayOutputStream();
+                                    bitmap.compress(Bitmap.CompressFormat.PNG, 40, output);
+                                    byte[] bytes = output.toByteArray();
+
+                                    handler.post(() -> {
+                                        ((MyWork)adapter.getItem(finalI)).setEncodeResID(bytes);
+                                        ((MyWork)adapter.getItem(finalI)).setContent(msg);
+                                        adapter.notifyDataSetChanged();
+                                    });
+                                }, e -> {
+                                    e.printStackTrace();
+                                });
+                    }
+                }
+            }
+        });
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-
-
         viewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_grid, container, false);
         init(viewGroup); // 초기화
-
+        restoreMyData();
 
         fab.setOnClickListener(new View.OnClickListener() {
-
+            @Override
             public void onClick(View v) {
-                notifiCM();
-
                 adapter.addItem(new MyWork(R.drawable.baseline_add_a_photo_black_18, " "));
                 myData.put("size", adapter.getCount());
-                db.collection("kim").document("yousin").set(myData,SetOptions.merge());
+                db.collection("kim").document("yousin").set(myData, SetOptions.merge());
                 adapter.notifyDataSetChanged();
             }
         });
@@ -181,7 +274,7 @@ public class GridFragment extends Fragment {
                         //provider를 사용해 외부앱과 연결하여 데이터를 Uri형식으로 연결한다.
                         Uri photoUri = FileProvider.getUriForFile(getContext(), "com.hj.homecleanproject.fileprovider", photoFile);
                         intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, photoUri);
-                        startActivityForResult(intent, 1000);
+                        launcher.launch(intent);
                     }
                 }
             }
@@ -198,7 +291,7 @@ public class GridFragment extends Fragment {
                     public void onMyDialogResult(String contents) {
                         msg = contents;
                         myData.put("myContentsTo" + adapterPosition, contents);
-                        db.collection("yousin").document("yousin").set(myData, SetOptions.merge());
+                        db.collection("kim").document("yousin").set(myData);
                         ((MyWork) adapter.getItem(adapterPosition)).setContent(contents);
                         adapter.notifyDataSetChanged();
                     }
@@ -217,76 +310,44 @@ public class GridFragment extends Fragment {
         storage = FirebaseStorage.getInstance();
         reference = storage.getReference();
 
-
         workList = new ArrayList<>();
         adapter = new MyGridAdapter();
         myData = new HashMap<>();
+        handler = new Handler();
 
         gridView.setAdapter(adapter);
     }
 
     public File createFile() throws IOException { //임시파일생성
-        fileName = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss").format(new Date());
+        fileName = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss").format(new Date()) + ".png";
         //Data/data/패키지/에 app_HomeCleanProject라는 파일이 생성된다.
         File file = File.createTempFile(fileName, ".png", getContext().getDir("HomeCleanProject", Context.MODE_PRIVATE));
 
         return file;
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1000 && resultCode == Activity.RESULT_OK) {
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inSampleSize = 4; // 용량을 4분의1로 낮춤 -> 이미지는 용량이 크기 때문에 임의로 줄이지 않으면 앱이 죽어버릴수있음
-            bitmap = BitmapFactory.decodeFile(photoFile.getAbsolutePath(), options); //photoFile로 만든 이미지를 bitmap으로 형식변경
-
-            ChangeRotate(); //이미지 각도 돌리기
-            //Bitmap 을 구한후, 디코딩 -> Bitmap을 통째로 넘기기는 좀 그러니,
-            ByteArrayOutputStream output = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.PNG, 40, output);
-            byte[] bytes = output.toByteArray();
-
-            saveStorage(bytes);
-
-
-        }
-    }
-
     private void saveStorage(byte[] bytes) { //Storage에 압축한 file 저장하기! -> 그래서 byte[]로 넣음.
-        reference.child("userName/"+fileName).putBytes(bytes).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+        reference.child("userName/" + fileName).putBytes(bytes).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                Toast.makeText(fragmentActivity, "잘 들어갔어여!", Toast.LENGTH_SHORT).show();
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Toast.makeText(fragmentActivity, "잘들어감!", Toast.LENGTH_SHORT).show();
                 loadStorage();
             }
         });
     }
 
-    private void loadStorage(){
-        storage.getReferenceFromUrl("gs://homeclean-ba4fc.appspot.com/").child("userName/"+fileName).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+    private void loadStorage() {
+        storage.getReferenceFromUrl("gs://homeclean-ba4fc.appspot.com/").child("userName/" + fileName).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
-                Log.d("yousin",uri.toString());
+                Log.d("yousin", uri.toString());
                 //FireStore에 uri집어넣기
-                myData.put("uri"+adapterPosition,uri.toString());
+                myData.put("uri" + adapterPosition, uri.toString());
                 db.collection("kim").document("yousin").set(myData);
-                try {
-                    URL url = new URL(uri.toString());
-                    if(url!=null) {
-                        ImageView im=adapter.getImageView();
-                        imgTask(url.toString(),im);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }finally {
-                    adapter.notifyDataSetChanged();
-                    Log.d("yousin","실행함");
-
-                }
             }
         });
     }
+
     public void ChangeRotate() { //이미지 각도 돌리기
         Resources resources = Resources.getSystem(); //어느곳에서든지 이렇게 사용하면 context의 내용을 사용할수있다. 무조건! (직접적인 접근 가능)
         Configuration configuration = resources.getConfiguration();
@@ -333,10 +394,5 @@ public class GridFragment extends Fragment {
                 e.printStackTrace();
             }
         }
-    }
-    private void imgTask(String imgUrl, ImageView imageView) {
-        ImageLoadTask task = new ImageLoadTask(imgUrl, imageView);
-        task.execute();
-
     }
 }

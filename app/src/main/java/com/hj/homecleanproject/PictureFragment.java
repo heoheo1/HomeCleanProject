@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -24,7 +25,15 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
 import java.io.File;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.concurrent.Flow;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -43,6 +52,9 @@ public class PictureFragment extends Fragment {
     private Bitmap bitmap;
     private File[] imageList;
 
+    FirebaseStorage firebaseStorage;
+    StorageReference reference;
+
     public static PictureFragment newInstance() {
         return new PictureFragment();
     }
@@ -51,15 +63,35 @@ public class PictureFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_picture, container, false);
-        adapter = new GalleryAdapter();
-        recyclerView = view.findViewById(R.id.galleryRecycler);
-        manager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-        recyclerView.setLayoutManager(manager);
-        recyclerView.setAdapter(adapter);
+        init(view);
+
         Handler handler = new android.os.Handler();
 
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = 4;
+
+
+        firebaseStorage.getReferenceFromUrl("gs://homeclean-ba4fc.appspot.com").child("userName/").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                try {
+                    URL url = new URL(uri.toString());
+
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setDoInput(true);
+                    connection.connect();
+
+                    InputStream inputStream = connection.getInputStream();
+                    Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+
+                    adapter.addItem(bitmap);
+                    adapter.notifyDataSetChanged();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
         imageList = getContext().getDir("HomeCleanProject", Context.MODE_PRIVATE).listFiles();
 
@@ -72,6 +104,7 @@ public class PictureFragment extends Fragment {
                 adapter.notifyDataSetChanged();
             });
         });
+
 
         //Ui 스레드에 직접 접근 불가 -> just메서드가 UI Blocking에 걸림
         //그래서 create메서드를 통해서 직접 subscribe를
@@ -100,5 +133,16 @@ public class PictureFragment extends Fragment {
                         }
                 );
         return view;
+    }
+
+    public void init(View view){ //초기화
+        adapter = new GalleryAdapter();
+        recyclerView = view.findViewById(R.id.galleryRecycler);
+        manager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(manager);
+        recyclerView.setAdapter(adapter);
+
+        firebaseStorage = FirebaseStorage.getInstance();
+        reference = firebaseStorage.getReference();
     }
 }

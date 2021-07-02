@@ -24,7 +24,7 @@ import com.hj.homecleanproject.customInterface.onDialogResultListener;
 
 import java.util.ArrayList;
 
-public class MyGridAdapter extends BaseAdapter{
+public class MyGridAdapter extends BaseAdapter {
 
     ArrayList<MyWork> list = new ArrayList<>();
 
@@ -55,32 +55,35 @@ public class MyGridAdapter extends BaseAdapter{
     public View getView(int position, View convertView, ViewGroup parent) {
         view = null;
 
-        if(convertView == null){
+        if (convertView == null) {
             view = new MyWork_View(parent.getContext());
-        }else{
+        } else {
             view = (MyWork_View) convertView;
         }
 
         work = list.get(position);
 
-        //기존 없는 이미지 -> 카메라모양의 이미지를 Drawable을 통해서 이용할 예정
-        if(list.get(position).getResID() != R.drawable.baseline_add_a_photo_black_18){ //만약 카메라에서 사진을 찍었다면, 그 사진을 붙이고
-            view.setImageViewToBitmap(work.getEncodeResID());
+        //여기를 바꿔야함 -> 기본 사진일때와, 새로운 사진이 들어갈때
+        //현재는 무조건 byte[] 의 값이 image에 찎힘
+        if(list.get(position).getResID() == R.drawable.baseline_add_a_photo_black_18){
+            view.setImageViewToBitmap(list.get(position).getEncodeResID());
+
         }
 
+        //기존 없는 이미지 -> 카메라모양의 이미지를 Drawable을 통해서 이용할 예정
         view.setTextView(work.getContent());
 
         MyWork_View finalView = view;
-        view.imageView.setOnClickListener(v ->{
+        view.imageView.setOnClickListener(v -> {
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            if(listener != null){
-                listener.adapterToFragment(intent,position,finalView);
+            if (listener != null) {
+                listener.adapterToFragment(intent, position, finalView);
             }
         });
 
         view.textView.setOnClickListener(v -> {
             dialog = new GridDialogFragment();
-            if(textViewClickListener != null){
+            if (textViewClickListener != null) {
                 textViewClickListener.textViewClicked(dialog, position);
             }
         });
@@ -88,18 +91,19 @@ public class MyGridAdapter extends BaseAdapter{
         return view;
     }
 
-    public void addItem(MyWork work){
+    public void addItem(MyWork work) {
         list.add(work);
     }
 
-    public void setOnImageViewClickListener(ImageViewClickListener listener){
+    public void setOnImageViewClickListener(ImageViewClickListener listener) {
         this.listener = listener;
     }
 
-    public void setOnTextViewClickListener(TextViewClickListener listener){
+    public void setOnTextViewClickListener(TextViewClickListener listener) {
         textViewClickListener = listener;
     }
-    public ImageView getImageView(){
-        return  view.imageView;
+
+    public ImageView getImageView() {
+        return view.imageView;
     }
 }
