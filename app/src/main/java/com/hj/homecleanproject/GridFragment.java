@@ -30,6 +30,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.LayoutInflater;
 
@@ -44,8 +45,17 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -65,6 +75,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -86,27 +97,33 @@ public class GridFragment extends Fragment {
     ArrayList<MyWork> workList;
     MyGridAdapter adapter;
     FragmentActivity fragmentActivity;
+    MyFamilyFragment familyFragment;
 
     File photoFile; // 찍은 사진에 대한 임시파일
     Bitmap bitmap; // 내장 카메라에서 찍은 사진파일형식
     int adapterPosition; //내가 선택한 cardView의 Position
     String collections, documents; // 그룹명, 유저이름
+    String groupName;
     Map<String, Object> myData; // FireStore에 넣어 주기 위한 Map
     String fileName; // TimeStamp! 현재 시간을 뽑아냄
-    ImageView imageView;
     FloatingActionButton fab;
+    String email;
+    String name;
+    String position;
 
     FirebaseFirestore db;
     FirebaseStorage storage;
+    DatabaseReference realtime;
+    FirebaseAuth auth;
+    FirebaseUser currentUser;
     StorageReference reference;
     NotificationManager manager;
     NotificationCompat.Builder builder;
-    boolean a = true;
-    PendingIntent pendingIntent;
 
     Handler handler;
 
     String msg;
+
 
 
     public void notifiCM(){
@@ -243,12 +260,26 @@ public class GridFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if(auth.getCurrentUser() != null) {
+            getProfile();
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         viewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_grid, container, false);
+        db = FirebaseFirestore.getInstance();
+        auth = FirebaseAuth.getInstance();
+        currentUser = auth.getCurrentUser();
+        realtime= FirebaseDatabase.getInstance().getReference("users");
         init(viewGroup); // 초기화
         restoreMyData();
+
+
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -305,6 +336,7 @@ public class GridFragment extends Fragment {
 
     public void init(ViewGroup viewGroup) { //초기화
         fragmentActivity = (FragmentActivity) getActivity();
+        familyFragment = new MyFamilyFragment();
         gridView = viewGroup.findViewById(R.id.grid);
         fab = viewGroup.findViewById(R.id.fab);
         db = FirebaseFirestore.getInstance();
@@ -317,6 +349,7 @@ public class GridFragment extends Fragment {
         handler = new Handler();
 
         gridView.setAdapter(adapter);
+
     }
 
     public File createFile() throws IOException { //임시파일생성
@@ -395,5 +428,52 @@ public class GridFragment extends Fragment {
                 e.printStackTrace();
             }
         }
+    }
+    public void getProfile(){
+        String uid =currentUser.getUid();
+
+        Log.d("uid",uid);
+        realtime.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Iterator<DataSnapshot> child = snapshot.getChildren().iterator(); //아이터레이터를 얻어온다.
+                while (child.hasNext()) {
+                    if (child.next().getKey().equals(uid)) {
+                        groupName = snapshot.child(uid).getValue().toString();
+                        Log.d("yousin", "groupName : " + groupName);
+                    }
+                }
+                realtime.removeEventListener(this);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        }); //cancle
+
+        if(groupName!=null) {
+            Log.d("yousin","groupName is null ?: "+ groupName);
+        }
+        db.collection(groupName).whereEqualTo("groupName",groupName).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        Log.d("yousin", document.getId() + " => " + document.getData());
+                        UserInfo userInfo = document.toObject(UserInfo.class);
+                        Log.d("yousin", "userInfo.getGroupName : " + userInfo.getGroupName());
+                        Log.d("yousin", userInfo.getName());
+                        Log.d("yousin", userInfo.getEmail());
+                        Log.d("yousin", userInfo.getPosition());
+
+                        groupName = userInfo.getGroupName();
+                        name = userInfo.getName();
+                        email = userInfo.getEmail();
+                        position = userInfo.getPosition();
+                    }
+                }
+            }
+        });
     }
 }

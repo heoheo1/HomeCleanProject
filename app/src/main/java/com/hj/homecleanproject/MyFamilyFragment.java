@@ -185,15 +185,9 @@ public class MyFamilyFragment extends Fragment {
                                     }, e -> {
                                         e.printStackTrace();
                                     });
-
-
-
-
                     }
                 }
             }
-
-
         });
     }
 }
