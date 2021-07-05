@@ -100,7 +100,7 @@ public class MyFamilyFragment extends Fragment {
                         profileSave();
                     }
                 }
-                realtime.removeEventListener(this);
+               // realtime.removeEventListener(this);
             }
 
             @Override

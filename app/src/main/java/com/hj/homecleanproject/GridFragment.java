@@ -206,60 +206,7 @@ public class GridFragment extends Fragment {
                 }
             });
 
-    public void restoreMyData() {
-        db.collection("kim").document("yousin").get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                Long size = documentSnapshot.getLong("size") == null ? 0 : documentSnapshot.getLong("size");
-                Log.d("yousin", size + "");
 
-                if (size > 0) {
-                    for (int i = 0; i < size; i++) {
-                        adapter.addItem(new MyWork(R.drawable.baseline_add_a_photo_black_18," "));
-                        String uri = documentSnapshot.getString("uri" + i) == null ? " " : documentSnapshot.getString("uri" + i);
-                        Log.d("yousin", uri);
-                        myData.put("uri" + i, uri);
-
-                        String msg = documentSnapshot.getString("myContentsTo" + i) == null ? " " : documentSnapshot.getString("myContentsTo" + i);
-                        Log.d("yousin", msg);
-                        myData.put("myContentsTo" + i, msg);
-
-                        Observable<URL> observable = Observable.create(emitter -> {
-                            if (!uri.equals(" ")) {
-                                emitter.onNext(new URL(uri));
-                            }
-                            emitter.onComplete();
-                        });
-
-                        int finalI = i;
-                        observable.observeOn(Schedulers.io())
-                                .subscribeOn(AndroidSchedulers.mainThread())
-                                .subscribe(data -> {
-                                    HttpURLConnection connection = (HttpURLConnection) data.openConnection();
-                                    connection.setDoInput(true);
-                                    connection.connect();
-
-                                    InputStream inputStream = connection.getInputStream();
-                                    Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-
-                                    //Bitmap 을 구한후, 디코딩 -> Bitmap을 통째로 넘기기는 좀 그러니,
-                                    ByteArrayOutputStream output = new ByteArrayOutputStream();
-                                    bitmap.compress(Bitmap.CompressFormat.PNG, 40, output);
-                                    byte[] bytes = output.toByteArray();
-
-                                    handler.post(() -> {
-                                        ((MyWork)adapter.getItem(finalI)).setEncodeResID(bytes);
-                                        ((MyWork)adapter.getItem(finalI)).setContent(msg);
-                                        adapter.notifyDataSetChanged();
-                                    });
-                                }, e -> {
-                                    e.printStackTrace();
-                                });
-                    }
-                }
-            }
-        });
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -271,8 +218,6 @@ public class GridFragment extends Fragment {
         currentUser = auth.getCurrentUser();
         realtime= FirebaseDatabase.getInstance().getReference("users");
         init(viewGroup); // 초기화
-        restoreMyData();
-
         String uid =currentUser.getUid();
 
         Log.d("uid",uid);
@@ -287,7 +232,7 @@ public class GridFragment extends Fragment {
                     }
                 }
                 getProfile();
-                realtime.removeEventListener(this);
+                //realtime.removeEventListener(this);
             }
 
             @Override
@@ -295,6 +240,8 @@ public class GridFragment extends Fragment {
 
             }
         }); //cancle
+
+
 
 
 
@@ -339,7 +286,7 @@ public class GridFragment extends Fragment {
                     public void onMyDialogResult(String contents) {
                         msg = contents;
                         myData.put("myContentsTo" + adapterPosition, contents);
-                        db.collection(groupName).document(name).set(myData);
+                        db.collection(groupName).document(name).set(myData,SetOptions.merge());
                         ((MyWork) adapter.getItem(adapterPosition)).setContent(contents);
                         adapter.notifyDataSetChanged();
                     }
@@ -377,7 +324,7 @@ public class GridFragment extends Fragment {
     }
 
     private void saveStorage(byte[] bytes) { //Storage에 압축한 file 저장하기! -> 그래서 byte[]로 넣음.
-        reference.child(groupName+"/" + fileName).putBytes(bytes).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        reference.child(groupName+"/"+fileName).putBytes(bytes).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 Toast.makeText(fragmentActivity, "잘들어감!", Toast.LENGTH_SHORT).show();
@@ -387,13 +334,13 @@ public class GridFragment extends Fragment {
     }
 
     private void loadStorage() {
-        storage.getReferenceFromUrl("gs://homeclean-ba4fc.appspot.com/").child(groupName + fileName).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+        storage.getReferenceFromUrl("gs://homeclean-ba4fc.appspot.com/").child(groupName+"/"+fileName).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
                 Log.d("yousin", uri.toString());
                 //FireStore에 uri집어넣기
                 myData.put("uri" + adapterPosition, uri.toString());
-                db.collection(groupName).document(name).set(myData);
+                db.collection(groupName).document(name).set(myData,SetOptions.merge());
             }
         });
     }
@@ -466,9 +413,71 @@ public class GridFragment extends Fragment {
                         name = userInfo.getName();
                         email = userInfo.getEmail();
                         position = userInfo.getPosition();
+
+                    }
+
+                    restoreMyData();
+                }
+
+            }
+        });
+    }
+    public void restoreMyData() {
+
+        Log.d("yousin","groupName is null2 ?: "+ groupName+","+name);
+
+        db.collection(groupName).document(name).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                Long size = documentSnapshot.getLong("size") == null ? 0 : documentSnapshot.getLong("size");
+                Log.d("yousin", size + "");
+
+                if (size > 0) {
+                    for (int i = 0; i < size; i++) {
+                        adapter.addItem(new MyWork(R.drawable.baseline_add_a_photo_black_18," "));
+                        String uri = documentSnapshot.getString("uri" + i) == null ? " " : documentSnapshot.getString("uri" + i);
+                        Log.d("yousin", uri);
+                        myData.put("uri" + i, uri);
+
+                        String msg = documentSnapshot.getString("myContentsTo" + i) == null ? " " : documentSnapshot.getString("myContentsTo" + i);
+                        Log.d("yousin", msg);
+                        myData.put("myContentsTo" + i, msg);
+
+                        Observable<URL> observable = Observable.create(emitter -> {
+                            if (!uri.equals(" ")) {
+                                emitter.onNext(new URL(uri));
+                            }
+                            emitter.onComplete();
+                        });
+
+                        int finalI = i;
+                        observable.observeOn(Schedulers.io())
+                                .subscribeOn(AndroidSchedulers.mainThread())
+                                .subscribe(data -> {
+                                    HttpURLConnection connection = (HttpURLConnection) data.openConnection();
+                                    connection.setDoInput(true);
+                                    connection.connect();
+
+                                    InputStream inputStream = connection.getInputStream();
+                                    Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+
+                                    //Bitmap 을 구한후, 디코딩 -> Bitmap을 통째로 넘기기는 좀 그러니,
+                                    ByteArrayOutputStream output = new ByteArrayOutputStream();
+                                    bitmap.compress(Bitmap.CompressFormat.PNG, 40, output);
+                                    byte[] bytes = output.toByteArray();
+
+                                    handler.post(() -> {
+                                        ((MyWork)adapter.getItem(finalI)).setEncodeResID(bytes);
+                                        ((MyWork)adapter.getItem(finalI)).setContent(msg);
+                                        adapter.notifyDataSetChanged();
+                                    });
+                                }, e -> {
+                                    e.printStackTrace();
+                                });
                     }
                 }
             }
         });
     }
+
 }
