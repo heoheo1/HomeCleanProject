@@ -55,9 +55,7 @@ public class PictureFragment extends Fragment {
     FirebaseStorage firebaseStorage;
     StorageReference reference;
 
-    public static PictureFragment newInstance() {
-        return new PictureFragment();
-    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

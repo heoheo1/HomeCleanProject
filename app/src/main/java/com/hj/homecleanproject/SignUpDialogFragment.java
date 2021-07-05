@@ -84,6 +84,7 @@ public class SignUpDialogFragment extends DialogFragment implements onBackPresse
     DatabaseReference realTime;
     FirebaseUser firebaseUser;
     FirebaseAuth auth;
+    CollectionReference rocRef;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -220,7 +221,6 @@ public class SignUpDialogFragment extends DialogFragment implements onBackPresse
 
         if (emailResult != null) {
             email = emailResult.getString("email");
-
             realTime.child(uid).setValue(groupName);
         }
 
@@ -247,7 +247,7 @@ public class SignUpDialogFragment extends DialogFragment implements onBackPresse
     private void pluseGroup() {
         name = edt_Name.getText().toString();
         groupName = edt_GroupName.getText().toString();
-        CollectionReference rocRef = db.collection(groupName);
+         rocRef = db.collection(groupName);
         rocRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -280,7 +280,7 @@ public class SignUpDialogFragment extends DialogFragment implements onBackPresse
     private void saveGroup() {
         name = edt_Name.getText().toString();
         groupName = edt_GroupName.getText().toString();
-        CollectionReference rocRef = db.collection(groupName);
+        rocRef = db.collection(groupName);
         rocRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -288,6 +288,8 @@ public class SignUpDialogFragment extends DialogFragment implements onBackPresse
                     QuerySnapshot collection = task.getResult();
                     Iterator<QueryDocumentSnapshot> iterator = collection.iterator();
                     if (iterator.hasNext()) {
+                        String n = iterator.next().getId();
+                        Log.d("dd", n);
                         storageSave();
                         selectDoc();
                         Toast.makeText(getActivity(), "회원가입이 완료 되었습니다.", Toast.LENGTH_SHORT).show();

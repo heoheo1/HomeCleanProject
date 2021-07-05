@@ -126,6 +126,8 @@ public class GridFragment extends Fragment {
 
 
 
+
+
     public void notifiCM(){
         manager =(NotificationManager) getContext().getSystemService(NOTIFICATION_SERVICE); //시스템에 발생시키는 SystemService
         //그냥 이벤트가 아니라 담당하는 시스템 에게 알림 처리를 하기위해서 사용 (인스턴스)
@@ -260,14 +262,6 @@ public class GridFragment extends Fragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        if(auth.getCurrentUser() != null) {
-            getProfile();
-        }
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
@@ -279,6 +273,29 @@ public class GridFragment extends Fragment {
         init(viewGroup); // 초기화
         restoreMyData();
 
+        String uid =currentUser.getUid();
+
+        Log.d("uid",uid);
+        realtime.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Iterator<DataSnapshot> child = snapshot.getChildren().iterator(); //아이터레이터를 얻어온다.
+                while (child.hasNext()) {
+                    if (child.next().getKey().equals(uid)) {
+                        groupName = snapshot.child(uid).getValue().toString();
+                        Log.d("yousin", "groupName : " + groupName);
+                    }
+                }
+                getProfile();
+                realtime.removeEventListener(this);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        }); //cancle
+
 
 
         fab.setOnClickListener(new View.OnClickListener() {
@@ -286,7 +303,7 @@ public class GridFragment extends Fragment {
             public void onClick(View v) {
                 adapter.addItem(new MyWork(R.drawable.baseline_add_a_photo_black_18, " "));
                 myData.put("size", adapter.getCount());
-                db.collection("kim").document("yousin").set(myData, SetOptions.merge());
+                db.collection(groupName).document(name).set(myData, SetOptions.merge());
                 adapter.notifyDataSetChanged();
             }
         });
@@ -322,7 +339,7 @@ public class GridFragment extends Fragment {
                     public void onMyDialogResult(String contents) {
                         msg = contents;
                         myData.put("myContentsTo" + adapterPosition, contents);
-                        db.collection("kim").document("yousin").set(myData);
+                        db.collection(groupName).document(name).set(myData);
                         ((MyWork) adapter.getItem(adapterPosition)).setContent(contents);
                         adapter.notifyDataSetChanged();
                     }
@@ -339,7 +356,6 @@ public class GridFragment extends Fragment {
         familyFragment = new MyFamilyFragment();
         gridView = viewGroup.findViewById(R.id.grid);
         fab = viewGroup.findViewById(R.id.fab);
-        db = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
         reference = storage.getReference();
 
@@ -361,7 +377,7 @@ public class GridFragment extends Fragment {
     }
 
     private void saveStorage(byte[] bytes) { //Storage에 압축한 file 저장하기! -> 그래서 byte[]로 넣음.
-        reference.child("userName/" + fileName).putBytes(bytes).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        reference.child(groupName+"/" + fileName).putBytes(bytes).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 Toast.makeText(fragmentActivity, "잘들어감!", Toast.LENGTH_SHORT).show();
@@ -371,13 +387,13 @@ public class GridFragment extends Fragment {
     }
 
     private void loadStorage() {
-        storage.getReferenceFromUrl("gs://homeclean-ba4fc.appspot.com/").child("userName/" + fileName).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+        storage.getReferenceFromUrl("gs://homeclean-ba4fc.appspot.com/").child(groupName + fileName).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
                 Log.d("yousin", uri.toString());
                 //FireStore에 uri집어넣기
                 myData.put("uri" + adapterPosition, uri.toString());
-                db.collection("kim").document("yousin").set(myData);
+                db.collection(groupName).document(name).set(myData);
             }
         });
     }
@@ -430,27 +446,6 @@ public class GridFragment extends Fragment {
         }
     }
     public void getProfile(){
-        String uid =currentUser.getUid();
-
-        Log.d("uid",uid);
-        realtime.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Iterator<DataSnapshot> child = snapshot.getChildren().iterator(); //아이터레이터를 얻어온다.
-                while (child.hasNext()) {
-                    if (child.next().getKey().equals(uid)) {
-                        groupName = snapshot.child(uid).getValue().toString();
-                        Log.d("yousin", "groupName : " + groupName);
-                    }
-                }
-                realtime.removeEventListener(this);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        }); //cancle
 
         if(groupName!=null) {
             Log.d("yousin","groupName is null ?: "+ groupName);

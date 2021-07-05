@@ -86,7 +86,6 @@ public class MyFamilyFragment extends Fragment {
         FirebaseUser currentUser = auth.getCurrentUser();
         realtime= FirebaseDatabase.getInstance().getReference("users");
 
-
         String uid =currentUser.getUid();
 
         Log.d("uid",uid);
