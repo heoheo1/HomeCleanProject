@@ -64,11 +64,11 @@ public class ServiceFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         viewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_service, container, false);
-        txt_Name = viewGroup.findViewById(R.id.txt_name);
-        txt_Email =viewGroup.findViewById(R.id.txt_Email);
-        txt_groupName=viewGroup.findViewById(R.id.txt_GroupName);
-        txt_Position =viewGroup.findViewById(R.id.txt_Position);
-        profile =viewGroup.findViewById(R.id.iv_photo);
+        txt_Name = viewGroup.findViewById(R.id.txt_name2);
+        txt_Email =viewGroup.findViewById(R.id.txt_Email2);
+        txt_groupName=viewGroup.findViewById(R.id.txt_GroupName2);
+        txt_Position =viewGroup.findViewById(R.id.txt_Position2);
+        profile =viewGroup.findViewById(R.id.iv_photo2);
 
         handler = new Handler();
 

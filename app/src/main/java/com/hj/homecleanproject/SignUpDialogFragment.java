@@ -145,7 +145,10 @@ public class SignUpDialogFragment extends DialogFragment implements onBackPresse
                     Toast.makeText(getActivity(), "정보를 입력해주세요.", Toast.LENGTH_SHORT).show();
                 } else if (!(rdo_leader.isChecked() || rdo_member.isChecked())) {
                     Toast.makeText(getActivity(), "그룹장과 구성원중 선택해주세요.", Toast.LENGTH_SHORT).show();
-                } else {
+                } else if(selectedImageUri==null){
+                    Toast.makeText(getActivity(), "이미지를 선택해 주세요", Toast.LENGTH_SHORT).show();
+                }
+                else {
                     if (position.equals("리더")) {
                         pluseGroup();
                     } else {

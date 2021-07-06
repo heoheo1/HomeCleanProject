@@ -9,7 +9,7 @@
 
     <com.google.android.material.card.MaterialCardView
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/family_card"
+        android:id="@+id/family_card2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         card_view:elevation="10dp"
@@ -25,7 +25,7 @@
             android:orientation="vertical"
             >
             <TextView
-                android:id="@+id/txt_name"
+                android:id="@+id/txt_name2"
                 android:layout_below="@+id/family_group"
                 android:layout_width="match_parent"
                 android:layout_marginTop="5dp"
@@ -41,7 +41,7 @@
                 card_view:cardElevation="8dp">
 
                 <ImageView
-                    android:id="@+id/iv_photo"
+                    android:id="@+id/iv_photo2"
                     android:layout_width="130dp"
                     android:layout_height="130dp"
                     android:src="@drawable/ic_launcher_foreground"
@@ -58,7 +58,7 @@
 
                 <TextView
                     android:layout_marginTop="10dp"
-                    android:id="@+id/txt_GroupName"
+                    android:id="@+id/txt_GroupName2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -66,8 +66,8 @@
 
                 <TextView
                     android:layout_marginTop="5dp"
-                    android:id="@+id/txt_Email"
-                    android:layout_below="@+id/txt_GroupName"
+                    android:id="@+id/txt_Email2"
+                    android:layout_below="@+id/txt_GroupName2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -77,8 +77,8 @@
                 <TextView
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="10dp"
-                    android:id="@+id/txt_Position"
-                    android:layout_below="@+id/txt_Email"
+                    android:id="@+id/txt_Position2"
+                    android:layout_below="@+id/txt_Email2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"

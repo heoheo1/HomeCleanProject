@@ -16,7 +16,7 @@
 
         <EditTextPreference
             android:key="key_edit_name"
-            android:title="이름 변경"
+            android:title="이름 변경(미구현)"
             android:summary="이름을 변경 하시려면 클릭해주세요"
             android:dialogTitle="Edit your name"
             app:iconSpaceReserved="false"/>
@@ -62,7 +62,7 @@
         </PreferenceScreen>
 
         <PreferenceScreen
-            android:title="회원 탈퇴"
+            android:title="회원 탈퇴(미구현)"
             app:iconSpaceReserved="false"
             android:key="screen">
 
