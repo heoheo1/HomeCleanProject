@@ -23,21 +23,18 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
-import android.os.SystemClock;
 import android.util.Log;
 import android.view.LayoutInflater;
 
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
-import android.widget.ImageView;
 
 import android.widget.Toast;
 
@@ -61,6 +58,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.hj.homecleanproject.customDialog.GridDialogFragment;
+import com.hj.homecleanproject.customInterface.GetCustomView;
 import com.hj.homecleanproject.customInterface.ImageViewClickListener;
 import com.hj.homecleanproject.customInterface.TextViewClickListener;
 import com.hj.homecleanproject.customInterface.onDialogResultListener;
@@ -83,7 +81,6 @@ import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
-
 
 //Fragment란, 어플리케이션에서 화면에 직접 보이는 공간의 Activity내에서 분할시키고 다른 화면으로 전환할 수 있는 화면 공간의 단위
 //Fragment를 이용하려면, 상위에 있는 Activity에서 출력할 layout을 제어
@@ -125,17 +122,14 @@ public class GridFragment extends Fragment {
     String msg;
 
 
-
-
-
-    public void notifiCM(){
-        manager =(NotificationManager) getContext().getSystemService(NOTIFICATION_SERVICE); //시스템에 발생시키는 SystemService
+    public void notifiCM() {
+        manager = (NotificationManager) getContext().getSystemService(NOTIFICATION_SERVICE); //시스템에 발생시키는 SystemService
         //그냥 이벤트가 아니라 담당하는 시스템 에게 알림 처리를 하기위해서 사용 (인스턴스)
-        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O) { //25미만은 돌아가지가 않는다.변화가 이러난 시점을 써줘야한다.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) { //25미만은 돌아가지가 않는다.변화가 이러난 시점을 써줘야한다.
             String channelID = "one-channel"; // 채널아이디(식별자) 채널 이름
             String channelName = "My channel One";
             String channelDescription = "My channel one Description";//Description = 보충 설명
-            NotificationChannel channel =null;// headsup 을 쓸려고 전역으로 뺌
+            NotificationChannel channel = null;// headsup 을 쓸려고 전역으로 뺌
             channel = new NotificationChannel(channelID, channelName, NotificationManager.IMPORTANCE_HIGH);
             //알림 채널을 정해주고 각각의 알림 정의를하기위해서 사용
             //headsup은 중요알림 설정할때
@@ -145,33 +139,33 @@ public class GridFragment extends Fragment {
             channel.setVibrationPattern(new long[]{100});//100 200 300 진동을 준다.
             manager.createNotificationChannel(channel);//매니저가 이제 자기 채널로 인식한다.
             builder = new NotificationCompat.Builder(getContext(), channelID);//오레오버전이하일때는 this 이이름으로 된 빌더를 하나만들겠다.
-        }else{
-            builder =new NotificationCompat.Builder(getContext()); //이전버전일 경우 25이하 버전은 채널이란 존재를 모른다. builder로 만들어 줘야한다.
+        } else {
+            builder = new NotificationCompat.Builder(getContext()); //이전버전일 경우 25이하 버전은 채널이란 존재를 모른다. builder로 만들어 줘야한다.
         }
         //오래오버전이상이나 이하나 누구나 사용가능
         builder.setSmallIcon(android.R.drawable.ic_menu_camera);//작은 아이콘이미지
         builder.setContentTitle("Home Family Project"); //확장 내용의 타이틀 문자열
         builder.setContentText("사진 등록이 완료 되었습니다."); //확장 내용의 본문 문자열
-        builder.setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE|Notification.DEFAULT_LIGHTS);
+        builder.setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE | Notification.DEFAULT_LIGHTS);
         //ALL 3개다쓴다.DEFAULT_LIGHTS 불빛 ,DEFAULT_SOUND 소리 ,DEFAULT_VIBRATE 진동
         builder.setAutoCancel(true); //기본이 트루,터치 시 작동 삭제 여부,터치 시 삭제됨
 
         //앱으로 돌아가고 싶을때.
-        Intent intent =new Intent(getContext(),FragmentActivity.class);//this 다른곳이아니닌까
+        Intent intent = new Intent(getContext(), FragmentActivity.class);//this 다른곳이아니닌까
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(getContext(),10,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(getContext(), 10, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         //저기로 가는걸 시스템에게 부탁하는 인텐트 생성
 //        builder.setContentIntent(pendingIntent);
         //빌드가 연결 되어있으닌까 notify가 알수있다.
-        builder.setFullScreenIntent(pendingIntent,true);
+        builder.setFullScreenIntent(pendingIntent, true);
 //        PendingIntent addActionIntent =PendingIntent.getBroadcast(getContext(),20,new Intent(getContext(),MyReceiver.class)
 //                ,PendingIntent.FLAG_UPDATE_CURRENT);
 //        builder.addAction(new NotificationCompat.Action.Builder(android.R.drawable.ic_menu_share,"알람 해제",addActionIntent).build());
 
-        Bitmap largeIcon = BitmapFactory.decodeResource(getResources(),R.drawable.iu);
+        Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.iu);
         builder.setLargeIcon(largeIcon); //큰아이콘 오른쪽에 뜨는 아이콘
 
-        manager.notify(1000,builder.build());
+        manager.notify(1000, builder.build());
     }
 
     public static GridFragment newInstance() {
@@ -191,14 +185,12 @@ public class GridFragment extends Fragment {
 
                         //Bitmap 을 구한후, 디코딩 -> Bitmap을 통째로 넘기기는 좀 그러니,
                         ByteArrayOutputStream output = new ByteArrayOutputStream();
-                        bitmap.compress(Bitmap.CompressFormat.PNG, 40, output);
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 40, output);
                         byte[] bytes = output.toByteArray();
-
-                        Log.d("yousin", "압축까지는 잘 되었습니다.");
 
                         saveStorage(bytes);
 
-//                        ((MyWork) adapter.getItem(adapterPosition)).setResID(0);
+                        ((MyWork) adapter.getItem(adapterPosition)).setResID(0);
                         ((MyWork) adapter.getItem(adapterPosition)).setEncodeResID(bytes);
                         adapter.notifyDataSetChanged();
                         notifiCM();
@@ -206,21 +198,14 @@ public class GridFragment extends Fragment {
                 }
             });
 
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         viewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_grid, container, false);
-        db = FirebaseFirestore.getInstance();
-        auth = FirebaseAuth.getInstance();
-        currentUser = auth.getCurrentUser();
-        realtime= FirebaseDatabase.getInstance().getReference("users");
         init(viewGroup); // 초기화
-        String uid =currentUser.getUid();
 
-        Log.d("uid",uid);
+        String uid = currentUser.getUid();
+
         realtime.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -228,7 +213,6 @@ public class GridFragment extends Fragment {
                 while (child.hasNext()) {
                     if (child.next().getKey().equals(uid)) {
                         groupName = snapshot.child(uid).getValue().toString();
-                        Log.d("yousin", "groupName : " + groupName);
                     }
                 }
                 getProfile();
@@ -239,21 +223,45 @@ public class GridFragment extends Fragment {
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
-        }); //cancle
-
-
-
-
+        }); //cancel
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                adapter.addItem(new MyWork(R.drawable.baseline_add_a_photo_black_18, " "));
+                adapter.addItem(new MyWork(R.drawable.baseline_add_a_photo_black_18, " ")); // 그 후, 새로운 cardView생산
+                ((MyWork) adapter.getItem((adapter.getCount() - 1))).setResID(R.drawable.baseline_add_a_photo_black_18); // 0으로 초기화 된것을 다시 기본사진으로 세팅한다.
+                ((MyWork) adapter.getItem((adapter.getCount() - 1))).setEncodeResID(null); // compress한 byte[]값이 그대로 남아있다. null로 초기화 시켜야 한다.
+
                 myData.put("size", adapter.getCount());
                 db.collection(groupName).document(name).set(myData, SetOptions.merge());
                 adapter.notifyDataSetChanged();
             }
         });
+
+        //adapter에서 view를 쓰자고하니 name을 넣어주기 위해 MyWork_View 사용시 이름을 GridFragment, firebase등등 여러가지를 가져와야 한다. (내용 제거)
+        //그렇다고 adapter에서 view에 setText하는 방식으로 메서드를 넣고 gridFragment에서 사용시 에러가 난다. (NPE)
+        //결론 : 그냥 여기로 납치해오자.
+        adapter.setOnCustomView(new GetCustomView() {
+            @Override
+            public void getCustomView(View view, int position) {
+                ((MyWork_View) view).setUserName(name);
+                ((MyWork_View) view).cardView.setOnLongClickListener(v -> { //카드뷰를 길게 클릭했을 경우
+                    //정렬
+                    for (int i = position; i < adapter.getCount(); i++) {
+                        myData.put("myContentsTo" + position, myData.get("myContentsTo" + (position + 1)));
+                        myData.put("uri" + position, myData.get("uri" + (position + 1)));
+                    }
+                    myData.put("uri" + (adapter.getCount() - 1), " ");
+                    myData.put("myContentsTo" + (adapter.getCount() - 1), " ");
+                    adapter.remove(position);
+                    myData.put("size", adapter.getCount());
+                    db.collection(groupName).document(name).set(myData, SetOptions.merge());
+                    adapter.notifyDataSetChanged(); //일단 adapter의 데이터를 지우고.
+                    return false;
+                });
+            }
+        });
+
 
         adapter.setOnImageViewClickListener(new ImageViewClickListener() {
             @Override
@@ -286,15 +294,13 @@ public class GridFragment extends Fragment {
                     public void onMyDialogResult(String contents) {
                         msg = contents;
                         myData.put("myContentsTo" + adapterPosition, contents);
-                        db.collection(groupName).document(name).set(myData,SetOptions.merge());
+                        db.collection(groupName).document(name).set(myData, SetOptions.merge());
                         ((MyWork) adapter.getItem(adapterPosition)).setContent(contents);
                         adapter.notifyDataSetChanged();
                     }
                 });
             }
         });
-
-
         return viewGroup;
     }
 
@@ -312,11 +318,14 @@ public class GridFragment extends Fragment {
         handler = new Handler();
 
         gridView.setAdapter(adapter);
-
+        db = FirebaseFirestore.getInstance();
+        auth = FirebaseAuth.getInstance();
+        currentUser = auth.getCurrentUser();
+        realtime = FirebaseDatabase.getInstance().getReference("users");
     }
 
     public File createFile() throws IOException { //임시파일생성
-        fileName = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss").format(new Date()) + ".png";
+        fileName = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss").format(new Date()) + ".jpeg";
         //Data/data/패키지/에 app_HomeCleanProject라는 파일이 생성된다.
         File file = File.createTempFile(fileName, ".png", getContext().getDir("HomeCleanProject", Context.MODE_PRIVATE));
 
@@ -324,7 +333,7 @@ public class GridFragment extends Fragment {
     }
 
     private void saveStorage(byte[] bytes) { //Storage에 압축한 file 저장하기! -> 그래서 byte[]로 넣음.
-        reference.child(groupName+"/"+fileName).putBytes(bytes).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        reference.child(groupName + "/" + fileName).putBytes(bytes).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 Toast.makeText(fragmentActivity, "잘들어감!", Toast.LENGTH_SHORT).show();
@@ -334,13 +343,12 @@ public class GridFragment extends Fragment {
     }
 
     private void loadStorage() {
-        storage.getReferenceFromUrl("gs://homeclean-ba4fc.appspot.com/").child(groupName+"/"+fileName).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+        storage.getReferenceFromUrl("gs://homeclean-ba4fc.appspot.com/").child(groupName + "/" + fileName).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
-                Log.d("yousin", uri.toString());
                 //FireStore에 uri집어넣기
                 myData.put("uri" + adapterPosition, uri.toString());
-                db.collection(groupName).document(name).set(myData,SetOptions.merge());
+                db.collection(groupName).document(name).set(myData, SetOptions.merge());
             }
         });
     }
@@ -392,40 +400,29 @@ public class GridFragment extends Fragment {
             }
         }
     }
-    public void getProfile(){
 
-        if(groupName!=null) {
-            Log.d("yousin","groupName is null ?: "+ groupName);
-        }
-        db.collection(groupName).whereEqualTo("groupName",groupName).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+    public void getProfile() {
+        db.collection(groupName).whereEqualTo("groupName", groupName).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
-                        Log.d("yousin", document.getId() + " => " + document.getData());
                         UserInfo userInfo = document.toObject(UserInfo.class);
-                        Log.d("yousin", "userInfo.getGroupName : " + userInfo.getGroupName());
-                        Log.d("yousin", userInfo.getName());
-                        Log.d("yousin", userInfo.getEmail());
-                        Log.d("yousin", userInfo.getPosition());
 
                         groupName = userInfo.getGroupName();
                         name = userInfo.getName();
+                        Log.d("yousin",name);
                         email = userInfo.getEmail();
                         position = userInfo.getPosition();
-
                     }
-
                     restoreMyData();
                 }
 
             }
         });
     }
+
     public void restoreMyData() {
-
-        Log.d("yousin","groupName is null2 ?: "+ groupName+","+name);
-
         db.collection(groupName).document(name).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -434,13 +431,11 @@ public class GridFragment extends Fragment {
 
                 if (size > 0) {
                     for (int i = 0; i < size; i++) {
-                        adapter.addItem(new MyWork(R.drawable.baseline_add_a_photo_black_18," "));
+                        adapter.addItem(new MyWork(R.drawable.baseline_add_a_photo_black_18, " "));
                         String uri = documentSnapshot.getString("uri" + i) == null ? " " : documentSnapshot.getString("uri" + i);
-                        Log.d("yousin", uri);
                         myData.put("uri" + i, uri);
 
                         String msg = documentSnapshot.getString("myContentsTo" + i) == null ? " " : documentSnapshot.getString("myContentsTo" + i);
-                        Log.d("yousin", msg);
                         myData.put("myContentsTo" + i, msg);
 
                         Observable<URL> observable = Observable.create(emitter -> {
@@ -463,12 +458,12 @@ public class GridFragment extends Fragment {
 
                                     //Bitmap 을 구한후, 디코딩 -> Bitmap을 통째로 넘기기는 좀 그러니,
                                     ByteArrayOutputStream output = new ByteArrayOutputStream();
-                                    bitmap.compress(Bitmap.CompressFormat.PNG, 40, output);
+                                    bitmap.compress(Bitmap.CompressFormat.JPEG, 40, output);
                                     byte[] bytes = output.toByteArray();
 
                                     handler.post(() -> {
-                                        ((MyWork)adapter.getItem(finalI)).setEncodeResID(bytes);
-                                        ((MyWork)adapter.getItem(finalI)).setContent(msg);
+                                        ((MyWork) adapter.getItem(finalI)).setEncodeResID(bytes);
+                                        ((MyWork) adapter.getItem(finalI)).setContent(msg);
                                         adapter.notifyDataSetChanged();
                                     });
                                 }, e -> {
@@ -479,5 +474,4 @@ public class GridFragment extends Fragment {
             }
         });
     }
-
 }

@@ -17,7 +17,11 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.hj.homecleanproject.customDialog.GridDialogFragment;
+import com.hj.homecleanproject.customInterface.GetCustomView;
 import com.hj.homecleanproject.customInterface.ImageViewClickListener;
 import com.hj.homecleanproject.customInterface.TextViewClickListener;
 import com.hj.homecleanproject.customInterface.onDialogResultListener;
@@ -31,10 +35,10 @@ public class MyGridAdapter extends BaseAdapter {
     private ImageViewClickListener listener;
     private TextViewClickListener textViewClickListener;
     private GridDialogFragment dialog;
+    private GetCustomView getCustomView;
     MyWork_View view;
     MyWork work;
-
-    Animation animation;
+    String name;
 
     @Override
     public int getCount() {
@@ -61,21 +65,14 @@ public class MyGridAdapter extends BaseAdapter {
             view = (MyWork_View) convertView;
         }
 
-        work = list.get(position);
+        view.setUserName(name);
 
-        //여기를 바꿔야함 -> 기본 사진일때와, 새로운 사진이 들어갈때
-        //현재는 무조건 byte[] 의 값이 image에 찎힘
-        if(list.get(position).getResID() == R.drawable.baseline_add_a_photo_black_18){
+        if (list.get(position).getEncodeResID() != null) {
             view.setImageViewToBitmap(list.get(position).getEncodeResID());
         }
 
-        view.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                list.remove(position);
-                return false;
-            }
-        });
+        work = list.get(position);
+
 
         //기존 없는 이미지 -> 카메라모양의 이미지를 Drawable을 통해서 이용할 예정
         view.setTextView(work.getContent());
@@ -87,6 +84,11 @@ public class MyGridAdapter extends BaseAdapter {
                 listener.adapterToFragment(intent, position, finalView);
             }
         });
+
+        if (getCustomView != null) {
+            getCustomView.getCustomView(finalView, position);
+        }
+
 
         view.textView.setOnClickListener(v -> {
             dialog = new GridDialogFragment();
@@ -100,6 +102,7 @@ public class MyGridAdapter extends BaseAdapter {
 
     public void addItem(MyWork work) {
         list.add(work);
+
     }
 
     public void setOnImageViewClickListener(ImageViewClickListener listener) {
@@ -110,11 +113,12 @@ public class MyGridAdapter extends BaseAdapter {
         textViewClickListener = listener;
     }
 
-    public ImageView getImageView() {
-        return view.imageView;
+    public void setOnCustomView(GetCustomView getCustomView) {
+        this.getCustomView = getCustomView;
     }
 
-    public void remove(int position){
+    public void remove(int position) {
         list.remove(position);
     }
+
 }

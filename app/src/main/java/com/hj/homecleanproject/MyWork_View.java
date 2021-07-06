@@ -16,19 +16,20 @@ import android.widget.Toast;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.FragmentActivity;
 
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.hj.homecleanproject.customDialog.GridDialogFragment;
+import com.hj.homecleanproject.customInterface.GetCustomView;
 import com.hj.homecleanproject.customInterface.onDialogResultListener;
 
 public class MyWork_View extends LinearLayout {
     ImageView imageView;
-    TextView textView;
+    TextView textView, userName;
     CardView cardView;
 
-
+    private GetCustomView getCustomView;
 
     public MyWork_View(Context context) {
         super(context);
-
         init(context);
     }
 
@@ -38,12 +39,8 @@ public class MyWork_View extends LinearLayout {
         imageView = findViewById(R.id.CardViewimage);
         textView = findViewById(R.id.CardViewText);
         cardView = findViewById(R.id.cardView);
+        userName = findViewById(R.id.userName);
 
-    }
-
-    public void setImageView(int resID){
-        imageView.setImageResource(resID);
-        imageView.setScaleType(ImageView.ScaleType.CENTER);
     }
 
     public void setTextView(String text){
@@ -61,7 +58,7 @@ public class MyWork_View extends LinearLayout {
         }
     }
 
-    public void setScaleTypeImageView(ImageView.ScaleType scaleType){
-        imageView.setScaleType(scaleType);
+    public void setUserName(String name){
+        userName.setText(name);
     }
 }

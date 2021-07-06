@@ -1,5 +1,7 @@
 package com.hj.homecleanproject;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +12,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.hj.homecleanproject.customInterface.ImageViewClickListener;
 import com.hj.homecleanproject.customInterface.ImageViewLongClickListener;
 
 import java.util.ArrayList;
@@ -19,6 +22,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.MyViewHo
     private ArrayList<Bitmap> myPhoto = new ArrayList<>();
 
     private ImageViewLongClickListener listener;
+    private ImageViewClickListener imageViewClickListener;
 
     @NonNull
     @Override
@@ -37,6 +41,15 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.MyViewHo
             }
             return false;
         });
+        holder.imageView.setOnClickListener(v ->{
+            if(imageViewClickListener != null){
+                imageViewClickListener.adapterToFragment(null,position,holder.imageView);
+            }
+        });
+    }
+
+    public Bitmap get(int position){
+        return myPhoto.get(position);
     }
 
     @Override
@@ -63,5 +76,8 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.MyViewHo
 
     public void setOnImageViewLongClickListener(ImageViewLongClickListener listener){
         this.listener = listener;
+    }
+    public void setOnImageViewClickListener(ImageViewClickListener imageViewClickListener){
+        this.imageViewClickListener = imageViewClickListener;
     }
 }
