@@ -57,8 +57,13 @@ public class MyGridAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        view = new MyWork_View(parent.getContext());
+        view = null;
 
+        if (convertView == null) {
+            view = new MyWork_View(parent.getContext());
+        } else {
+            view = (MyWork_View) convertView;
+        }
 
         view.setUserName(name);
 

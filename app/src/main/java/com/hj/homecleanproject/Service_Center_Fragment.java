@@ -1,52 +1,33 @@
 package com.hj.homecleanproject;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
+
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
+
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
-import androidx.preference.PreferenceManager;
-import androidx.preference.PreferenceScreen;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.AttributeSet;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
+import androidx.preference.PreferenceScreen;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.zip.Inflater;
+import com.google.firebase.storage.FirebaseStorage;
 
 
 public class Service_Center_Fragment extends PreferenceFragmentCompat {
     Preference soundPreference; //프리퍼런스를 전역변수 선언
-    Preference keywordScreen;
     Preference editPreference;
-    Preference switchPreference;
     Preference screen;
+    FirebaseFirestore db;
+    FirebaseStorage storage;
+    DatabaseReference realtime;
+    FirebaseAuth auth;
+    FirebaseUser currentUser;
 
 
     @Override
@@ -64,11 +45,32 @@ public class Service_Center_Fragment extends PreferenceFragmentCompat {
         setPreferencesFromResource(R.xml.settings_preference, rootKey);
 
         if (rootKey == null) {
-            soundPreference = findPreference("sound_list");//findViewBy 참조할수있도록 지정하겠다.
-            keywordScreen = findPreference("keyword_screen");
             editPreference = findPreference("nickname");
-            screen=findPreference("key_test");
+            screen =findPreference("screen");
         }
+
+        screen.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+
+               alertDialog.setPositiveButton("취소", new DialogInterface.OnClickListener() {
+                   @Override
+                   public void onClick(DialogInterface dialog, int which) {
+                       dialog.cancel();
+                   }
+               }).setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                   @Override
+                   public void onClick(DialogInterface dialog, int which) {
+
+
+                   }
+               });
+
+                return false;
+            }
+        });
 
 
 

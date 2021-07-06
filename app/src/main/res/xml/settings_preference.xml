@@ -63,9 +63,9 @@
 
         <PreferenceScreen
             android:title="회원 탈퇴"
-            app:iconSpaceReserved="false">
-            <intent android:action="android.intent.action.VIEW"
-                android:data="http://www.android.com" />
+            app:iconSpaceReserved="false"
+            android:key="screen">
+
         </PreferenceScreen>
 
     </PreferenceCategory>
