@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ServiceFragment"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <com.google.android.material.card.MaterialCardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/family_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        card_view:elevation="10dp"
+        card_view:cardCornerRadius="5dp"
+        android:layout_margin="10dp"
+        card_view:strokeColor="#2fc600"
+        card_view:strokeWidth="1dp"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            >
+            <TextView
+                android:id="@+id/txt_name"
+                android:layout_below="@+id/family_group"
+                android:layout_width="match_parent"
+                android:layout_marginTop="5dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="이름"
+                />
+            <androidx.cardview.widget.CardView
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                card_view:cardCornerRadius="15dp"
+                android:layout_marginTop="10dp"
+                card_view:cardElevation="8dp">
+
+                <ImageView
+                    android:id="@+id/iv_photo"
+                    android:layout_width="130dp"
+                    android:layout_height="130dp"
+                    android:src="@drawable/ic_launcher_foreground"
+                    android:scaleType="fitXY"
+
+                    />
+            </androidx.cardview.widget.CardView>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toRightOf="@+id/iv_photo"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/txt_GroupName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="그룹명"/>
+
+                <TextView
+                    android:layout_marginTop="5dp"
+                    android:id="@+id/txt_Email"
+                    android:layout_below="@+id/txt_GroupName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="이메일"
+                    />
+
+                <TextView
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="10dp"
+                    android:id="@+id/txt_Position"
+                    android:layout_below="@+id/txt_Email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="그룹포지션"
+                    />
+
+
+            </RelativeLayout>
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/cc"
+        android:orientation="vertical">
+        <fragment
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:name="com.hj.homecleanproject.Service_Center_Fragment">
+
+        </fragment>
+
+    </LinearLayout>
+
+
+</LinearLayout>

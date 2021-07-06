@@ -191,7 +191,11 @@ public class GridFragment extends Fragment {
                         saveStorage(bytes);
 
                         ((MyWork) adapter.getItem(adapterPosition)).setResID(0);
-                        ((MyWork) adapter.getItem(adapterPosition)).setEncodeResID(bytes);
+                        //((MyWork) adapter.getItem(adapterPosition)).setEncodeResID(bytes);
+                       // adapter.view.setImageViewToBitmap(bytes);
+                       adapter.view.setImageViewToBitmap(adapter.list.get(adapterPosition).getEncodeResID());
+
+
                         adapter.notifyDataSetChanged();
                         notifiCM();
                     }

@@ -28,6 +28,7 @@ public class FragmentActivity extends AppCompatActivity {
     private FragmentTransaction ft;
     private GridFragment gridFragment;
     private MyFamilyFragment myFamilyFragment;
+    private ServiceFragment serviceCenter;
     private PictureFragment pictureFragment;
     private Service_Center_Fragment serviceCenterFragment;
 
@@ -46,10 +47,12 @@ public class FragmentActivity extends AppCompatActivity {
 
         bottomNavigationView = findViewById(R.id.bottomNavi);
 
+
         gridFragment = new GridFragment();
         myFamilyFragment = new MyFamilyFragment();
         pictureFragment = new PictureFragment();
         serviceCenterFragment = new Service_Center_Fragment();
+        serviceCenter = new ServiceFragment();
         positions = new ArrayList<>();
         bottomNavigationView = findViewById(R.id.bottomNavi);
         setFrag(2); //첫 프로그먼트 화면을 무엇으로 지정
@@ -143,7 +146,7 @@ public class FragmentActivity extends AppCompatActivity {
                 ft.commit();
                 break;
             case 4:
-                ft.replace(R.id.main_frame, serviceCenterFragment, "service");
+                ft.replace(R.id.main_frame, serviceCenter, "service");
                 ft.addToBackStack(null);
                 ft.commit();
                 break;
