@@ -87,7 +87,8 @@ import static android.content.Context.NOTIFICATION_SERVICE;
 //하지만 Fragment 내부에서 다른 Fragment로 이동하는 것은 그 Fragment가 자신의 하위레벨이 아니기 때문에
 //내부에서 직접 제어할 수 없으므로 , 상위 레벨인 Activity를 호출하여 제어하는 형태가 되어야 함
 
-public class GridFragment extends Fragment {
+public class
+GridFragment extends Fragment {
 
     ViewGroup viewGroup;
     GridView gridView;
@@ -191,7 +192,7 @@ public class GridFragment extends Fragment {
                         saveStorage(bytes);
 
                         ((MyWork) adapter.getItem(adapterPosition)).setResID(0);
-                        //((MyWork) adapter.getItem(adapterPosition)).setEncodeResID(bytes);
+                        ((MyWork) adapter.getItem(adapterPosition)).setEncodeResID(bytes);
                        // adapter.view.setImageViewToBitmap(bytes);
                        adapter.view.setImageViewToBitmap(adapter.list.get(adapterPosition).getEncodeResID());
 
